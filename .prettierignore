@@ -1,0 +1,17 @@
+# 빌드 산출물
+.next
+out
+build
+coverage
+node_modules
+package-lock.json
+next-env.d.ts
+
+# 생성 파일 / 도구 데이터
+lib/supabase/database.types.ts
+shrimp_data
+supabase/.temp
+
+# 원본 형태를 유지할 문서/설정
+app/docs
+.claude
