@@ -1,0 +1,4 @@
+# 변경된 파일만 린트/포맷
+npx lint-staged
+# 타입 에러는 파일 단위로 잡을 수 없으므로 프로젝트 전체를 검사
+npm run typecheck
