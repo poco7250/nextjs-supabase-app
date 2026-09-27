@@ -24,9 +24,7 @@
     },
     "shrimp-task-manager": {
       "command": "node",
-      "args": [
-        "/Users/kyu/workspace/mcp-shrimp-task-manager/dist/index.js"
-      ],
+      "args": ["/Users/kyu/workspace/mcp-shrimp-task-manager/dist/index.js"],
       "env": {
         "DATA_DIR": "/Users/kyu/workspace/nextjs-supabase-app/shrimp_data",
         "TEMPLATES_USE": "en",
