@@ -69,3 +69,13 @@ Next.js 16에서는 middleware 대신 루트의 `proxy.ts`가 `proxy()` 함수�
 
 - `.claude/agents/`, `.claude/commands/`(git commit/branch/pr/merge, docs/update-roadmap)에 프로젝트 전용 서브에이전트와 커맨드가 있다.
 - `shrimp_data/`는 shrimp-task-manager MCP의 작업 데이터 디렉터리다.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
