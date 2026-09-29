@@ -5,10 +5,10 @@
       "name": "경로 상수 도입 및 인증 후 목적지를 /dashboard로 변경",
       "description": "lib/constants/routes.ts를 만들어 routes 객체와 DEFAULT_AUTH_REDIRECT(/dashboard)를 정의하고, /protected 하드코딩 5곳을 이 상수로 교체한다. 로그인 후 404가 나지 않도록 app/(app)/dashboard/page.tsx 빈 페이지를 만든다.",
       "notes": "route group (app)은 layout 없이도 URL에서 생략된다(node_modules/next/dist/docs/01-app/01-getting-started/02-project-structure.md). Task 002가 같은 위치에 layout.tsx를 추가한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-29T14:59:38.693Z",
       "relatedFiles": [
         {
           "path": "lib/constants/routes.ts",
@@ -58,7 +58,9 @@
       ],
       "implementationGuide": "1) lib/constants/routes.ts: export const routes = { home: '/', dashboard: '/dashboard', login: '/auth/login' } as const; export const DEFAULT_AUTH_REDIRECT = routes.dashboard; 한국어 JSDoc\\n2) components/login-form.tsx:43, components/update-password-form.tsx:37 router.push(DEFAULT_AUTH_REDIRECT)\\n3) components/sign-up-form.tsx:48 emailRedirectTo = `${window.location.origin}${DEFAULT_AUTH_REDIRECT}` (confirm?next= 경유는 Task 010 범위라 바꾸지 않는다)\\n4) components/google-login-button.tsx:50 next 기본값 = DEFAULT_AUTH_REDIRECT (prop 시그니처 유지)\\n5) app/auth/callback/route.ts:4 defaultNext 제거, getSafeNext fallback에 DEFAULT_AUTH_REDIRECT 사용\\n6) app/(app)/dashboard/page.tsx: 제목 '내 그룹'만 있는 동기 서버 컴포넌트. 공개 경로에 추가하지 않는다(proxy가 보호)",
       "verificationCriteria": "grep -rn '/protected' app components lib 결과가 0건이다. /dashboard가 로그인 상태에서 렌더되고, 비로그인이면 /auth/login으로 리다이렉트된다. npm run typecheck와 lint가 통과한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "lib/constants/routes.ts(routes, DEFAULT_AUTH_REDIRECT=/dashboard)를 만들고 /protected 하드코딩 5곳(login-form, update-password-form, sign-up-form emailRedirectTo, google-login-button next 기본값, auth/callback getSafeNext fallback)을 이 상수로 교체했다. 스타터 영어 TODO 주석 2줄도 삭제했다. app/(app)/dashboard/page.tsx에 빈 대시보드를 만들었다. 검증: /protected grep 0건, typecheck와 lint(--max-warnings=0) 통과, 비로그인 /dashboard 접근 시 307 → /auth/login, / 200. 미검증: 로그인 상태의 /dashboard 렌더와 실제 로그인 후 이동은 테스트 계정이 필요해서 작업 4의 Playwright E2E로 넘긴다.",
+      "completedAt": "2026-09-29T14:59:38.691Z"
     },
     {
       "id": "73e9494e-58b5-4c66-81e5-fcbfa405a097",
@@ -181,6 +183,130 @@
       "implementationGuide": "1) npm run check, npm run build\\n2) Playwright MCP: npm run dev → /auth/login에서 테스트 계정으로 로그인 → URL이 /dashboard인지 확인 → 비로그인 상태로 /dashboard 접근 시 /auth/login 리다이렉트 확인 → / 랜딩 렌더와 콘솔 에러 없음 확인\\n3) 구글: google-login-button 기본 next와 callback fallback이 /dashboard인지 코드로 확인하고, 실제 OAuth는 사용자에게 수동 확인을 요청한다\\n4) tasks/000-sample.md, tasks/001-starter-cleanup.md 작성(체크박스, 변경 요약, 테스트 체크리스트)\\n5) /docs:update-roadmap으로 Task 001 ✅ 표시",
       "verificationCriteria": "npm run check와 build가 통과한다. Playwright로 이메일 로그인 후 /dashboard 도착을 확인한다. ROADMAP Task 001의 완료 조건 3개를 모두 충족한다.",
       "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+    },
+    {
+      "id": "7dd7429f-2c01-45d4-88d1-bfefd87f96e3",
+      "name": "경로 빌더 확장 및 공용 라우트 상태 컴포넌트 작성",
+      "description": "lib/constants/routes.ts에 정적 경로(profile, newGroup)와 동적 경로 빌더를 추가하고, 세그먼트 상태 파일이 위임할 공용 컴포넌트 3개와 루트 app/not-found.tsx를 만든다.",
+      "notes": "error prop 이름은 16.3에서 stable이 된 retry다(docs 03-file-conventions/error.md). logger가 생기기 전까지는 console.error를 허용한다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "60252374-0d43-47d2-87f3-52951e014657"
+        }
+      ],
+      "createdAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-29T15:03:06.242Z",
+      "relatedFiles": [
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "TO_MODIFY",
+          "description": "경로 빌더 추가"
+        },
+        {
+          "path": "components/route-states/segment-loading.tsx",
+          "type": "CREATE",
+          "description": "공용 로딩"
+        },
+        {
+          "path": "components/route-states/segment-error.tsx",
+          "type": "CREATE",
+          "description": "공용 에러"
+        },
+        {
+          "path": "components/route-states/segment-not-found.tsx",
+          "type": "CREATE",
+          "description": "공용 404"
+        },
+        {
+          "path": "app/not-found.tsx",
+          "type": "CREATE",
+          "description": "루트 404"
+        },
+        {
+          "path": "components/ui/button.tsx",
+          "type": "REFERENCE",
+          "description": "재사용"
+        }
+      ],
+      "implementationGuide": "1) routes.ts: 기존 export 유지. 내부 헬퍼 segment(v)=encodeURIComponent(v). routes에 profile:'/profile', newGroup:'/groups/new', invite(token), group(groupId), groupSettings(groupId), groupMembers(groupId), newEvent(groupId), event(groupId,eventId), eventCarpool(groupId,eventId), eventSettlement(groupId,eventId)를 추가하고 각각 한국어 JSDoc\\n2) components/route-states/segment-loading.tsx: 서버 컴포넌트, '불러오는 중...' + aria-busy\\n3) components/route-states/segment-error.tsx: 'use client', props { error: Error & { digest?: string }; retry: () => void }, useEffect에서 console.error('[segment-error]', error.digest ?? error.message), '문제가 발생했어요' + 다시 시도 Button(onClick=retry)\\n4) components/route-states/segment-not-found.tsx: '페이지를 찾을 수 없어요' + Button asChild Link href=routes.dashboard\\n5) app/not-found.tsx: SegmentNotFound 재사용(매칭 안 되는 URL용)",
+      "verificationCriteria": "typecheck와 lint가 통과한다. routes.event('a b','c')가 '/groups/a%20b/events/c'를 반환한다. 존재하지 않는 URL에 접근하면 한국어 404가 표시된다.",
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다."
+    },
+    {
+      "id": "19be88dd-0729-4842-820d-ba3df042f958",
+      "name": "(app)·초대 라우트 골격과 세그먼트 상태 파일 생성",
+      "description": "빈 페이지 10개(invite/[token], profile, groups/new, groups/[groupId] 홈·settings·members·events/new, events/[eventId] 상세·carpool·settlement)와 레이아웃 3개((app), groups/[groupId], events/[eventId])를 만들고, 4개 세그먼트((app), groups/[groupId], events/[eventId], invite/[token])에 loading/error/not-found 래퍼를 배치한다.",
+      "notes": "loading.tsx는 같은 세그먼트의 layout을 감싸지 않는다. 그래서 레이아웃에서 params를 await하면 build 오류가 나거나 static shell이 깨진다. invite는 (app) 밖이다. proxy를 수정하지 않는다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "7dd7429f-2c01-45d4-88d1-bfefd87f96e3"
+        }
+      ],
+      "createdAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-29T15:03:06.242Z",
+      "relatedFiles": [
+        {
+          "path": "app/(app)/layout.tsx",
+          "type": "CREATE",
+          "description": "로그인 후 공통 레이아웃"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/layout.tsx",
+          "type": "CREATE",
+          "description": "그룹 컨텍스트"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/events/[eventId]/layout.tsx",
+          "type": "CREATE",
+          "description": "이벤트 컨텍스트"
+        },
+        {
+          "path": "app/invite/[token]/page.tsx",
+          "type": "CREATE",
+          "description": "초대 수락"
+        },
+        {
+          "path": "app/(app)/dashboard/page.tsx",
+          "type": "REFERENCE",
+          "description": "기존 빈 페이지 스타일"
+        }
+      ],
+      "implementationGuide": "1) 정적 페이지(profile, groups/new): 동기 컴포넌트, <main><h1>내 프로필</h1></main>\\n2) 동적 페이지: export default async function XxxPage(props: PageProps<'/groups/[groupId]/settings'>) { const { groupId } = await props.params; return <main><h1>그룹 설정</h1><p className=text-muted-foreground>{groupId}</p></main> }\\n3) 레이아웃: (app)/layout.tsx는 children 컨테이너. [groupId]/layout.tsx와 [eventId]/layout.tsx는 LayoutProps를 받고 children만 반환한다. params를 await하지 않으며, 멤버 확인은 Task 009에서 Suspense 안에 넣는다는 JSDoc을 단다\\n4) 세그먼트 상태 래퍼: loading.tsx→<SegmentLoading/>, error.tsx→'use client' + props를 SegmentError로 전달, not-found.tsx→<SegmentNotFound/>\\n5) 페이지 제목: 초대 수락, 내 프로필, 그룹 만들기, 그룹 홈, 그룹 설정, 멤버 관리, 이벤트 만들기, 이벤트 상세, 카풀, 정산",
+      "verificationCriteria": "typecheck와 lint가 통과하고 npm run build에서 cacheComponents 관련 오류가 없다. 레이아웃 파일에 await params가 없다.",
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다."
+    },
+    {
+      "id": "1429f0a4-e456-4ec9-a488-0d1fcc9351b0",
+      "name": "Task 002 전 경로 렌더 검증 및 로드맵 반영",
+      "description": "npm run build와 check를 실행하고, 로그인 세션으로 전체 경로를 순회해 404 없이 렌더되는지 확인한 뒤, tasks/002 작업 파일과 ROADMAP을 갱신한다.",
+      "notes": "테스트 계정은 사용자에게 받는다. /invite/*는 Task 010 전까지 로그인 상태에서만 확인한다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "19be88dd-0729-4842-820d-ba3df042f958"
+        }
+      ],
+      "createdAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-29T15:03:06.242Z",
+      "relatedFiles": [
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 002 체크",
+          "lineStart": 105,
+          "lineEnd": 128
+        },
+        {
+          "path": "tasks/002-route-skeleton.md",
+          "type": "CREATE",
+          "description": "작업 파일"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\\n2) Playwright MCP: 테스트 계정으로 로그인 → routes 빌더로 만든 더미 id(예: g1, e1, t1) 경로 11개를 순회하며 h1 텍스트와 콘솔 에러 없음 확인 → 없는 URL은 한국어 404 확인 → 비로그인 상태로 /groups/g1에 접근하면 /auth/login 리다이렉트 확인\\n3) tasks/002-route-skeleton.md 작성(체크박스, 변경 요약, 테스트 체크리스트)\\n4) /docs:update-roadmap으로 Task 002 ✅",
+      "verificationCriteria": "build와 check가 통과한다. 로그인 상태에서 11개 경로 모두 200으로 제목이 표시된다. ROADMAP Task 002 완료 조건을 충족한다.",
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다."
     }
   ]
 }
