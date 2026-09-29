@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { DEFAULT_AUTH_REDIRECT } from "@/lib/constants/routes";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { GoogleLoginButton, OrDivider } from "@/components/google-login-button";
@@ -45,7 +46,7 @@ export function SignUpForm({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/protected`,
+          emailRedirectTo: `${window.location.origin}${DEFAULT_AUTH_REDIRECT}`,
         },
       });
       if (error) throw error;

@@ -1,7 +1,6 @@
+import { DEFAULT_AUTH_REDIRECT } from "@/lib/constants/routes";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse, type NextRequest } from "next/server";
-
-const defaultNext = "/protected";
 
 /**
  * 리다이렉트 대상 경로를 검증한다.
@@ -9,7 +8,7 @@ const defaultNext = "/protected";
  */
 function getSafeNext(next: string | null): string {
   if (!next || !next.startsWith("/") || next.startsWith("//")) {
-    return defaultNext;
+    return DEFAULT_AUTH_REDIRECT;
   }
   return next;
 }
