@@ -1,0 +1,186 @@
+{
+  "tasks": [
+    {
+      "id": "cec180a4-6893-4246-b8a5-c42d9c16493a",
+      "name": "경로 상수 도입 및 인증 후 목적지를 /dashboard로 변경",
+      "description": "lib/constants/routes.ts를 만들어 routes 객체와 DEFAULT_AUTH_REDIRECT(/dashboard)를 정의하고, /protected 하드코딩 5곳을 이 상수로 교체한다. 로그인 후 404가 나지 않도록 app/(app)/dashboard/page.tsx 빈 페이지를 만든다.",
+      "notes": "route group (app)은 layout 없이도 URL에서 생략된다(node_modules/next/dist/docs/01-app/01-getting-started/02-project-structure.md). Task 002가 같은 위치에 layout.tsx를 추가한다.",
+      "status": "pending",
+      "dependencies": [],
+      "createdAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "relatedFiles": [
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "CREATE",
+          "description": "경로 상수"
+        },
+        {
+          "path": "app/(app)/dashboard/page.tsx",
+          "type": "CREATE",
+          "description": "빈 대시보드"
+        },
+        {
+          "path": "components/login-form.tsx",
+          "type": "TO_MODIFY",
+          "description": "로그인 후 이동",
+          "lineStart": 43,
+          "lineEnd": 43
+        },
+        {
+          "path": "components/sign-up-form.tsx",
+          "type": "TO_MODIFY",
+          "description": "emailRedirectTo",
+          "lineStart": 48,
+          "lineEnd": 48
+        },
+        {
+          "path": "components/update-password-form.tsx",
+          "type": "TO_MODIFY",
+          "description": "비밀번호 변경 후 이동",
+          "lineStart": 37,
+          "lineEnd": 37
+        },
+        {
+          "path": "components/google-login-button.tsx",
+          "type": "TO_MODIFY",
+          "description": "next 기본값",
+          "lineStart": 50,
+          "lineEnd": 50
+        },
+        {
+          "path": "app/auth/callback/route.ts",
+          "type": "TO_MODIFY",
+          "description": "defaultNext",
+          "lineStart": 1,
+          "lineEnd": 15
+        }
+      ],
+      "implementationGuide": "1) lib/constants/routes.ts: export const routes = { home: '/', dashboard: '/dashboard', login: '/auth/login' } as const; export const DEFAULT_AUTH_REDIRECT = routes.dashboard; 한국어 JSDoc\\n2) components/login-form.tsx:43, components/update-password-form.tsx:37 router.push(DEFAULT_AUTH_REDIRECT)\\n3) components/sign-up-form.tsx:48 emailRedirectTo = `${window.location.origin}${DEFAULT_AUTH_REDIRECT}` (confirm?next= 경유는 Task 010 범위라 바꾸지 않는다)\\n4) components/google-login-button.tsx:50 next 기본값 = DEFAULT_AUTH_REDIRECT (prop 시그니처 유지)\\n5) app/auth/callback/route.ts:4 defaultNext 제거, getSafeNext fallback에 DEFAULT_AUTH_REDIRECT 사용\\n6) app/(app)/dashboard/page.tsx: 제목 '내 그룹'만 있는 동기 서버 컴포넌트. 공개 경로에 추가하지 않는다(proxy가 보호)",
+      "verificationCriteria": "grep -rn '/protected' app components lib 결과가 0건이다. /dashboard가 로그인 상태에서 렌더되고, 비로그인이면 /auth/login으로 리다이렉트된다. npm run typecheck와 lint가 통과한다.",
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+    },
+    {
+      "id": "73e9494e-58b5-4c66-81e5-fcbfa405a097",
+      "name": "스타터 페이지·컴포넌트 삭제, 랜딩 재작성, proxy·메타데이터 정리",
+      "description": "app/instruments, app/protected, components/tutorial/, hero.tsx, deploy-button.tsx, next-logo.tsx, supabase-logo.tsx를 삭제한다. 이 파일들을 import하는 app/page.tsx를 최소 한국어 랜딩으로 다시 쓰고, proxy 공개 경로에서 /instruments 조건을 제거하고, app/layout.tsx 메타데이터를 한국어로 바꾸고 lang을 ko로 바꾼다.",
+      "notes": "AuthButton은 쿠키를 읽으므로 cacheComponents 환경에서 Suspense 경계를 반드시 유지한다. 서비스명은 PRD에 없으니 확정값을 사용자에게 받는다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "cec180a4-6893-4246-b8a5-c42d9c16493a"
+        }
+      ],
+      "createdAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "relatedFiles": [
+        {
+          "path": "app/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "랜딩 재작성"
+        },
+        {
+          "path": "app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "메타데이터, lang"
+        },
+        {
+          "path": "lib/supabase/proxy.ts",
+          "type": "TO_MODIFY",
+          "description": "공개 경로 조건",
+          "lineStart": 50,
+          "lineEnd": 58
+        },
+        {
+          "path": "components/auth-button.tsx",
+          "type": "REFERENCE",
+          "description": "nav에서 재사용"
+        },
+        {
+          "path": "app/instruments/page.tsx",
+          "type": "OTHER",
+          "description": "삭제 대상"
+        },
+        {
+          "path": "app/protected/page.tsx",
+          "type": "OTHER",
+          "description": "삭제 대상"
+        }
+      ],
+      "implementationGuide": "1) git rm -r app/instruments app/protected components/tutorial components/hero.tsx components/deploy-button.tsx components/next-logo.tsx components/supabase-logo.tsx\\n2) app/page.tsx: nav(서비스명 Link + hasEnvVars ? <Suspense><AuthButton/></Suspense> : <EnvVarWarning/>) + 한 줄 소개 섹션 + footer(ThemeSwitcher). DeployButton, Hero, tutorial import 제거. 카피 완성은 Task 007 범위\\n3) lib/supabase/proxy.ts 55-56줄의 /instruments 조건 두 줄만 삭제. createServerClient~getClaims 구간과 supabaseResponse 반환은 건드리지 않는다\\n4) app/layout.tsx: title '모임 이벤트 관리'(가칭, 사용자 확인 필요), description은 PRD 목적 요약 한국어 문장, <html lang='ko'>. OG 이미지는 Task 032 범위라 그대로 둔다",
+      "verificationCriteria": "grep -rnE 'tutorial/|components/hero|deploy-button|next-logo|supabase-logo|instruments' app components lib 결과가 0건이다(database.types.ts 제외). / 페이지가 렌더되고, /instruments에 비로그인으로 접근하면 /auth/login으로 리다이렉트된다. html lang이 ko다. npm run typecheck와 lint가 통과한다.",
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+    },
+    {
+      "id": "73b05d01-4baf-4d3d-81f9-43536f07a3ad",
+      "name": "instruments 테이블 drop 마이그레이션 및 DB 타입 재생성",
+      "description": "DB 작업 3단계 순서로 instruments 테이블을 제거하고 lib/supabase/database.types.ts를 재생성한다.",
+      "notes": "app/instruments 삭제(이전 작업) 뒤에 실행해야 타입 재생성 후 typecheck가 깨지지 않는다. 원격 DB에 바로 반영되고 되돌릴 수 없는 작업이니 실행 전에 사용자 확인을 받는다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "73e9494e-58b5-4c66-81e5-fcbfa405a097"
+        }
+      ],
+      "createdAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "relatedFiles": [
+        {
+          "path": "supabase/migrations/20260926000000_create_profiles_table.sql",
+          "type": "REFERENCE",
+          "description": "마이그레이션 스타일 참고"
+        },
+        {
+          "path": "lib/supabase/database.types.ts",
+          "type": "TO_MODIFY",
+          "description": "MCP로 재생성"
+        }
+      ],
+      "implementationGuide": "0) MCP list_tables로 instruments를 참조하는 FK가 없는지 확인한다(있으면 중단하고 보고. cascade 금지)\\n1) supabase/migrations/<YYYYMMDDHHMMSS>_drop_instruments_table.sql 작성: 한국어 주석 + drop table if exists public.instruments;\\n2) 같은 SQL을 MCP apply_migration(name: drop_instruments_table)으로 반영\\n3) MCP get_advisors(security, performance)로 새 경고가 없는지 확인\\n4) MCP generate_typescript_types 결과로 lib/supabase/database.types.ts 전체를 덮어쓴다(직접 편집 금지)",
+      "verificationCriteria": "MCP list_migrations에 drop_instruments_table이 있다. database.types.ts에서 grep instruments 결과가 0건이다. get_advisors에 새 경고가 없다. npm run typecheck가 통과한다.",
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+    },
+    {
+      "id": "60252374-0d43-47d2-87f3-52951e014657",
+      "name": "Task 001 최종 검증 및 로드맵 반영",
+      "description": "전체 품질 게이트와 로그인 흐름 E2E를 검증하고, tasks/001-starter-cleanup.md(와 000-sample.md) 작업 파일과 ROADMAP 체크를 갱신한다.",
+      "notes": "테스트 계정 자격 증명은 사용자에게 받는다(.env 읽기 금지).",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "cec180a4-6893-4246-b8a5-c42d9c16493a"
+        },
+        {
+          "taskId": "73e9494e-58b5-4c66-81e5-fcbfa405a097"
+        },
+        {
+          "taskId": "73b05d01-4baf-4d3d-81f9-43536f07a3ad"
+        }
+      ],
+      "createdAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "relatedFiles": [
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 001 체크",
+          "lineStart": 96,
+          "lineEnd": 103
+        },
+        {
+          "path": "tasks/001-starter-cleanup.md",
+          "type": "CREATE",
+          "description": "작업 파일"
+        },
+        {
+          "path": "tasks/000-sample.md",
+          "type": "CREATE",
+          "description": "작업 파일 샘플"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\\n2) Playwright MCP: npm run dev → /auth/login에서 테스트 계정으로 로그인 → URL이 /dashboard인지 확인 → 비로그인 상태로 /dashboard 접근 시 /auth/login 리다이렉트 확인 → / 랜딩 렌더와 콘솔 에러 없음 확인\\n3) 구글: google-login-button 기본 next와 callback fallback이 /dashboard인지 코드로 확인하고, 실제 OAuth는 사용자에게 수동 확인을 요청한다\\n4) tasks/000-sample.md, tasks/001-starter-cleanup.md 작성(체크박스, 변경 요약, 테스트 체크리스트)\\n5) /docs:update-roadmap으로 Task 001 ✅ 표시",
+      "verificationCriteria": "npm run check와 build가 통과한다. Playwright로 이메일 로그인 후 /dashboard 도착을 확인한다. ROADMAP Task 001의 완료 조건 3개를 모두 충족한다.",
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+    }
+  ]
+}
