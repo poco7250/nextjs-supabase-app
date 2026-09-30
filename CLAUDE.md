@@ -46,14 +46,15 @@ npm run check       # typecheck + lint + format:check (작업 마무리 전 실�
 
 Next.js 16에서는 middleware 대신 루트의 `proxy.ts`가 `proxy()` 함수를 export한다. 이 함수가 `lib/supabase/proxy.ts`의 `updateSession()`을 호출한다.
 
-- 공개 경로 화이트리스트는 `updateSession()` 안에 하드코딩되어 있다: `/`, `/login*`, `/auth*`, `/instruments`, `/instruments/*`. 그 외 경로는 비로그인 시 `/auth/login`으로 리다이렉트된다. **새 공개 페이지를 추가하면 여기에 경로를 추가해야 한다.**
+- 공개 경로 화이트리스트는 `updateSession()` 안에 하드코딩되어 있다: `/`, `/login*`, `/auth*`. 그 외 경로는 비로그인 시 `/auth/login`으로 리다이렉트된다. **새 공개 페이지를 추가하면 여기에 경로를 추가해야 한다.**
 - `createServerClient`와 `supabase.auth.getClaims()` 사이에 코드를 넣지 말고, `supabaseResponse` 객체를 그대로 반환해야 한다(쿠키 동기화가 깨지면 사용자가 랜덤하게 로그아웃됨).
 
 ### 인증 흐름
 
 - 인증 UI는 `components/*-form.tsx`(Client Component, 브라우저 클라이언트 사용)와 `app/auth/*` 페이지로 구성된다.
 - 이메일 확인/비밀번호 재설정 링크는 `app/auth/confirm/route.ts`에서 `verifyOtp({ token_hash, type })`로 처리하고 `next` 파라미터로 리다이렉트한다.
-- `app/protected/`는 로그인이 필요한 영역 예시.
+- 로그인·가입·비밀번호 변경 후 기본 목적지는 `lib/constants/routes.ts`의 `DEFAULT_AUTH_REDIRECT`(`/dashboard`)다. 경로 문자열을 하드코딩하지 않는다.
+- 로그인이 필요한 화면은 `app/(app)/` route group 아래에 둔다. 서비스명·소개 문구는 `lib/constants/site.ts`에서 관리한다.
 
 ### 데이터베이스
 
