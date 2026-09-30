@@ -67,14 +67,14 @@
       "name": "스타터 페이지·컴포넌트 삭제, 랜딩 재작성, proxy·메타데이터 정리",
       "description": "app/instruments, app/protected, components/tutorial/, hero.tsx, deploy-button.tsx, next-logo.tsx, supabase-logo.tsx를 삭제한다. 이 파일들을 import하는 app/page.tsx를 최소 한국어 랜딩으로 다시 쓰고, proxy 공개 경로에서 /instruments 조건을 제거하고, app/layout.tsx 메타데이터를 한국어로 바꾸고 lang을 ko로 바꾼다.",
       "notes": "AuthButton은 쿠키를 읽으므로 cacheComponents 환경에서 Suspense 경계를 반드시 유지한다. 서비스명은 PRD에 없으니 확정값을 사용자에게 받는다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "cec180a4-6893-4246-b8a5-c42d9c16493a"
         }
       ],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-30T14:13:58.983Z",
       "relatedFiles": [
         {
           "path": "app/page.tsx",
@@ -111,7 +111,9 @@
       ],
       "implementationGuide": "1) git rm -r app/instruments app/protected components/tutorial components/hero.tsx components/deploy-button.tsx components/next-logo.tsx components/supabase-logo.tsx\\n2) app/page.tsx: nav(서비스명 Link + hasEnvVars ? <Suspense><AuthButton/></Suspense> : <EnvVarWarning/>) + 한 줄 소개 섹션 + footer(ThemeSwitcher). DeployButton, Hero, tutorial import 제거. 카피 완성은 Task 007 범위\\n3) lib/supabase/proxy.ts 55-56줄의 /instruments 조건 두 줄만 삭제. createServerClient~getClaims 구간과 supabaseResponse 반환은 건드리지 않는다\\n4) app/layout.tsx: title '모임 이벤트 관리'(가칭, 사용자 확인 필요), description은 PRD 목적 요약 한국어 문장, <html lang='ko'>. OG 이미지는 Task 032 범위라 그대로 둔다",
       "verificationCriteria": "grep -rnE 'tutorial/|components/hero|deploy-button|next-logo|supabase-logo|instruments' app components lib 결과가 0건이다(database.types.ts 제외). / 페이지가 렌더되고, /instruments에 비로그인으로 접근하면 /auth/login으로 리다이렉트된다. html lang이 ko다. npm run typecheck와 lint가 통과한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "스타터 잔재 12개 파일(app/instruments, app/protected, components/tutorial 5개, hero, deploy-button, next-logo, supabase-logo)을 git rm으로 삭제했다. app/page.tsx는 서비스명 nav(AuthButton은 Suspense 유지, EnvVarWarning) + 소개 섹션 + ThemeSwitcher footer로 재작성했다. 서비스명과 설명은 lib/constants/site.ts의 siteConfig로 분리했다(가칭 '모임 이벤트 관리', 한 곳에서 교체 가능). app/layout.tsx는 메타데이터를 siteConfig로 바꾸고 lang을 ko로 바꿨다. proxy에서 /instruments 조건 두 줄만 삭제했다(getClaims 구간은 건드리지 않음). CLAUDE.md와 shrimp-rules.md의 공개 경로, 리다이렉트 상수, 예시 파일 설명도 동기화했다. 검증: 잔존 참조 grep 0건, typecheck(오래된 .next/dev/types는 dev 재시작으로 재생성)와 lint --max-warnings=0, prettier 통과. / 200(lang=ko, title·description 한국어), /instruments·/protected·/dashboard는 비로그인 시 307 → /auth/login. instruments 타입과 테이블 관련 문서 문구는 다음 작업(DB)에서 처리한다.",
+      "completedAt": "2026-09-30T14:13:58.981Z"
     },
     {
       "id": "73b05d01-4baf-4d3d-81f9-43536f07a3ad",
