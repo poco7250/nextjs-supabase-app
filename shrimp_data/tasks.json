@@ -120,14 +120,14 @@
       "name": "instruments 테이블 drop 마이그레이션 및 DB 타입 재생성",
       "description": "DB 작업 3단계 순서로 instruments 테이블을 제거하고 lib/supabase/database.types.ts를 재생성한다.",
       "notes": "app/instruments 삭제(이전 작업) 뒤에 실행해야 타입 재생성 후 typecheck가 깨지지 않는다. 원격 DB에 바로 반영되고 되돌릴 수 없는 작업이니 실행 전에 사용자 확인을 받는다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "73e9494e-58b5-4c66-81e5-fcbfa405a097"
         }
       ],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-30T14:25:19.585Z",
       "relatedFiles": [
         {
           "path": "supabase/migrations/20260926000000_create_profiles_table.sql",
@@ -142,14 +142,16 @@
       ],
       "implementationGuide": "0) MCP list_tables로 instruments를 참조하는 FK가 없는지 확인한다(있으면 중단하고 보고. cascade 금지)\\n1) supabase/migrations/<YYYYMMDDHHMMSS>_drop_instruments_table.sql 작성: 한국어 주석 + drop table if exists public.instruments;\\n2) 같은 SQL을 MCP apply_migration(name: drop_instruments_table)으로 반영\\n3) MCP get_advisors(security, performance)로 새 경고가 없는지 확인\\n4) MCP generate_typescript_types 결과로 lib/supabase/database.types.ts 전체를 덮어쓴다(직접 편집 금지)",
       "verificationCriteria": "MCP list_migrations에 drop_instruments_table이 있다. database.types.ts에서 grep instruments 결과가 0건이다. get_advisors에 새 경고가 없다. npm run typecheck가 통과한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "instruments를 참조하는 FK·뷰·함수가 없음을 확인(전용 RLS 정책 1개는 테이블과 함께 삭제)한 뒤 supabase/migrations/20260930232356_drop_instruments_table.sql을 작성하고 apply_migration(drop_instruments_table)으로 원격에 반영. list_migrations에 20260930142410 drop_instruments_table 등록 확인. get_advisors performance 0건, security는 기존 Auth 설정 경고(leaked password protection)만 있고 신규 경고 없음. generate_typescript_types 결과로 database.types.ts를 덮어써 instruments 0건, npm run typecheck 통과. 참고: 로컬 파일 타임스탬프와 원격 버전 번호는 다름(기존 profiles 마이그레이션도 동일한 상황).",
+      "completedAt": "2026-09-30T14:25:19.583Z"
     },
     {
       "id": "60252374-0d43-47d2-87f3-52951e014657",
       "name": "Task 001 최종 검증 및 로드맵 반영",
       "description": "전체 품질 게이트와 로그인 흐름 E2E를 검증하고, tasks/001-starter-cleanup.md(와 000-sample.md) 작업 파일과 ROADMAP 체크를 갱신한다.",
       "notes": "테스트 계정 자격 증명은 사용자에게 받는다(.env 읽기 금지).",
-      "status": "pending",
+      "status": "in_progress",
       "dependencies": [
         {
           "taskId": "cec180a4-6893-4246-b8a5-c42d9c16493a"
@@ -162,7 +164,7 @@
         }
       ],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-30T14:26:19.770Z",
       "relatedFiles": [
         {
           "path": "docs/ROADMAP.md",
@@ -191,14 +193,14 @@
       "name": "경로 빌더 확장 및 공용 라우트 상태 컴포넌트 작성",
       "description": "lib/constants/routes.ts에 정적 경로(profile, newGroup)와 동적 경로 빌더를 추가하고, 세그먼트 상태 파일이 위임할 공용 컴포넌트 3개와 루트 app/not-found.tsx를 만든다.",
       "notes": "error prop 이름은 16.3에서 stable이 된 retry다(docs 03-file-conventions/error.md). logger가 생기기 전까지는 console.error를 허용한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
-          "taskId": "60252374-0d43-47d2-87f3-52951e014657"
+          "taskId": "73b05d01-4baf-4d3d-81f9-43536f07a3ad"
         }
       ],
       "createdAt": "2026-09-29T15:03:06.242Z",
-      "updatedAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-30T14:30:11.478Z",
       "relatedFiles": [
         {
           "path": "lib/constants/routes.ts",
@@ -233,21 +235,23 @@
       ],
       "implementationGuide": "1) routes.ts: 기존 export 유지. 내부 헬퍼 segment(v)=encodeURIComponent(v). routes에 profile:'/profile', newGroup:'/groups/new', invite(token), group(groupId), groupSettings(groupId), groupMembers(groupId), newEvent(groupId), event(groupId,eventId), eventCarpool(groupId,eventId), eventSettlement(groupId,eventId)를 추가하고 각각 한국어 JSDoc\\n2) components/route-states/segment-loading.tsx: 서버 컴포넌트, '불러오는 중...' + aria-busy\\n3) components/route-states/segment-error.tsx: 'use client', props { error: Error & { digest?: string }; retry: () => void }, useEffect에서 console.error('[segment-error]', error.digest ?? error.message), '문제가 발생했어요' + 다시 시도 Button(onClick=retry)\\n4) components/route-states/segment-not-found.tsx: '페이지를 찾을 수 없어요' + Button asChild Link href=routes.dashboard\\n5) app/not-found.tsx: SegmentNotFound 재사용(매칭 안 되는 URL용)",
       "verificationCriteria": "typecheck와 lint가 통과한다. routes.event('a b','c')가 '/groups/a%20b/events/c'를 반환한다. 존재하지 않는 URL에 접근하면 한국어 404가 표시된다.",
-      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다."
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다.",
+      "summary": "routes.ts에 profile·newGroup 정적 경로와 invite/group/groupSettings/groupMembers/newEvent/event/eventCarpool/eventSettlement 빌더(encodeURIComponent 적용, 한국어 JSDoc)를 추가하고 기존 export는 유지했다. components/route-states에 SegmentLoading(role=status, aria-busy), SegmentError('use client', {error, retry}, digest 기준 console.error), SegmentNotFound(대시보드 링크)를 만들고 app/not-found.tsx에서 재사용했다. 검증: typecheck·lint 통과, routes.event('a b','c') → /groups/a%20b/events/c, /auth/nope에서 HTTP 404와 한국어 404 문구 확인(비로그인 보호 경로는 proxy가 먼저 /auth/login으로 보냄).",
+      "completedAt": "2026-09-30T14:30:11.476Z"
     },
     {
       "id": "19be88dd-0729-4842-820d-ba3df042f958",
       "name": "(app)·초대 라우트 골격과 세그먼트 상태 파일 생성",
       "description": "빈 페이지 10개(invite/[token], profile, groups/new, groups/[groupId] 홈·settings·members·events/new, events/[eventId] 상세·carpool·settlement)와 레이아웃 3개((app), groups/[groupId], events/[eventId])를 만들고, 4개 세그먼트((app), groups/[groupId], events/[eventId], invite/[token])에 loading/error/not-found 래퍼를 배치한다.",
       "notes": "loading.tsx는 같은 세그먼트의 layout을 감싸지 않는다. 그래서 레이아웃에서 params를 await하면 build 오류가 나거나 static shell이 깨진다. invite는 (app) 밖이다. proxy를 수정하지 않는다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "7dd7429f-2c01-45d4-88d1-bfefd87f96e3"
         }
       ],
       "createdAt": "2026-09-29T15:03:06.242Z",
-      "updatedAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-30T14:31:12.981Z",
       "relatedFiles": [
         {
           "path": "app/(app)/layout.tsx",
@@ -277,7 +281,9 @@
       ],
       "implementationGuide": "1) 정적 페이지(profile, groups/new): 동기 컴포넌트, <main><h1>내 프로필</h1></main>\\n2) 동적 페이지: export default async function XxxPage(props: PageProps<'/groups/[groupId]/settings'>) { const { groupId } = await props.params; return <main><h1>그룹 설정</h1><p className=text-muted-foreground>{groupId}</p></main> }\\n3) 레이아웃: (app)/layout.tsx는 children 컨테이너. [groupId]/layout.tsx와 [eventId]/layout.tsx는 LayoutProps를 받고 children만 반환한다. params를 await하지 않으며, 멤버 확인은 Task 009에서 Suspense 안에 넣는다는 JSDoc을 단다\\n4) 세그먼트 상태 래퍼: loading.tsx→<SegmentLoading/>, error.tsx→'use client' + props를 SegmentError로 전달, not-found.tsx→<SegmentNotFound/>\\n5) 페이지 제목: 초대 수락, 내 프로필, 그룹 만들기, 그룹 홈, 그룹 설정, 멤버 관리, 이벤트 만들기, 이벤트 상세, 카풀, 정산",
       "verificationCriteria": "typecheck와 lint가 통과하고 npm run build에서 cacheComponents 관련 오류가 없다. 레이아웃 파일에 await params가 없다.",
-      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다."
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다.",
+      "summary": "빈 페이지 10개(invite/[token], profile, groups/new, groups/[groupId] 홈·settings·members·events/new, events/[eventId] 상세·carpool·settlement)와 레이아웃 3개((app), groups/[groupId], events/[eventId])를 만들고, 4개 세그먼트((app), groups/[groupId], events/[eventId], invite/[token])에 loading/error/not-found 래퍼를 배치했다. 동적 페이지는 PageProps<route>로 params를 await하고, 레이아웃은 LayoutProps만 받고 params를 await하지 않는다(Task 009/Phase 2 확장 지점은 JSDoc에 적음). error.tsx 기본 export 이름은 전역 Error를 가리지 않게 ErrorBoundary로 지었다. proxy는 수정하지 않았다. 검증: typecheck·lint·prettier 통과, npm run build 성공(동적 경로 전부 Partial Prerender, cacheComponents 오류 없음).",
+      "completedAt": "2026-09-30T14:31:12.979Z"
     },
     {
       "id": "1429f0a4-e456-4ec9-a488-0d1fcc9351b0",
@@ -288,10 +294,13 @@
       "dependencies": [
         {
           "taskId": "19be88dd-0729-4842-820d-ba3df042f958"
+        },
+        {
+          "taskId": "60252374-0d43-47d2-87f3-52951e014657"
         }
       ],
       "createdAt": "2026-09-29T15:03:06.242Z",
-      "updatedAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-30T14:28:59.307Z",
       "relatedFiles": [
         {
           "path": "docs/ROADMAP.md",
@@ -309,6 +318,212 @@
       "implementationGuide": "1) npm run check, npm run build\\n2) Playwright MCP: 테스트 계정으로 로그인 → routes 빌더로 만든 더미 id(예: g1, e1, t1) 경로 11개를 순회하며 h1 텍스트와 콘솔 에러 없음 확인 → 없는 URL은 한국어 404 확인 → 비로그인 상태로 /groups/g1에 접근하면 /auth/login 리다이렉트 확인\\n3) tasks/002-route-skeleton.md 작성(체크박스, 변경 요약, 테스트 체크리스트)\\n4) /docs:update-roadmap으로 Task 002 ✅",
       "verificationCriteria": "build와 check가 통과한다. 로그인 상태에서 11개 경로 모두 200으로 제목이 표시된다. ROADMAP Task 002 완료 조건을 충족한다.",
       "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다."
+    },
+    {
+      "id": "4f02e55c-b75c-4b32-9af3-102aaf99218b",
+      "name": "shadcn 컴포넌트 추가, Toaster 배치, 로그아웃 훅 정리",
+      "description": "Task 003에 필요한 shadcn/ui 컴포넌트(dialog, alert-dialog, sheet, select, textarea, tabs, avatar, separator, skeleton, sonner, field)를 CLI로 추가하고, app/layout.tsx에 sonner Toaster를 배치한다. 로그아웃 로직을 hooks/use-logout.ts로 추출하고 LogoutButton을 한국어로 바꾸며 로그아웃 후 랜딩(routes.home)으로 이동하게 한다. ROADMAP의 'form 대체용 필드 래퍼'는 shadcn field로 대체한다(레지스트리에 registry:ui로 존재 확인).",
+      "notes": "shadcn sonner 컴포넌트는 next-themes useTheme을 쓰므로 ThemeProvider 안에 있어야 한다. auth-button.tsx(랜딩)에서도 LogoutButton을 쓰므로 동작 변경(로그아웃 후 '/')이 랜딩에도 반영된다. 새 radix 의존성이 package.json에 추가되는지 확인.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "1429f0a4-e456-4ec9-a488-0d1fcc9351b0"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-09-30T14:22:24.738Z",
+      "relatedFiles": [
+        {
+          "path": "components/ui/",
+          "type": "CREATE",
+          "description": "shadcn 컴포넌트 11종 추가 위치"
+        },
+        {
+          "path": "app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "Toaster 배치"
+        },
+        {
+          "path": "hooks/use-logout.ts",
+          "type": "CREATE",
+          "description": "로그아웃 공용 훅"
+        },
+        {
+          "path": "components/logout-button.tsx",
+          "type": "TO_MODIFY",
+          "description": "훅 사용, 한국어화, 랜딩 이동"
+        },
+        {
+          "path": "components/auth-button.tsx",
+          "type": "REFERENCE",
+          "description": "LogoutButton 기존 사용처"
+        },
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "DEPENDENCY",
+          "description": "routes.home"
+        }
+      ],
+      "implementationGuide": "1) npx shadcn@latest add dialog alert-dialog sheet select textarea tabs avatar separator skeleton sonner field (components/ui에 생성, 기존 button 등 덮어쓰기 프롬프트가 나오면 덮어쓰지 않음)\n2) app/layout.tsx: ThemeProvider 안쪽 children 뒤에 <Toaster richColors position=top-center /> 추가\n3) hooks/use-logout.ts ('use client'): export function useLogout(): () => Promise<void>. createClient().auth.signOut() → error면 console.error('[use-logout] 로그아웃 실패:', error) + toast.error('로그아웃하지 못했어요. 다시 시도해 주세요.') 후 return → 성공 시 router.replace(routes.home); router.refresh()\n4) components/logout-button.tsx: useLogout 사용, 문구 '로그아웃', 하드코딩 '/auth/login' 제거, JSDoc 추가",
+      "verificationCriteria": "components/ui에 11개 컴포넌트 파일 존재, npm run typecheck·lint 통과, 로그아웃 버튼 클릭 시 '/'로 이동하고 세션이 사라진다.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다."
+    },
+    {
+      "id": "cadad379-11af-4806-a50d-4bf631d5176c",
+      "name": "내비게이션 순수 로직과 BottomTabNav·AppHeader 컴포넌트 구현",
+      "description": "탭 정의·활성 판정·페이지 제목·상위 경로 계산을 순수 함수로 lib/navigation/에 두고, 이를 쓰는 components/layout/bottom-tab-nav.tsx, app-header.tsx, nav-skeleton.tsx를 만든다. 탭 구성: app(대시보드/내 프로필), group(그룹 홈/이벤트 만들기*/멤버*/설정*, *는 owner·admin 전용), event(상세/카풀/정산). BottomTabNav는 props { context: 'app'|'group'|'event'; role?: GroupRole }를 받고, 현재 URL의 컨텍스트가 자기 context와 다르면 null을 반환한다.",
+      "notes": "useParams/usePathname은 cacheComponents에서 동적 param 라우트일 때 suspend하므로 이 컴포넌트들은 반드시 Suspense 안에서 렌더된다(연결은 다음 작업). routes 빌더는 encodeURIComponent를 적용하므로 isTabActive 비교에는 usePathname 값(인코딩된 경로)과 빌더 결과를 그대로 비교한다. 그룹 탭에 대시보드 복귀 탭은 없고 헤더 뒤로 가기로 복귀한다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "4f02e55c-b75c-4b32-9af3-102aaf99218b"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-09-30T14:22:24.738Z",
+      "relatedFiles": [
+        {
+          "path": "lib/navigation/tabs.ts",
+          "type": "CREATE",
+          "description": "탭 정의·컨텍스트 판별·활성 판정"
+        },
+        {
+          "path": "lib/navigation/page-meta.ts",
+          "type": "CREATE",
+          "description": "페이지 제목·상위 경로 계산"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "CREATE",
+          "description": "Phase 0 더미 역할 상수"
+        },
+        {
+          "path": "components/layout/bottom-tab-nav.tsx",
+          "type": "CREATE",
+          "description": "하단 탭 바"
+        },
+        {
+          "path": "components/layout/app-header.tsx",
+          "type": "CREATE",
+          "description": "상단 헤더"
+        },
+        {
+          "path": "components/layout/nav-skeleton.tsx",
+          "type": "CREATE",
+          "description": "Suspense fallback"
+        },
+        {
+          "path": "components/theme-switcher.tsx",
+          "type": "REFERENCE",
+          "description": "헤더에서 재사용"
+        },
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "DEPENDENCY",
+          "description": "Task 002에서 추가된 경로 빌더"
+        },
+        {
+          "path": "lib/constants/site.ts",
+          "type": "DEPENDENCY",
+          "description": "제목 fallback"
+        },
+        {
+          "path": "node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md",
+          "type": "REFERENCE",
+          "description": "Cache Components에서 Suspense 필요 조건"
+        }
+      ],
+      "implementationGuide": "1) lib/navigation/tabs.ts\n  - export type GroupRole = 'owner'|'admin'|'member' (JSDoc: Task 004에서 lib/types/domain.ts로 이동)\n  - export type NavContext = 'app'|'group'|'event'; type NavTab = { href: string; label: string; icon: LucideIcon; adminOnly?: boolean; exact?: boolean }\n  - detectNavContext({ groupId?, eventId? }): eventId 있으면 event, groupId 있으면 group, 아니면 app\n  - isAdminRole(role?): owner|admin이면 true\n  - getTabs(context, { groupId, eventId, role }): 컨텍스트별 배열을 routes 빌더로 생성 후 adminOnly는 isAdminRole일 때만 포함. 그룹 홈·이벤트 상세 탭은 exact true\n  - isTabActive(pathname, tab): exact면 ===, 아니면 pathname === href || startsWith(href + '/')\n2) lib/navigation/page-meta.ts\n  - getPageTitle(pathname): 정규식 패턴 테이블(/dashboard→내 그룹, /profile→내 프로필, /groups/new→그룹 만들기, /groups/x→그룹 홈, /settings→그룹 설정, /members→멤버 관리, /events/new→이벤트 만들기, /events/y→이벤트 상세, /carpool→카풀, /settlement→정산), 매칭 없으면 siteConfig.name\n  - getParentHref(pathname): 이벤트 하위(carpool/settlement)→이벤트 상세, 이벤트 상세·events/new·settings·members→그룹 홈, 그룹 홈·groups/new→대시보드, 대시보드·프로필→null\n3) lib/mocks/dummy-role.ts: export const DUMMY_GROUP_ROLE: GroupRole = 'owner' (JSDoc: Task 009에서 제거, 검증 시 값을 바꿔 확인)\n4) components/layout/bottom-tab-nav.tsx ('use client'): useParams<{groupId?: string; eventId?: string}>(), usePathname(). context 불일치 시 null. <nav aria-label='주요 메뉴' className='fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur pb-[env(safe-area-inset-bottom)]'> + <ul className='mx-auto grid max-w-5xl' style gridTemplateColumns repeat(n)>. TabItem 분리: Link min-h-14 min-w-0, 아이콘 20px + text-xs truncate 라벨, 활성 시 aria-current='page'와 text-primary\n5) components/layout/app-header.tsx ('use client'): sticky top-0 z-40 h-14 border-b bg-background/95. 좌측: getParentHref가 있으면 Button variant ghost size icon className size-11 asChild Link(aria-label '뒤로 가기', ChevronLeft). 가운데: h1 truncate getPageTitle. 우측: ThemeSwitcher + DropdownMenu(트리거 size-11, aria-label '메뉴', 항목: 내 프로필 Link routes.profile, 로그아웃 onSelect useLogout)\n6) components/layout/nav-skeleton.tsx: 헤더용(h-14)·탭 바용(h-14 fixed bottom) Skeleton 두 개 export",
+      "verificationCriteria": "npm run typecheck·lint 통과, 모든 함수 30줄 이하·JSDoc 존재, 경로 문자열 하드코딩 없음(routes 빌더만 사용), getTabs('group', role member)는 1개, owner/admin은 4개 탭을 반환.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다."
+    },
+    {
+      "id": "c13c8d5e-d87b-427c-9037-6571992a7608",
+      "name": "컨텍스트 레이아웃에 앱 셸 연결 및 프로필 로그아웃 배치",
+      "description": "(app)/layout.tsx에 AppHeader와 셸 main 컨테이너, app 컨텍스트 BottomTabNav를 배치하고, groups/[groupId]/layout.tsx와 events/[eventId]/layout.tsx에 각각 group(role 주입)·event 컨텍스트 BottomTabNav를 배치한다. Task 002에서 만든 페이지들의 중첩 <main>을 정리하고, 내 프로필 페이지에 LogoutButton을 둔다.",
+      "notes": "탭 바는 layout에 있어 페이지 이동 시 리렌더만 되고 재마운트되지 않는다. app 컨텍스트 BottomTabNav는 그룹·이벤트 경로에서 null, group은 이벤트 경로에서 null을 반환하므로 항상 하나만 보인다. 헤더 h1과 페이지 h1이 겹치지 않도록 한 페이지에 h1은 하나만.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "cadad379-11af-4806-a50d-4bf631d5176c"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-09-30T14:22:24.738Z",
+      "relatedFiles": [
+        {
+          "path": "app/(app)/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "셸 헤더·main·app 탭 바"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "group 탭 바 + 더미 역할 주입"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/events/[eventId]/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "event 탭 바"
+        },
+        {
+          "path": "app/(app)/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "main→section 정리"
+        },
+        {
+          "path": "app/(app)/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "로그아웃 버튼 배치"
+        },
+        {
+          "path": "app/(app)/groups/",
+          "type": "TO_MODIFY",
+          "description": "Task 002 페이지들의 main/h1 정리"
+        }
+      ],
+      "implementationGuide": "1) app/(app)/layout.tsx: <>\n  <Suspense fallback={<HeaderSkeleton/>}><AppHeader/></Suspense>\n  <main className='mx-auto w-full max-w-5xl px-4 pb-24 pt-4'>{children}</main>\n  <Suspense fallback={null}><BottomTabNav context='app'/></Suspense></>\n2) groups/[groupId]/layout.tsx: children + <Suspense fallback={null}><BottomTabNav context='group' role={DUMMY_GROUP_ROLE}/></Suspense>. params는 await하지 않는다(Task 002 규칙). JSDoc에 'Task 009에서 멤버 확인과 실제 역할 조회를 Suspense 안 async 컴포넌트로 교체' 명시\n3) events/[eventId]/layout.tsx: children + <Suspense fallback={null}><BottomTabNav context='event'/></Suspense>\n4) (app) 하위 페이지들의 <main>을 <section className='flex flex-col gap-6'>로 교체(셸 main 중첩 방지), 페이지 h1은 헤더 제목과 중복되므로 sr-only가 아니라 유지할지 결정: 헤더 h1을 쓰므로 페이지 h1은 h2로 낮추거나 제거\n5) app/(app)/profile/page.tsx: 섹션 하단에 <LogoutButton /> 배치\n6) 탭 바 fallback은 null로 두어 레이아웃 이동을 막되 main pb-24로 공간은 항상 확보",
+      "verificationCriteria": "npm run build 통과(Suspense 누락으로 인한 blocking-prerender 오류 없음), 대시보드·그룹·이벤트 경로에서 탭 바가 정확히 하나씩 보이고, 페이지마다 h1이 하나다.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다."
+    },
+    {
+      "id": "51bff4f5-af68-4552-82ae-133bb612417d",
+      "name": "Task 003 360px 반응형·역할 탭 검증 및 로드맵 반영",
+      "description": "npm run check와 build를 통과시키고, Playwright MCP로 360px 뷰포트에서 셸을 검증한 뒤 tasks/003-app-shell-navigation.md를 작성하고 ROADMAP의 Task 003을 완료 처리한다.",
+      "notes": "테스트 계정은 Task 002 검증 때 쓴 계정을 재사용하고 없으면 사용자에게 받는다. 더미 역할 전환 검증 후 반드시 원래 값으로 되돌린다.",
+      "status": "pending",
+      "dependencies": [
+        {
+          "taskId": "c13c8d5e-d87b-427c-9037-6571992a7608"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-09-30T14:22:24.738Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/003-app-shell-navigation.md",
+          "type": "CREATE",
+          "description": "Task 003 작업 파일"
+        },
+        {
+          "path": "tasks/002-route-skeleton.md",
+          "type": "REFERENCE",
+          "description": "작업 파일 형식 참고"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 003 완료 표시"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "OTHER",
+          "description": "역할 전환 검증용(원복 필수)"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\n2) Playwright MCP(browser_resize 360x740): 테스트 계정 로그인 → /dashboard, /groups/g1, /groups/g1/events/e1/carpool 순회하며 browser_evaluate로 document.documentElement.scrollWidth <= 360 확인, 탭 개수와 aria-current='page' 요소가 활성 탭 1개인지 확인, 탭 링크 높이 >= 44px 확인\n3) DUMMY_GROUP_ROLE을 'member'로 바꿔 /groups/g1에서 탭 1개, 'owner'로 되돌려 4개 확인(검증 후 원복)\n4) 헤더 뒤로 가기: 카풀→이벤트 상세→그룹 홈→대시보드 순서, 대시보드에서는 버튼 없음\n5) 헤더 메뉴 로그아웃 → '/' 이동, 이후 /dashboard 접근 시 /auth/login 리다이렉트\n6) 다크 모드 전환 후 헤더·탭 바 대비 스크린샷 확인, 콘솔 에러 없음\n7) tasks/003-app-shell-navigation.md: 명세, 관련 파일, 수락 기준, 구현 단계(체크), 테스트 체크리스트 결과, 변경 사항 요약 (002 작업 파일 형식 참고)\n8) /docs:update-roadmap으로 Task 003 ✅",
+      "verificationCriteria": "npm run check·build 통과, 360px에서 세 컨텍스트 모두 가로 스크롤 없음, 역할 전환 시 관리자 탭 노출 변화 확인, 로그아웃 후 랜딩 이동, tasks/003 파일과 ROADMAP 갱신 완료.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다."
     }
   ]
 }
