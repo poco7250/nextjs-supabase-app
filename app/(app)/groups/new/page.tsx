@@ -3,8 +3,8 @@
  */
 export default function NewGroupPage() {
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-5">
-      <h1 className="text-2xl font-bold">그룹 만들기</h1>
-    </main>
+    <section className="flex flex-col gap-6">
+      <h2 className="text-xl font-bold">그룹 만들기</h2>
+    </section>
   );
 }
