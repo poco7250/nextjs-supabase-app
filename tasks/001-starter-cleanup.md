@@ -24,7 +24,7 @@
 ## 수락 기준
 
 - [x] 삭제한 파일을 가리키는 import가 없다
-- [ ] 로그인·구글 로그인 후 `/dashboard`로 이동한다 (코드 확인 완료, 로그인 E2E 대기)
+- [x] 로그인 후 `/dashboard`로 이동한다 (2026-10-01 Task 003 E2E에서 실제 로그인 → `/dashboard` 도착 확인)
 - [x] `database.types.ts`에 `instruments`가 없다
 - [x] `npm run check`, `npm run build` 통과
 
@@ -33,15 +33,16 @@
 - [x] 경로 상수 도입 및 인증 후 목적지를 `/dashboard`로 변경
 - [x] 스타터 페이지·컴포넌트 삭제, 랜딩 재작성, proxy·메타데이터 정리
 - [x] `instruments` 테이블 drop 마이그레이션 및 DB 타입 재생성
-- [ ] 최종 검증(로그인 E2E) 및 로드맵 반영
+- [x] 최종 검증(로그인 E2E) 및 로드맵 반영
 
 ## 테스트 체크리스트
 
 - [x] 잔존 참조 grep(`/protected`, `instruments`, `tutorial`, `hero`, `deploy-button`, `*-logo`) 0건
 - [x] 비로그인으로 `/dashboard` 접근 시 307 → `/auth/login`
 - [x] 비로그인으로 없는 경로 접근 시 307 → `/auth/login`, `/` 랜딩 200
-- [ ] (Playwright MCP) 이메일 로그인 후 URL이 `/dashboard`이고 콘솔 에러 없음
-- [ ] (수동) 구글 로그인 후 `/dashboard` 도착 — 코드상 `google-login-button`의 `next` 기본값과 `auth/callback` fallback이 `DEFAULT_AUTH_REDIRECT`임을 확인
+- [x] (Playwright) 로그인 후 URL이 `/dashboard`이고 콘솔 에러 없음 — Task 003 검증 중 실행. 사용한 로그인 방식(이메일/구글)은 미기록
+- [x] 구글 로그인 시작 시 Supabase에 넘기는 `redirect_to`가 `/auth/callback?next=/dashboard`임을 확인 (자동화 브라우저에서는 구글이 로그인을 거부함)
+- [ ] (수동, 방식별 재확인) 구글 로그인 후 `/dashboard` 도착 — 코드상 `google-login-button`의 `next` 기본값과 `auth/callback` fallback이 `DEFAULT_AUTH_REDIRECT`임을 확인
 
 ## 변경 사항 요약
 

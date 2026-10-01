@@ -93,18 +93,18 @@
 
 ### Phase 0: 기반 정리 및 애플리케이션 골격
 
-- **Task 001: 스타터 킷 잔여물 제거 및 인증 리다이렉트 정리** - 우선순위
-  - 규모: S | 기능 ID: (기반), F020 | 의존: 없음
-  - [ ] `app/instruments`, `app/protected`, `components/tutorial/`, `hero.tsx`, `deploy-button.tsx`, `next-logo.tsx`, `supabase-logo.tsx` 삭제 및 참조 제거
-  - [ ] `instruments` 테이블 제거: 마이그레이션 파일(`drop table if exists public.instruments`) → `apply_migration` → `generate_typescript_types`로 타입 재생성
-  - [ ] `lib/supabase/proxy.ts` 공개 경로에서 `/instruments` 조건 제거
-  - [ ] 인증 후 기본 목적지를 `/protected`에서 `/dashboard`로 변경(`login-form.tsx`, `sign-up-form.tsx`, `update-password-form.tsx`, `google-login-button.tsx`, `app/auth/callback/route.ts`). 목적지 상수는 `lib/constants/routes.ts` 한 곳에서 관리
-  - [ ] `app/layout.tsx` 메타데이터를 서비스명·한국어 설명으로 교체, `<html lang="ko">`
+- **Task 001: 스타터 킷 잔여물 제거 및 인증 리다이렉트 정리** ✅ - 완료
+  - 규모: S | 기능 ID: (기반), F020 | 의존: 없음 | 작업 파일: `tasks/001-starter-cleanup.md`
+  - [x] `app/instruments`, `app/protected`, `components/tutorial/`, `hero.tsx`, `deploy-button.tsx`, `next-logo.tsx`, `supabase-logo.tsx` 삭제 및 참조 제거
+  - [x] `instruments` 테이블 제거: 마이그레이션 파일(`drop table if exists public.instruments`) → `apply_migration` → `generate_typescript_types`로 타입 재생성
+  - [x] `lib/supabase/proxy.ts` 공개 경로에서 `/instruments` 조건 제거
+  - [x] 인증 후 기본 목적지를 `/protected`에서 `/dashboard`로 변경(`login-form.tsx`, `sign-up-form.tsx`, `update-password-form.tsx`, `google-login-button.tsx`, `app/auth/callback/route.ts`). 목적지 상수는 `lib/constants/routes.ts` 한 곳에서 관리
+  - [x] `app/layout.tsx` 메타데이터를 서비스명·한국어 설명으로 교체, `<html lang="ko">`
   - 완료 조건: 삭제한 파일을 가리키는 import가 없고, 로그인·구글 로그인 후 `/dashboard`(빈 페이지)로 이동하며, `database.types.ts`에 `instruments`가 없다
 
-- **Task 002: 전체 라우트 구조 및 빈 페이지 생성**
-  - 규모: S | 기능 ID: 전체 페이지 골격 | 의존: Task 001
-  - [ ] 라우트 골격 생성 (각 페이지는 제목만 있는 빈 껍데기)
+- **Task 002: 전체 라우트 구조 및 빈 페이지 생성** ✅ - 완료
+  - 규모: S | 기능 ID: 전체 페이지 골격 | 의존: Task 001 | 작업 파일: `tasks/002-route-skeleton.md`
+  - [x] 라우트 골격 생성 (각 페이지는 제목만 있는 빈 껍데기)
     ```
     app/page.tsx                                      랜딩
     app/invite/[token]/page.tsx                       초대 수락 (공개)
@@ -122,9 +122,9 @@
     app/(app)/groups/[groupId]/events/[eventId]/carpool/page.tsx     카풀
     app/(app)/groups/[groupId]/events/[eventId]/settlement/page.tsx  정산
     ```
-  - [ ] `lib/constants/routes.ts`에 경로 빌더 함수 정의(`routes.group(groupId)` 등)
-  - [ ] 각 세그먼트에 `loading.tsx`, `not-found.tsx`, `error.tsx` 기본 파일 배치
-  - [ ] 동적 파라미터(`params`는 Promise) 처리 방식을 Next.js 16 문서로 확인하고 적용
+  - [x] `lib/constants/routes.ts`에 경로 빌더 함수 정의(`routes.group(groupId)` 등)
+  - [x] 각 세그먼트에 `loading.tsx`, `not-found.tsx`, `error.tsx` 기본 파일 배치
+  - [x] 동적 파라미터(`params`는 Promise) 처리 방식을 Next.js 16 문서로 확인하고 적용
   - 완료 조건: 모든 경로가 404 없이 렌더되고 `npm run build`가 통과한다
 
 - **Task 003: 공통 레이아웃 및 하단 탭 내비게이션 구현** ✅ - 완료
