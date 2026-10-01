@@ -1,16 +1,16 @@
+import { RouteParamsText } from "@/components/route-states/route-params-text";
+
 /**
  * 그룹 설정 페이지(owner/admin).
- * params는 Promise라서 await한다. 같은 세그먼트의 loading.tsx가 Suspense 경계가 된다.
+ * params는 RouteParamsText 안의 Suspense에서 읽는다(클라이언트 내비게이션이 막히지 않게).
  */
-export default async function GroupSettingsPage(
+export default function GroupSettingsPage(
   props: PageProps<"/groups/[groupId]/settings">,
 ) {
-  const { groupId } = await props.params;
-
   return (
-    <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-5">
-      <h1 className="text-2xl font-bold">그룹 설정</h1>
-      <p className="text-sm text-muted-foreground">{groupId}</p>
-    </main>
+    <section className="flex flex-col gap-6">
+      <h2 className="text-xl font-bold">그룹 설정</h2>
+      <RouteParamsText params={props.params} />
+    </section>
   );
 }
