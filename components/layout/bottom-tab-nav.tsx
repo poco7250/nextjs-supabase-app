@@ -19,16 +19,16 @@ type BottomTabNavProps = {
   role?: GroupRole;
 };
 
+/** 하단 탭이 읽는 URL 동적 파라미터 */
+type NavRouteParams = { groupId?: string; eventId?: string };
+
 /**
  * 모바일 하단 탭 바. 레이아웃마다 하나씩 두고, 가장 안쪽 컨텍스트의 탭 바만 보이게 한다.
  * usePathname/useParams가 동적 경로에서 suspend하므로 Suspense 안에 둬야 한다.
  */
 export function BottomTabNav({ context, role }: BottomTabNavProps) {
   const pathname = usePathname();
-  const { groupId, eventId } = useParams<{
-    groupId?: string;
-    eventId?: string;
-  }>();
+  const { groupId, eventId } = useParams<NavRouteParams>();
 
   if (detectNavContext({ groupId, eventId }) !== context) return null;
 

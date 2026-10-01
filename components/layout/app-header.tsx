@@ -12,7 +12,14 @@ import {
 import { useLogout } from "@/hooks/use-logout";
 import { routes } from "@/lib/constants/routes";
 import { getPageTitle, getParentHref } from "@/lib/navigation/page-meta";
-import { ChevronLeft, LayoutGrid, LogOut, Menu, User } from "lucide-react";
+import {
+  ChevronLeft,
+  LayoutGrid,
+  LogOut,
+  Menu,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -69,16 +76,8 @@ function HeaderMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-44">
-        <DropdownMenuItem asChild className="min-h-11">
-          <Link href={routes.dashboard}>
-            <LayoutGrid aria-hidden />내 그룹
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild className="min-h-11">
-          <Link href={routes.profile}>
-            <User aria-hidden />내 프로필
-          </Link>
-        </DropdownMenuItem>
+        <MenuLink href={routes.dashboard} icon={LayoutGrid} label="내 그룹" />
+        <MenuLink href={routes.profile} icon={User} label="내 프로필" />
         <DropdownMenuSeparator />
         <DropdownMenuItem className="min-h-11" onSelect={logout}>
           <LogOut aria-hidden />
@@ -86,5 +85,21 @@ function HeaderMenu() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+type MenuLinkProps = { href: string; icon: LucideIcon; label: string };
+
+/**
+ * 헤더 메뉴의 이동 항목. 터치 영역 44px 이상.
+ */
+function MenuLink({ href, icon: Icon, label }: MenuLinkProps) {
+  return (
+    <DropdownMenuItem asChild className="min-h-11">
+      <Link href={href}>
+        <Icon aria-hidden />
+        {label}
+      </Link>
+    </DropdownMenuItem>
   );
 }
