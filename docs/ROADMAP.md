@@ -127,17 +127,17 @@
   - [ ] 동적 파라미터(`params`는 Promise) 처리 방식을 Next.js 16 문서로 확인하고 적용
   - 완료 조건: 모든 경로가 404 없이 렌더되고 `npm run build`가 통과한다
 
-- **Task 003: 공통 레이아웃 및 하단 탭 내비게이션 구현**
-  - 규모: M | 기능 ID: 메뉴 구조 전체 | 의존: Task 002
-  - [ ] 필요한 shadcn/ui 컴포넌트 추가: `dialog`, `alert-dialog`, `sheet`, `select`, `textarea`, `tabs`, `avatar`, `separator`, `skeleton`, `sonner`(토스트), `form` 대체용 필드 래퍼
-  - [ ] 모바일 우선 앱 셸: 상단 헤더(뒤로 가기, 페이지 제목, 컨텍스트 메뉴) + 하단 탭 바(`components/layout/bottom-tab-nav.tsx`)
-  - [ ] 컨텍스트별 탭 구성
+- **Task 003: 공통 레이아웃 및 하단 탭 내비게이션 구현** ✅ - 완료
+  - 규모: M | 기능 ID: 메뉴 구조 전체 | 의존: Task 002 | 작업 파일: `tasks/003-app-shell-navigation.md`
+  - [x] 필요한 shadcn/ui 컴포넌트 추가: `dialog`, `alert-dialog`, `sheet`, `select`, `textarea`, `tabs`, `avatar`, `separator`, `skeleton`, `sonner`(토스트), `form` 대체용 필드 래퍼
+  - [x] 모바일 우선 앱 셸: 상단 헤더(뒤로 가기, 페이지 제목, 컨텍스트 메뉴) + 하단 탭 바(`components/layout/bottom-tab-nav.tsx`)
+  - [x] 컨텍스트별 탭 구성
     - 공통: 대시보드 / 내 프로필
     - 그룹 내부: 그룹 홈 / 이벤트 만들기(owner/admin) / 멤버(owner/admin) / 설정(owner/admin)
     - 이벤트 내부: 상세 / 카풀 / 정산
-  - [ ] 역할별 탭 노출은 props(`role`)로 받도록 설계해 Phase 1에서 실제 역할만 주입
-  - [ ] 로그아웃은 내 프로필 페이지와 헤더 메뉴에 배치, 로그아웃 후 랜딩으로 이동
-  - [ ] 다크 모드(`theme-switcher.tsx`) 유지, 터치 영역 44px 이상, 활성 탭 `aria-current`
+  - [x] 역할별 탭 노출은 props(`role`)로 받도록 설계해 Phase 1에서 실제 역할만 주입
+  - [x] 로그아웃은 내 프로필 페이지와 헤더 메뉴에 배치, 로그아웃 후 랜딩으로 이동
+  - [x] 다크 모드(`theme-switcher.tsx`) 유지, 터치 영역 44px 이상, 활성 탭 `aria-current`
   - 완료 조건: 360px 폭에서 가로 스크롤 없이 모든 탭이 보이고, 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다
 
 - **Task 004: 도메인 타입·Zod 스키마·레이어 구조 및 DB 스키마 설계**
