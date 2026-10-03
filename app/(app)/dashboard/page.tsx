@@ -3,17 +3,17 @@ import { GroupCard } from "@/components/groups/group-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { routes } from "@/lib/constants/routes";
-import { getMockDashboardGroups } from "@/lib/mocks/groups";
-import { MOCK_CURRENT_USER_ID } from "@/lib/mocks/ids";
+import { unwrapPageResult } from "@/lib/navigation/page-result";
+import { listMyGroups } from "@/lib/services/group-service";
 import { Plus, UsersRound } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
 /**
  * 대시보드(내 그룹 목록) 페이지 (F022). 소속 그룹과 각 그룹의 다음 예정 이벤트를 보여준다.
- * 지금은 더미 데이터다. Task 009에서 실데이터로 바꾸고 `?preview=empty` 미리보기를 지운다.
+ * 다음 이벤트 요약은 Task 015에서 연결한다. 그 전에는 "예정 이벤트 없음"으로 보인다.
  */
-export default function DashboardPage(props: PageProps<"/dashboard">) {
+export default function DashboardPage() {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-2">
@@ -25,24 +25,17 @@ export default function DashboardPage(props: PageProps<"/dashboard">) {
         </Button>
       </div>
       <Suspense fallback={<GroupListSkeleton />}>
-        <GroupList searchParams={props.searchParams} />
+        <GroupList />
       </Suspense>
     </section>
   );
 }
 
 /**
- * 그룹 카드 목록. searchParams가 런타임 데이터라 Suspense 안에서 읽는다.
- * `?preview=empty`면 빈 상태를 보여준다(개발용 미리보기).
+ * 그룹 카드 목록. 세션 쿠키를 읽으므로 Suspense 안에서 렌더한다.
  */
-async function GroupList({
-  searchParams,
-}: {
-  searchParams: PageProps<"/dashboard">["searchParams"];
-}) {
-  const { preview } = await searchParams;
-  const groups =
-    preview === "empty" ? [] : getMockDashboardGroups(MOCK_CURRENT_USER_ID);
+async function GroupList() {
+  const groups = unwrapPageResult(await listMyGroups());
 
   if (groups.length === 0) {
     return (
@@ -62,7 +55,7 @@ async function GroupList({
     <ul className="grid gap-3 sm:grid-cols-2">
       {groups.map((item) => (
         <li key={item.group.id}>
-          <GroupCard {...item} />
+          <GroupCard {...item} nextEvent={undefined} />
         </li>
       ))}
     </ul>

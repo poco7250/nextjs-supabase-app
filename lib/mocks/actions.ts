@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { routes } from "@/lib/constants/routes";
 import {
   canChangeRole,
-  canManageMembers,
   canRemoveMember,
   isLastOwner,
   type MemberRef,
@@ -14,7 +13,7 @@ import {
   getMockRole,
   resolveMockInvite,
 } from "@/lib/mocks/groups";
-import { MOCK_CURRENT_USER_ID, MOCK_GROUP_IDS } from "@/lib/mocks/ids";
+import { MOCK_CURRENT_USER_ID } from "@/lib/mocks/ids";
 import {
   type ActionState,
   fail,
@@ -23,22 +22,15 @@ import {
 } from "@/lib/types/action-result";
 import {
   changeMemberRoleInputSchema,
-  createGroupInputSchema,
   removeMemberInputSchema,
-  updateGroupInputSchema,
 } from "@/lib/validations/group";
-import {
-  acceptInviteInputSchema,
-  regenerateInviteInputSchema,
-} from "@/lib/validations/invite";
+import { acceptInviteInputSchema } from "@/lib/validations/invite";
 
 /*
  * Task 007 더미 화면용 목 Server Action.
  * 실제 액션과 같은 시그니처((prevState, formData) → ActionResult)로 입력 검증과 권한 규칙만 거치고,
- * DB에는 아무것도 저장하지 않는다. Task 009~011에서 실제 액션으로 교체한 뒤 이 파일을 지운다.
+ * DB에는 아무것도 저장하지 않는다. Task 009에서 그룹 생성·수정·초대 재발급은 실제 액션으로 바꿨다. 남은 액션도 Task 010~011에서 교체한 뒤 이 파일을 지운다.
  */
-
-const NOT_ADMIN = "그룹 관리자만 할 수 있어요.";
 
 const INVITE_ERROR_MESSAGE: Record<"expired" | "invalid", string> = {
   expired: "만료된 초대 링크예요. 관리자에게 새 링크를 요청해 주세요.",
@@ -59,61 +51,6 @@ function getMemberContext(groupId: string, targetUserId: string) {
     ? { userId: MOCK_CURRENT_USER_ID, role: viewerRole }
     : undefined;
   return { viewer, target, ownerCount };
-}
-
-/**
- * 그룹 생성 (F001). 성공하면 그룹 홈으로 이동한다. 더미라 항상 등반 모임 홈으로 간다.
- */
-export async function createGroupMock(
-  _prev: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
-  const parsed = createGroupInputSchema.safeParse({
-    name: formData.get("name"),
-    description: formData.get("description"),
-  });
-  if (!parsed.success) return fromZodError(parsed.error);
-  redirect(routes.group(MOCK_GROUP_IDS.climbing));
-}
-
-/**
- * 그룹 정보 수정 (F001, admin 이상).
- */
-export async function updateGroupMock(
-  _prev: ActionState,
-  formData: FormData,
-): Promise<ActionState> {
-  const parsed = updateGroupInputSchema.safeParse({
-    groupId: formData.get("groupId"),
-    name: formData.get("name"),
-    description: formData.get("description"),
-  });
-  if (!parsed.success) return fromZodError(parsed.error);
-  if (
-    !canManageMembers(getMockRole(parsed.data.groupId, MOCK_CURRENT_USER_ID))
-  ) {
-    return fail("FORBIDDEN", NOT_ADMIN);
-  }
-  return ok(null);
-}
-
-/**
- * 초대 링크 재발급 (F002, admin 이상). 더미라 그룹별로 같은 새 토큰을 돌려준다.
- */
-export async function regenerateInviteMock(
-  _prev: ActionState<{ token: string }>,
-  formData: FormData,
-): Promise<ActionState<{ token: string }>> {
-  const parsed = regenerateInviteInputSchema.safeParse({
-    groupId: formData.get("groupId"),
-  });
-  if (!parsed.success) return fromZodError(parsed.error);
-  if (
-    !canManageMembers(getMockRole(parsed.data.groupId, MOCK_CURRENT_USER_ID))
-  ) {
-    return fail("FORBIDDEN", NOT_ADMIN);
-  }
-  return ok({ token: `regenerated-${parsed.data.groupId.slice(-12)}` });
 }
 
 /**

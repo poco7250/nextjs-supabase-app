@@ -1,6 +1,6 @@
 import { BottomTabNav } from "@/components/layout/bottom-tab-nav";
-import { getMockRole } from "@/lib/mocks/groups";
-import { MOCK_CURRENT_USER_ID } from "@/lib/mocks/ids";
+import { unwrapPageResult } from "@/lib/navigation/page-result";
+import { getMyRole } from "@/lib/services/group-service";
 import { Suspense } from "react";
 
 /**
@@ -23,8 +23,7 @@ export default function GroupLayout({
 }
 
 /**
- * 현재 사용자의 그룹 내 역할을 조회해 하단 탭에 넘긴다.
- * 지금은 더미 역할이다. Task 009에서 실제 멤버십 조회로 교체한다.
+ * 현재 사용자의 그룹 내 역할을 조회해 하단 탭에 넘긴다. 비멤버·없는 그룹이면 404.
  */
 async function GroupTabNav({
   params,
@@ -32,6 +31,6 @@ async function GroupTabNav({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
-  const role = getMockRole(groupId, MOCK_CURRENT_USER_ID);
+  const role = unwrapPageResult(await getMyRole(groupId));
   return <BottomTabNav context="group" role={role} />;
 }

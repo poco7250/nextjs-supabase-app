@@ -11,16 +11,11 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { routes } from "@/lib/constants/routes";
 import { canManageMembers } from "@/lib/groups/member-permissions";
-import {
-  MOCK_GROUP_MEMBERS,
-  getMockGroup,
-  getMockRole,
-} from "@/lib/mocks/groups";
-import { MOCK_CURRENT_USER_ID } from "@/lib/mocks/ids";
+import { unwrapPageResult } from "@/lib/navigation/page-result";
+import { getGroupHome } from "@/lib/services/group-service";
 import type { Group, GroupRole } from "@/lib/types/domain";
 import { CalendarDays, Megaphone, Settings, UsersRound } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 /**
@@ -49,8 +44,7 @@ export default function GroupHomePage(props: PageProps<"/groups/[groupId]">) {
 }
 
 /**
- * 그룹이 없으면 404. 지금은 더미 데이터를 쓴다.
- * 비멤버 404는 Task 009에서 레이아웃의 멤버십 조회로 처리한다(더미 가입은 저장되지 않아 여기서 막지 않는다).
+ * 그룹 정보·내 역할·멤버 수를 조회한다. 없는 그룹이나 비멤버면 404.
  */
 async function GroupHomeContent({
   params,
@@ -58,12 +52,9 @@ async function GroupHomeContent({
   params: Promise<{ groupId: string }>;
 }) {
   const { groupId } = await params;
-  const group = getMockGroup(groupId);
-  const role = getMockRole(groupId, MOCK_CURRENT_USER_ID);
-  if (!group) notFound();
-  const memberCount = MOCK_GROUP_MEMBERS.filter(
-    (member) => member.groupId === groupId,
-  ).length;
+  const { group, role, memberCount } = unwrapPageResult(
+    await getGroupHome(groupId),
+  );
 
   return <GroupInfoCard group={group} role={role} memberCount={memberCount} />;
 }
@@ -77,7 +68,7 @@ function GroupInfoCard({
   memberCount,
 }: {
   group: Group;
-  role: GroupRole | undefined;
+  role: GroupRole;
   memberCount: number;
 }) {
   return (
@@ -85,7 +76,7 @@ function GroupInfoCard({
       <CardHeader className="gap-1">
         <div className="flex items-start justify-between gap-2">
           <CardTitle className="break-keep text-xl">{group.name}</CardTitle>
-          {role && <RoleBadge role={role} />}
+          <RoleBadge role={role} />
         </div>
         {group.description && (
           <CardDescription className="break-keep">
