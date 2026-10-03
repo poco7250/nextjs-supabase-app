@@ -30,7 +30,7 @@ Phase 1~4의 UI Task(007·013·020·024)와 DB Task(008·014·021·026)가 함�
 
 ## 수락 기준
 
-- [ ] 모든 더미 데이터가 도메인 타입으로 타입 체크된다 (`satisfies`)
+- [x] 모든 더미 데이터가 도메인 타입으로 타입 체크된다 (`satisfies`)
 - [ ] `docs/db-schema.md`에 PRD의 12개 신규 테이블과 CHECK·UNIQUE·부분 유니크 제약이 빠짐없이 매핑된다
 - [ ] ROADMAP의 헬퍼 함수·RPC(Task 008·014·017·018·021·026)가 시그니처와 함께 설계 문서에 있다
 - [x] logger 밖에서 `console.error`/`console.warn` 직접 호출이 없다
@@ -41,7 +41,7 @@ Phase 1~4의 UI Task(007·013·020·024)와 DB Task(008·014·021·026)가 함�
 - [x] 기반: zod 설치, 로거, ActionResult, 레이어 규칙
 - [x] 도메인 타입 정의 및 `GroupRole` 이전
 - [x] Zod 입력 스키마 작성
-- [ ] Phase 1~4 UI용 더미 데이터 작성
+- [x] Phase 1~4 UI용 더미 데이터 작성
 - [ ] DB 스키마 설계 문서 작성
 - [ ] 검증 및 로드맵 반영
 
@@ -59,7 +59,7 @@ Phase 1~4의 UI Task(007·013·020·024)와 DB Task(008·014·021·026)가 함�
   - RSVP `waitlisted` 직접 입력
 - [x] grep: `type GroupRole =` 정의가 `lib/types/domain.ts`에만 있다
 - [ ] grep: 12개 신규 테이블명이 `docs/db-schema.md`의 ERD와 정의 절에 모두 있다
-- [ ] 더미 시나리오가 각 UI Task 완료 조건의 상태를 덮는다
+- [x] 더미 시나리오가 각 UI Task 완료 조건의 상태를 덮는다 (스모크 스크립트로 시나리오·정산 금액 재계산 일치 확인)
   - 007: 그룹·멤버 역할·초대 유효/만료/무효
   - 013: 정원 초과·대기자·마감
   - 020: 만석·잔여·탑승 중·운전자
