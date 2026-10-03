@@ -776,10 +776,10 @@
       "name": "Task 005 Vitest 설치·설정·샘플 테스트",
       "description": "vitest·@vitest/coverage-v8·vite를 devDependency로 설치하고 @types/node를 ^22로 올린다. vitest.config.ts와 test/test:watch/test:coverage 스크립트를 추가하고, check에 test를 붙인다. lib/utils.test.ts로 cn() 샘플 테스트를 작성해 @/ 별칭 해석을 확인한다.",
       "notes": "peer 충돌이 나면 원인과 해결을 기록. --legacy-peer-deps로 우회하지 않는다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-10-03T08:10:45.579Z",
-      "updatedAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:18:30.066Z",
       "relatedFiles": [
         {
           "path": "package.json",
@@ -804,21 +804,23 @@
       ],
       "implementationGuide": "1) npm install -D vitest@^5 @vitest/coverage-v8@^5 vite@^8 @types/node@^22\n2) vitest.config.ts: defineConfig from 'vitest/config', resolve.tsconfigPaths true, test.environment 'node', include ['**/*.test.ts'], exclude node_modules/.next, coverage provider v8 include lib/**/*.ts exclude database.types.ts·*.test.ts, reporter text/html\n3) scripts: test 'vitest run', test:watch 'vitest', test:coverage 'vitest run --coverage', check 끝에 '&& npm run test'\n4) lib/utils.test.ts: import { cn } from '@/lib/utils'; 클래스 결합, tailwind 충돌 시 뒤 클래스 우선, falsy 무시",
       "verificationCriteria": "npm run test 통과, @/ 별칭 import 해석, npm run typecheck가 vitest.config.ts·테스트 파일 포함해 통과, npm install에 peer 경고/에러 없음.",
-      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "vitest 5.0.3, @vitest/coverage-v8 5.0.3, vite 8.3.2를 devDependency로 설치하고 @types/node를 ^22로 올렸다. npm install에서 peer 경고나 에러는 없었다. npm audit의 high 8건은 기존 tailwindcss·eslint-config-next의 braces 체인이라 이번 범위에서 제외했다. 설정 파일은 vitest.config.mts로 만들었다: resolve.tsconfigPaths, node 환경, *.test.ts include, v8 커버리지(lib/**/*.ts). package.json에 \"type\": \"module\"이 없어 .ts 설정이 CJS로 로드되면서 Vite configLoader 경고가 났고, 영향 범위가 작은 .mts로 바꿔 해결했다. tsconfig include에 **/*.mts를 추가해 타입 체크 대상에 넣었다. 스크립트 test·test:watch·test:coverage를 추가하고 check 끝에 test를 붙였다. lib/utils.test.ts는 @/lib/utils를 import하는 cn() 샘플 테스트 3개로, 모두 통과해서 별칭 해석을 확인했다. typecheck·eslint·prettier 통과.",
+      "completedAt": "2026-10-03T08:18:30.060Z"
     },
     {
       "id": "703eaa5c-cfb8-4c99-8a8c-782ab207005e",
       "name": "Task 005 Task 004 계약 단위 테스트 이관",
       "description": "Task 004에서 일회성 스크립트로 확인한 계약을 정식 Vitest 테스트로 옮긴다: action-result, validations(common·event·expense·payment-account·rsvp), mocks 정합성.",
       "notes": "scratchpad mock-smoke.ts 로직 재사용. 스키마 동작을 바꾸지 말고 현재 동작을 고정하는 테스트로 쓴다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "424169c3-f366-4000-9b4d-14493acb99b3"
         }
       ],
       "createdAt": "2026-10-03T08:10:45.579Z",
-      "updatedAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:21:10.315Z",
       "relatedFiles": [
         {
           "path": "lib/validations/",
@@ -843,21 +845,23 @@
       ],
       "implementationGuide": "- lib/types/action-result.test.ts: ok/fail 형태, fromZodError 첫 메시지·경로별 첫 메시지\n- lib/validations/common.test.ts: withJosa, 빈 문자열→null, 숫자 문자열·체크박스 변환, KST 오프셋\n- event.test.ts: 정상 통과, 마감>시작 거부, 정원 빈 값 null\n- expense.test.ts: 일반 음수 거부, 조정 0원 거부·음수 허용, 분담자 0명·중복 거부\n- payment-account.test.ts: http·비허용 호스트 토스 링크 거부, 문자 섞인 계좌번호 거부\n- rsvp.test.ts: waitlisted 거부\n- lib/mocks/mocks.test.ts: id z.uuid 통과·중복 없음, 분담 합계=금액·비결제자 floor, 송금 요약 = 쌍별 합산·상계 재계산, 시나리오 getter(초대 4종, 대시보드 빈 상태, 이벤트 정원초과·마감, 카풀 5종, 정산 3종)\n- 거부 케이스는 fromZodError(...).error.fieldErrors로 한국어 메시지 확인\n- 재계산 헬퍼는 테스트 파일 내부 함수(30줄 이하)",
       "verificationCriteria": "npm run test 전체 통과, 계획 표의 케이스가 모두 테스트로 존재, 한국어 메시지 검증 포함, lint 통과.",
-      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "Task 004 계약을 Vitest 테스트 7개 파일로 옮겼다. 샘플 포함 전체 8파일 71케이스가 통과한다.\n- action-result: ok/fail 형태, fromZodError의 대표 메시지·경로별 첫 메시지·점으로 이은 중첩 경로·경로 없는 이슈 제외\n- common: withJosa, 텍스트 trim과 null 변환, 양의 정수·금액 범위, 체크박스, datetime-local의 초 보충과 KST 부착\n- event: DTO 변환, 마감 역전 거부, 시간대가 달라도 실제 시각으로 비교\n- expense: 일반 음수 거부, 조정 항목 음수 허용·0원 거부, 분담자 0명·중복 거부\n- payment-account: 계좌번호 문자 거부, http·비허용 호스트 거부\n- rsvp: waitlisted 직접 입력 거부\n- mocks: uuid 형식·중복 없음, db-schema 제약(대기 시각, 활성 초대 1개, 송금 무결성), 분담 합계·floor·PRD 3,333 예시, 송금 요약 재계산 일치, Task 007·013·020·024 시나리오\n거부 케이스는 공용 헬퍼 lib/test-utils/zod.ts(fieldErrorsOf, 커버리지 제외)로 한국어 메시지까지 검증한다. 더미 송금액 하나를 일부러 틀리게 바꾸면 해당 테스트만 실패하는 것을 확인했고, 원본은 복구했다. 스키마 코드는 바꾸지 않았다. eslint·prettier·typecheck 통과.",
+      "completedAt": "2026-10-03T08:21:10.312Z"
     },
     {
       "id": "bda1ff8c-e603-43b8-8e26-8670b542ddbf",
       "name": "Task 005 CI 연결과 실패 감지 확인",
       "description": ".github/workflows/ci.yml에 테스트 단계를 추가하고, 임시 실패 테스트로 npm run test가 0이 아닌 종료 코드를 내는지 확인한 뒤 제거한다.",
       "notes": "원격 CI 확인은 사용자가 push/PR을 지시할 때 한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "424169c3-f366-4000-9b4d-14493acb99b3"
         }
       ],
       "createdAt": "2026-10-03T08:10:45.579Z",
-      "updatedAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:24:38.731Z",
       "relatedFiles": [
         {
           "path": ".github/workflows/ci.yml",
@@ -867,21 +871,23 @@
       ],
       "implementationGuide": "1) ci.yml 포맷 검사 뒤에 '- name: 테스트 / run: npm run test'\n2) 임시 lib/__fail__.test.ts(expect(1).toBe(2)) 생성 → npm run test; echo $? 확인 → 파일 삭제 → 다시 통과 확인",
       "verificationCriteria": "ci.yml에 test 단계 존재·prettier 통과, 실패 테스트 시 종료 코드 ≠ 0 기록, 임시 파일 제거됨.",
-      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": ".github/workflows/ci.yml의 포맷 검사 뒤에 '테스트'(npm run test) 단계를 추가했고 prettier를 통과했다. 임시 lib/__fail__.test.ts(expect(1).toBe(2))를 넣었을 때 npm run test 종료 코드가 1, 제거 후에는 0인 것을 확인했고 임시 파일은 지웠다. CI 설치 단계가 npm ci이므로 npm ci --dry-run으로 lock 파일이 package.json과 맞는지도 확인했다. CI의 Node는 .nvmrc 22라 vitest 5의 engines(^22.12)를 만족한다. 원격 CI 실행은 push·PR 시점에 확인한다.",
+      "completedAt": "2026-10-03T08:24:38.728Z"
     },
     {
       "id": "9f70ce79-9612-44d8-9b02-14bb377717ec",
       "name": "Task 005 testing 문서와 테스트 계정",
       "description": "docs/testing.md에 단위 테스트 규칙, E2E 실행 전제, 테스트 계정 3개(owner/admin/member)와 대시보드 생성 절차, 시드 절차, 브라우저 우회 방법을 정리한다. 사용자에게 계정 생성을 요청하고 로그인 스모크를 확인한다. CLAUDE.md 테스트 안내를 갱신한다.",
       "notes": "비밀번호는 문서·커밋에 넣지 않는다. .env*.local은 이미 gitignore.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "424169c3-f366-4000-9b4d-14493acb99b3"
         }
       ],
       "createdAt": "2026-10-03T08:10:45.579Z",
-      "updatedAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:52:48.535Z",
       "relatedFiles": [
         {
           "path": "docs/testing.md",
@@ -896,13 +902,15 @@
       ],
       "implementationGuide": "1) docs/testing.md: 단위 테스트(명령어, *.test.ts 규칙, 커버리지), E2E 전제, 계정 표(역할·이메일·.env.test.local 변수명 E2E_OWNER_EMAIL/PASSWORD 등), 대시보드 생성 절차(Add user, Auto Confirm), 시드 순서(그룹 생성→초대 수락→역할 변경, DB Task에서 갱신), 브라우저 우회(캐시 Chromium, 구글 OAuth 거부 시 이메일 로그인)\n2) 사용자에게 계정 3개 생성 요청, 이메일 확인\n3) 이메일 로그인 → /dashboard 진입 스모크\n4) CLAUDE.md '테스트 러너는 아직...' 문구를 test 명령어 안내로 교체\n5) 메모리 e2e-browser-workaround에 docs/testing.md 연결",
       "verificationCriteria": "docs/testing.md에 계정 3개와 시드 절차 존재, 비밀번호 미포함, 계정 로그인 스모크 통과, prettier 통과.",
-      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "docs/testing.md를 작성했다. 내용은 단위 테스트 명령어·작성 규칙·fieldErrorsOf·커버리지, E2E 실행 전제, 테스트 계정 표(역할과 .env.test.local 변수명만 적고 실제 이메일·비밀번호는 넣지 않음), 대시보드 계정 생성 절차(Auto Confirm)와 profiles 확인 SQL, Task 009~028 시드 순서와 cascade 초기화, 브라우저 우회 방법, 동시성 테스트 자리다. CLAUDE.md는 테스트 명령어 안내를 넣고 check·CI 설명에 test를 추가했다. 사용자가 처음 만든 계정 중 하나는 도메인 오타로 미확인 상태여서 다시 만들어 달라고 요청했다. 재생성 후 확인 결과: SQL에서 3개 계정 모두 confirmed이고 profile 있음. Supabase Auth signInWithPassword와 프로필 조회 3/3 성공. 캐시된 Chromium Playwright 스크립트로 이메일 로그인 → /dashboard 진입 → 보호 경로 /profile 접근 3/3 성공, 콘솔 에러 0건. 비밀번호는 출력하지 않고 스크립트가 .env.test.local을 직접 읽게 했다. .env.test.local이 gitignore 대상임을 확인했다. 메모리 e2e-browser-workaround에 계정 위치와 사용법을 기록했다.",
+      "completedAt": "2026-10-03T08:52:48.534Z"
     },
     {
       "id": "ce4d122f-2095-43fe-8b66-feddad3eac8a",
       "name": "Task 005 검증 및 로드맵 반영",
       "description": "npm run check(test 포함)·build·test:coverage를 실행하고 tasks/005 작업 파일과 ROADMAP을 완료 상태로 갱신한 뒤 관심사별로 커밋한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "703eaa5c-cfb8-4c99-8a8c-782ab207005e"
@@ -915,7 +923,7 @@
         }
       ],
       "createdAt": "2026-10-03T08:10:45.579Z",
-      "updatedAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:55:40.694Z",
       "relatedFiles": [
         {
           "path": "tasks/005-test-runner.md",
@@ -930,7 +938,9 @@
       ],
       "implementationGuide": "1) npm run check, npm run build, npm run test:coverage\n2) tasks/005-test-runner.md 체크박스·변경 요약\n3) ROADMAP Task 005 ✅, vite-tsconfig-paths 문구를 Vite 8 내장 resolve.tsconfigPaths로 정정, Phase 0 마무리 npm run test 체크\n4) 커밋 분할: ➕ 의존성·설정·샘플 / ✅ 계약 테스트 / 👷 CI / 📝 testing·CLAUDE.md / 📝 작업 파일·로드맵 / 🔧 shrimp, Claude 서명 없음",
       "verificationCriteria": "check·build·coverage 통과, ROADMAP 완료 조건 충족, tasks/005와 ROADMAP 갱신, 커밋 완료.",
-      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "검증 결과: npm run check(typecheck·lint·format·test)와 npm run build가 모두 종료 코드 0으로 통과했다. npm run test:coverage는 coverage/ 리포트를 생성했고(gitignore 대상), 기준선은 lines 58%다. tasks/005-test-runner.md는 체크박스를 전부 체크하고 변경 사항 요약(버전·peer 대응, .mts 전환, 테스트 이관, CI 연결, 테스트 계정 처리)을 썼다. ROADMAP Task 005에 ✅와 작업 파일 경로를 표시하고, vite-tsconfig-paths 문구를 Vite 8 내장 resolve.tsconfigPaths로 정정했다. Phase 0 마무리의 check·test 항목도 체크했다. 커밋은 관심사별로 나눴고 Claude 서명은 넣지 않았으며 pre-commit을 통과했다: ➕ 러너·샘플 / ✅ 계약 테스트 / 👷 CI / 📝 테스트 문서·CLAUDE.md / 📝 작업 파일·로드맵. ROADMAP 완료 조건 중 로컬 통과와 실패 감지는 확인했고, 원격 CI 실행은 push 시점에 확인한다.",
+      "completedAt": "2026-10-03T08:55:40.692Z"
     }
   ]
 }
