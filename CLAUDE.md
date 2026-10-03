@@ -18,16 +18,23 @@ npm run lint        # eslint . (flat config: core-web-vitals + typescript + pret
 npm run lint:fix    # 자동 수정
 npm run format      # prettier --write . (Tailwind 클래스 자동 정렬 포함)
 npm run typecheck   # next typegen && tsc --noEmit
-npm run check       # typecheck + lint + format:check (작업 마무리 전 실행)
+npm run check       # typecheck + lint + format:check + test (작업 마무리 전 실행)
 ```
 
-테스트 러너는 아직 설정되어 있지 않다.
+```bash
+npm run test           # Vitest 단위 테스트 (CI와 같음)
+npm run test:watch     # 변경 감지 모드
+npm run test:coverage  # 커버리지 리포트
+```
+
+- 단위 테스트는 소스 옆 `*.test.ts`에 두고 `describe`/`it`/`expect`를 `vitest`에서 import한다. 설정은 `vitest.config.mts`.
+- 테스트 규칙, E2E 테스트 계정(`.env.test.local`), 시드 절차는 `docs/testing.md`를 따른다.
 
 ### 품질 게이트
 
 - **Claude Code 훅**: `.claude/settings.json`의 PostToolUse 훅(`.claude/hooks/format-lint-hook.sh`)이 Edit/Write 직후 해당 파일에 Prettier + `eslint --fix`를 돌린다. 자동 수정 안 되는 에러가 남으면 피드백이 오니 바로 고친다.
 - **pre-commit**: husky + lint-staged로 스테이징된 파일을 린트/포맷하고, 전체 `typecheck`를 실행한다. `--no-verify`로 우회하지 않는다.
-- **CI**: `.github/workflows/ci.yml`에서 PR마다 typecheck / lint(`--max-warnings=0`) / format:check.
+- **CI**: `.github/workflows/ci.yml`에서 PR마다 typecheck / lint(`--max-warnings=0`) / format:check / test.
 - `console.log`는 ESLint 경고 대상이다(`console.warn`/`error`만 허용).
 
 환경 변수(`.env.local`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. 값이 없으면 `lib/utils.ts`의 `hasEnvVars`가 false가 되어 proxy 인증 검사를 건너뛰고 UI에 `EnvVarWarning`이 표시된다.
