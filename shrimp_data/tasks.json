@@ -702,14 +702,14 @@
       "id": "c5ece238-1a34-4185-b763-cd65491848a2",
       "name": "Task 004 DB 스키마 설계 문서 작성",
       "description": "docs/db-schema.md에 ERD(Mermaid), 테이블 정의, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 시그니처, RLS 매트릭스, PRD 매핑 체크리스트를 작성한다. 구현은 각 Phase DB Task에서 한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "3ba8d544-8a47-433a-9b0a-1ecd12460f97"
         }
       ],
       "createdAt": "2026-10-01T14:51:58.661Z",
-      "updatedAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-03T04:24:52.782Z",
       "relatedFiles": [
         {
           "path": "docs/db-schema.md",
@@ -734,13 +734,15 @@
       ],
       "implementationGuide": "1) erDiagram 13개 엔티티\n2) 테이블별 컬럼·타입·NULL·기본값·FK·on delete 정책(멤버 내보내기 후 이력 보존: profiles FK는 restrict, group/event 하위는 cascade 여부 명시), created_at/updated_at + set_updated_at 트리거 재사용\n3) 제약 표: PRD 477~491행 전부 + 문자열 길이 CHECK(Zod 상수와 일치)\n4) 인덱스: 유니크 겸 조회 인덱스, events(group_id,start_at), event_rsvps(event_id,waitlisted_at) where status='waitlisted', FK 인덱스\n5) 헬퍼·RPC: is_group_member, is_group_admin, is_event_member, is_event_attendee, create_group, get_invite_preview(anon), accept_invite, regenerate_invite, change_member_role, remove_member, respond_rsvp, promote_waitlist(내부), set_check_in, request/cancel_carpool_seat, get_payee_accounts, save/delete_expense, recalculate_settlement(내부), mark_transfer_sent, confirm_transfer — 시그니처, security definer, stable, grant, 잠금 행, 담당 Task\n6) RLS 매트릭스\n7) PRD 매핑 체크리스트\n8) ROADMAP 결정 필요 사항 1~7 참조, 권장안 기준에 '확정 필요' 표시",
       "verificationCriteria": "PRD 12개 신규 테이블명이 모두 정의 절과 ERD에 있고, PRD의 CHECK·UNIQUE 항목이 매핑 체크리스트에서 전부 체크되며, ROADMAP의 RPC가 모두 목록에 있다. prettier 통과.",
-      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md"
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "docs/db-schema.md를 작성했다. 구성은 공통 규칙, Mermaid ERD(13개 엔티티), 테이블 정의 13개(삭제 정책: profiles FK는 restrict, 그룹·이벤트 하위는 cascade, cloned_from은 set null), CHECK·문자열 길이 CHECK(Zod 상수와 같은 값), UNIQUE·부분 유니크, 인덱스(대기열 부분 인덱스, FK 인덱스), 함수·RPC다. RPC는 헬퍼 5개, 클라이언트 RPC 15개, 내부 함수·트리거로 나누고 각각 시그니처·반환·잠금 행·검증·Task를 적었다. 이어서 RPC 에러와 ActionErrorCode 매핑, RLS 매트릭스, 결정 필요 사항 D1~D8(초대 만료 기간 추가), PRD 매핑 체크리스트를 넣었다. 검증: grep으로 12개 테이블이 ERD와 정의 절에 모두 있고 ROADMAP 함수 21개가 전부 시그니처와 함께 있음을 확인했다. prettier 통과. 도메인 타입에 없는 events.created_by는 빼서 더미 데이터·타입과 일치시켰다.",
+      "completedAt": "2026-10-03T04:24:52.780Z"
     },
     {
       "id": "0e75b9a1-1702-4909-8366-aa34c5752bae",
       "name": "Task 004 검증 및 로드맵 반영",
       "description": "npm run check·build, 스모크 스크립트, grep 검증을 실행하고 tasks/004 작업 파일을 완료 상태로 갱신한 뒤 ROADMAP Task 004를 ✅로 표시하고 관심사별로 커밋한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "3374cd72-ca8b-4937-98aa-dfe94c8f23db"
@@ -750,7 +752,7 @@
         }
       ],
       "createdAt": "2026-10-01T14:51:58.661Z",
-      "updatedAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-03T08:06:41.125Z",
       "relatedFiles": [
         {
           "path": "tasks/004-domain-foundation.md",
@@ -765,7 +767,9 @@
       ],
       "implementationGuide": "1) npm run check, npm run build\n2) grep: logger.ts 밖 console.error/warn 0건, 'type GroupRole =' 1건(domain.ts), db-schema.md에 12개 테이블명\n3) tasks/004-domain-foundation.md 체크박스·테스트 체크리스트·변경 요약 작성, Zod 단위 테스트는 Task 005 TODO로 기록\n4) ROADMAP Task 004 ✅\n5) 커밋 분할(기반 / 도메인·스키마 / 목업 / 설계 문서 / 작업 파일·로드맵), Claude 서명 없음",
       "verificationCriteria": "check·build 통과, grep 검증 통과, ROADMAP 완료 조건 2개 충족, tasks/004와 ROADMAP 갱신, 커밋 완료.",
-      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md"
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "npm run check(typecheck·lint·format)과 npm run build를 통과했다. grep 결과: logger.ts 밖 console.* 직접 호출 0건, type GroupRole 정의는 lib/types/domain.ts 1건, db-schema.md의 ERD와 정의 절에 12개 테이블이 모두 있다. tasks/004-domain-foundation.md의 체크박스를 전부 체크하고 변경 사항 요약을 작성했다(Zod·더미 데이터 정식 단위 테스트는 Task 005 TODO). ROADMAP Task 004에 ✅ 완료와 작업 파일 경로를 표시하고, 로거 항목을 자체 구현 결정으로 정정했다. ROADMAP 완료 조건 2개(더미 데이터 satisfies 타입 체크, 12개 테이블·제약 매핑)를 충족한다. 커밋은 이전 단계 커밋들(기반/도메인/스키마/목업)에 이어 설계 문서와 작업 파일·로드맵을 관심사별로 나눠 했고, 서명은 넣지 않았다.",
+      "completedAt": "2026-10-03T08:06:41.123Z"
     }
   ]
 }
