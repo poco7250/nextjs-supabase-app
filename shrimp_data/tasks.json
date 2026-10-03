@@ -1078,14 +1078,14 @@
       "id": "3c2522e0-f2ca-4ee3-8dcd-b8d001090a33",
       "name": "Task 007 초대 수락 페이지",
       "description": "app/invite/[token]에서 resolveMockInvite 결과(valid/alreadyMember/expired/invalid)별 화면과 가입하기(acceptInviteMock) 폼을 구현한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "17891638-1021-4f24-a126-aaff1a560250"
         }
       ],
       "createdAt": "2026-10-03T09:00:21.001Z",
-      "updatedAt": "2026-10-03T09:00:21.001Z",
+      "updatedAt": "2026-10-03T09:41:23.135Z",
       "relatedFiles": [
         {
           "path": "app/invite/[token]/page.tsx",
@@ -1100,20 +1100,22 @@
       ],
       "implementationGuide": "1) page.tsx 동기 + Suspense async InviteContent({params})\n2) valid: 그룹 미리보기 Card + 가입하기 form(useActionState, pending)\n3) alreadyMember: 안내 + 그룹 홈 링크\n4) expired/invalid: 에러 카드 + 안내 + 대시보드 링크\n5) 셸 밖 단독 레이아웃(main/h1, 가운데 카드)",
       "verificationCriteria": "토큰 4개(runningActiveToken2026, climbingActiveToken2026, bookClubExpiredToken2026, climbingRevokedToken2026)별 화면, 가입하기 → 그룹 홈, build 통과.",
-      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "app/invite/[token]/page.tsx를 앱 셸 밖 단독 화면(main/h1, 가운데 카드)으로 만들고, 동기 페이지 + Suspense 안 async InviteContent에서 resolveMockInvite 결과별로 화면을 나눴다. valid는 그룹 미리보기 + AcceptInviteForm(useActionState, pending, 실패 토스트), alreadyMember는 안내 + 그룹 홈 링크, expired·invalid는 role=alert 에러 카드 + 대시보드 링크다. E2E에서 토큰 4개 화면과 가입하기 → 러닝 크루 그룹 홈 이동을 확인했고 build를 통과했다.",
+      "completedAt": "2026-10-03T09:41:23.132Z"
     },
     {
       "id": "f1655fa1-e153-48b2-99e3-1a6c55f34c5d",
       "name": "Task 007 멤버 관리·그룹 홈 셸",
       "description": "멤버 관리 페이지(목록, 역할 변경 Select, 내보내기 AlertDialog)와 그룹 홈 셸(그룹 정보 카드, 관리자 바로가기, Phase 2 자리 표시)을 구현한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "17891638-1021-4f24-a126-aaff1a560250"
         }
       ],
       "createdAt": "2026-10-03T09:00:21.001Z",
-      "updatedAt": "2026-10-03T09:00:21.001Z",
+      "updatedAt": "2026-10-03T09:41:39.176Z",
       "relatedFiles": [
         {
           "path": "components/groups/member-list.tsx",
@@ -1133,13 +1135,15 @@
       ],
       "implementationGuide": "1) members/page.tsx 동기 + Suspense async: notFound/비관리자 redirect, getMockGroupMembers\n2) components/groups/member-list.tsx client: 이름(getMockMemberDisplayName 결과를 서버에서 계산해 전달), 역할, 가입일(formatDate); getAssignableRoles로 Select 옵션, canRemoveMember로 내보내기 버튼; changeMemberRoleMock/removeMemberMock 결과 토스트, 성공 시 로컬 상태 갱신\n3) groups/[groupId]/page.tsx: 동기 + Suspense async: notFound, 그룹명·설명·멤버 수 카드, 관리자면 설정·멤버 바로가기, 공지·이벤트 EmptyState(Phase 2)",
       "verificationCriteria": "owner 행 내보내기 버튼 없음, 역할 변경·내보내기 토스트, 없는 groupId not-found, build 통과.",
-      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "멤버 관리 페이지는 동기 + Suspense에서 그룹이 없으면 notFound, 비관리자는 그룹 홈으로 redirect하고, 표시 이름을 서버에서 계산해 MemberList(client)에 넘긴다. MemberList는 getAssignableRoles로 Select 옵션, canRemoveMember로 내보내기 AlertDialog를 노출하고, 목 액션 결과를 토스트로 알린 뒤 성공 시 로컬 목록을 갱신한다(예외는 logger.error). 그룹 홈은 정보 카드(설명·멤버 수·역할 배지), 관리자 바로가기, 공지·이벤트 EmptyState를 둔다. 결정: 더미 가입이 저장되지 않으므로 그룹 홈은 그룹이 없을 때만 404이고, 비멤버 404는 Task 009 레이아웃에서 처리한다. E2E에서 owner 행 내보내기 버튼 없음, 역할 변경·내보내기 토스트, 없는 groupId not-found를 확인했고 build를 통과했다.",
+      "completedAt": "2026-10-03T09:41:39.173Z"
     },
     {
       "id": "eaf95611-4c3e-46a6-b827-3f83aa3e7c22",
       "name": "Task 007 E2E 검증 및 로드맵 반영",
       "description": "check·build 후 Playwright 스크립트(테스트 계정 owner, 360×740)로 전체 흐름을 검증하고 tasks/007·ROADMAP을 갱신해 관심사별로 커밋한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "e4a91a1b-8e43-4616-879d-84cc1f583bff"
@@ -1155,7 +1159,7 @@
         }
       ],
       "createdAt": "2026-10-03T09:00:21.001Z",
-      "updatedAt": "2026-10-03T09:00:21.001Z",
+      "updatedAt": "2026-10-03T09:42:05.313Z",
       "relatedFiles": [
         {
           "path": "tasks/007-group-ui.md",
@@ -1175,7 +1179,9 @@
       ],
       "implementationGuide": "1) npm run check, npm run build\n2) scratchpad Playwright 스크립트(.env.test.local 직접 읽기, 캐시 Chromium): 작업 파일 테스트 체크리스트 전 항목 + 각 화면 scrollWidth<=360·콘솔 에러 0\n3) tasks/007 체크·변경 요약, ROADMAP Task 007 ✅\n4) 커밋 분할(기반 / 랜딩·대시보드 / 그룹 생성·설정 / 초대 / 멤버·그룹 홈 / 작업 파일·로드맵 / shrimp), 서명 없음",
       "verificationCriteria": "E2E 체크리스트 전부 통과, check·build 통과, ROADMAP 완료 조건 충족, 커밋 완료.",
-      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md"
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "npm run check(86개 테스트)와 build를 통과했다. 캐시 Chromium 스크립트(owner 계정, 360×740)로 22개 항목을 모두 통과했다. 항목은 랜딩 → 로그인 → 대시보드(카드 2개·배지·다음 이벤트), 빈 상태, 그룹 생성 검증·제출 → 그룹 홈, 설정의 복사·재발급, 멤버 관리의 역할 변경·내보내기, member 그룹의 관리자 탭 숨김과 설정·멤버 차단, not-found, 초대 4개 상태와 가입 흐름이다. 전 화면 scrollWidth는 360이었고 콘솔 에러는 0건이었다. tasks/007과 ROADMAP Task 007을 완료로 갱신하고 초대 / 멤버·그룹 홈 / 문서로 나눠 커밋했다(서명 없음).",
+      "completedAt": "2026-10-03T09:42:05.311Z"
     }
   ]
 }
