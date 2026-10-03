@@ -11,6 +11,7 @@ export const routes = {
   home: "/",
   dashboard: "/dashboard",
   login: "/auth/login",
+  signUp: "/auth/sign-up",
   profile: "/profile",
   newGroup: "/groups/new",
 
