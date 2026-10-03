@@ -150,12 +150,12 @@
   - [x] `docs/db-schema.md`에 전체 ERD, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 목록과 시그니처 설계(구현은 각 Phase에서)
   - 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고, DB 설계 문서에 PRD의 12개 테이블과 제약이 빠짐없이 매핑된다
 
-- **Task 005: 테스트 러너 도입 및 CI 연결**
-  - 규모: S | 기능 ID: 품질 기반 (정산 로직 선행 조건) | 의존: Task 001
-  - [ ] Vitest(+ `vite-tsconfig-paths`로 `@/*` 별칭) 설치, `vitest.config.ts` 작성, `npm run test` / `npm run test:watch` 스크립트 추가
-  - [ ] 샘플 테스트(예: `lib/utils.ts`의 `cn()`)로 동작 확인
-  - [ ] `npm run check`에 `test` 포함 여부 결정 후 반영, `.github/workflows/ci.yml`에 test 단계 추가
-  - [ ] Playwright MCP E2E용 테스트 계정 2~3개와 시드 절차를 `docs/testing.md`에 정리
+- **Task 005: 테스트 러너 도입 및 CI 연결** ✅ - 완료
+  - 규모: S | 기능 ID: 품질 기반 (정산 로직 선행 조건) | 의존: Task 001 | 작업 파일: `tasks/005-test-runner.md`
+  - [x] Vitest 5 설치(`@/*` 별칭은 `vite-tsconfig-paths` 대신 Vite 8 내장 `resolve.tsconfigPaths`), `vitest.config.mts` 작성, `npm run test` / `npm run test:watch` 스크립트 추가
+  - [x] 샘플 테스트(예: `lib/utils.ts`의 `cn()`)로 동작 확인
+  - [x] `npm run check`에 `test` 포함(pre-commit은 제외), `.github/workflows/ci.yml`에 test 단계 추가
+  - [x] Playwright MCP E2E용 테스트 계정 2~3개와 시드 절차를 `docs/testing.md`에 정리
   - 완료 조건: 로컬과 CI에서 `npm run test`가 통과하고, CI가 실패 테스트를 잡아낸다
 
 - **Task 006: 카카오 비즈 앱 전환 심사 신청 및 외부 설정 준비** - 우선순위 (병렬, 비개발 작업)
@@ -167,8 +167,8 @@
   - 완료 조건: 심사 신청이 접수되었고, 플래그가 false일 때 카카오 버튼이 어디에도 노출되지 않는다
 
 - **Phase 0 마무리**
-  - [ ] `npm run check` 통과
-  - [ ] `npm run test` 통과
+  - [x] `npm run check` 통과
+  - [x] `npm run test` 통과
 
 ### Phase 1: 그룹·초대·멤버
 
