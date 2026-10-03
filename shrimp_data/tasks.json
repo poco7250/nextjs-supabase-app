@@ -667,14 +667,14 @@
       "id": "3374cd72-ca8b-4937-98aa-dfe94c8f23db",
       "name": "Task 004 Phase 1~4 UI용 더미 데이터 작성",
       "description": "lib/mocks/에 결정적 id 상수와 users, groups, events, carpools, settlements 더미 데이터를 도메인 타입으로 작성하고, UI Task(007·013·020·024)가 필요한 상태를 시나리오 getter로 제공한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "d557e183-ddc4-4cfa-a814-c7b89eee38eb"
         }
       ],
       "createdAt": "2026-10-01T14:51:58.661Z",
-      "updatedAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-03T04:07:41.708Z",
       "relatedFiles": [
         {
           "path": "lib/mocks/",
@@ -694,7 +694,9 @@
       ],
       "implementationGuide": "ids.ts: MOCK_USER_IDS 등 고정 uuid(Math.random 금지). users: 5명(나간 멤버 1명). groups: 그룹·멤버(owner/admin/member)·초대(활성/만료/revoked). events: 정원 초과+대기자, 마감, 취소, 정원 NULL, RSVP, 공지(고정/일반). carpools: 만석, 잔여, 내가 탑승, 내가 운전자. settlements: 일반/조정 비용, 분담, 송금(정산 전/송금 표시/입금 확인→잠금). 모든 export에 satisfies 도메인 타입. getMockEventScenario 등 시나리오 getter, 함수 30줄 이하. 금액은 PRD 예시(10,000원 ÷ 3 → 3,333)와 맞춘다.",
       "verificationCriteria": "typecheck 통과(satisfies로 모든 더미 데이터 타입 검사), ROADMAP 007·013·020·024 완료 조건의 상태가 각각 시나리오로 존재, 함수 30줄 이하.",
-      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md"
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "lib/mocks에 ids/users/groups/events/carpools/settlements 6개 파일을 작성했다. mockId(entity, seq)로 z.uuid를 통과하는 결정적 v4 id를 만들고, 기준 시각은 MOCK_NOW로 고정했다. 모든 export 데이터는 satisfies 도메인 타입으로 검사한다. 시나리오 getter는 getMockInviteScenario(valid/alreadyMember/expired/invalid), getMockDashboardGroups(빈 상태 포함), getMockEventScenario(overCapacity/unlimited/closed/canceled/completed), getMockCarpoolScenario(full/available/riding/driver/notAttendee), getMockSettlementScenario(beforeSettlement/transferMarked/locked)다. 정산 금액은 PRD 규칙(10,000÷3→3,333, 쌍별 상계)대로 계산했고, 스모크 스크립트로 분담 합계와 송금 재계산이 일치하는 것을 확인했다. 조정 항목은 음수 나머지 규칙이 아직 결정 전이라 나누어떨어지는 금액(-9,000)을 썼다. typecheck, eslint, prettier 통과, 함수는 모두 30줄 이하다.",
+      "completedAt": "2026-10-03T04:07:41.706Z"
     },
     {
       "id": "c5ece238-1a34-4185-b763-cd65491848a2",
