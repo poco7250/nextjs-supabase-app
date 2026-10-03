@@ -1,4 +1,5 @@
 import { routes } from "@/lib/constants/routes";
+import type { GroupRole } from "@/lib/types/domain";
 import {
   Car,
   CalendarDays,
@@ -11,11 +12,6 @@ import {
   Users,
   type LucideIcon,
 } from "lucide-react";
-
-/**
- * 그룹 내 역할. Task 004에서 lib/types/domain.ts로 옮긴다.
- */
-export type GroupRole = "owner" | "admin" | "member";
 
 /** 하단 탭 바가 보여줄 메뉴 묶음 */
 export type NavContext = "app" | "group" | "event";

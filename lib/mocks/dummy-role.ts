@@ -1,4 +1,4 @@
-import type { GroupRole } from "@/lib/navigation/tabs";
+import type { GroupRole } from "@/lib/types/domain";
 
 /**
  * 하단 탭의 역할별 노출을 확인하기 위한 더미 역할.

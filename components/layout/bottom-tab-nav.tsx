@@ -4,10 +4,10 @@ import {
   detectNavContext,
   getTabs,
   isTabActive,
-  type GroupRole,
   type NavContext,
   type NavTab,
 } from "@/lib/navigation/tabs";
+import type { GroupRole } from "@/lib/types/domain";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
