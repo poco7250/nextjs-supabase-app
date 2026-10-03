@@ -1182,6 +1182,82 @@
       "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
       "summary": "npm run check(86개 테스트)와 build를 통과했다. 캐시 Chromium 스크립트(owner 계정, 360×740)로 22개 항목을 모두 통과했다. 항목은 랜딩 → 로그인 → 대시보드(카드 2개·배지·다음 이벤트), 빈 상태, 그룹 생성 검증·제출 → 그룹 홈, 설정의 복사·재발급, 멤버 관리의 역할 변경·내보내기, member 그룹의 관리자 탭 숨김과 설정·멤버 차단, not-found, 초대 4개 상태와 가입 흐름이다. 전 화면 scrollWidth는 360이었고 콘솔 에러는 0건이었다. tasks/007과 ROADMAP Task 007을 완료로 갱신하고 초대 / 멤버·그룹 홈 / 문서로 나눠 커밋했다(서명 없음).",
       "completedAt": "2026-10-03T09:42:05.311Z"
+    },
+    {
+      "id": "1e9f083e-99ff-4fc3-8ed6-c097dc9719cc",
+      "name": "Task 008 테이블 마이그레이션",
+      "description": "groups, group_members, group_invites 테이블과 CHECK·UNIQUE·부분 유니크·인덱스·updated_at 트리거·RLS 활성화를 마이그레이션 파일로 만들고 apply_migration으로 반영한다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-10-03T09:46:28.692Z",
+      "updatedAt": "2026-10-03T09:47:03.781Z",
+      "relatedFiles": [
+        {
+          "path": "docs/db-schema.md",
+          "type": "REFERENCE",
+          "description": "설계 문서"
+        }
+      ],
+      "implementationGuide": "1) supabase/migrations/<ts>_create_group_tables.sql 작성 2) 이름 길이 CHECK(trim 후 1자 이상, 50자 이하), 설명 500자, role CHECK, unique(group_id,user_id), unique(token), unique(group_id) where revoked_at is null 3) 인덱스 group_members(user_id), groups(owner_id), group_invites(created_by) 4) apply_migration 후 list_tables로 확인",
+      "verificationCriteria": "테이블 3개가 RLS 활성 상태로 생성되고 제약 이름이 문서와 같다.",
+      "analysisResult": "ROADMAP Task 008: docs/db-schema.md 기준으로 groups/group_members/group_invites 스키마, RLS 헬퍼(is_group_member/is_group_admin), RLS 정책, RPC 6종(create_group, get_invite_preview, accept_invite, regenerate_invite, change_member_role, remove_member)을 마이그레이션으로 구현한다. 규칙: security definer + set search_path='', revoke 후 필요한 것만 grant, p_ 인자, (select auth.uid()), 에러는 'CODE: 메시지' P0001. D8은 무기한으로 확정. 작업 파일 tasks/008-group-schema.md. 커밋은 관심사별·서명 없음.",
+      "summary": "supabase/migrations/20261003190000_create_group_tables.sql을 작성하고 apply_migration으로 반영했다. groups(이름 trim 1~50자·설명 500자 CHECK, owner_id restrict, updated_at 트리거), group_members(role CHECK, group_members_group_user_key), group_invites(base64url 32자 토큰 기본값, group_invites_token_key, 부분 유니크 group_invites_active_key)를 만들었다. 인덱스는 groups(owner_id), group_members(user_id), group_invites(created_by)를 추가했다. list_tables에서 3개 테이블 모두 RLS 활성 상태를 확인했다.",
+      "completedAt": "2026-10-03T09:47:03.779Z"
+    },
+    {
+      "id": "be260680-ab29-4c0d-a271-2c35673b631d",
+      "name": "Task 008 헬퍼·RLS·RPC 마이그레이션",
+      "description": "is_group_member/is_group_admin, RLS 정책, groups 컬럼 update 권한 제한, RPC 6종과 내부 함수 sync_group_owner_id를 마이그레이션으로 만들고 advisors를 확인한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "1e9f083e-99ff-4fc3-8ed6-c097dc9719cc"
+        }
+      ],
+      "createdAt": "2026-10-03T09:46:28.692Z",
+      "updatedAt": "2026-10-03T10:44:37.932Z",
+      "relatedFiles": [
+        {
+          "path": "lib/groups/member-permissions.ts",
+          "type": "REFERENCE",
+          "description": "권한 규칙(같은 기준)"
+        }
+      ],
+      "implementationGuide": "1) <ts>_create_group_policies_and_rpc.sql 2) 모든 함수 revoke from public, anon, authenticated 후 헬퍼·RPC는 authenticated, get_invite_preview는 anon에도 grant 3) 정책: groups select 멤버/update admin, group_members select 멤버, group_invites select admin 4) revoke update on groups, grant update(name, description) 5) get_advisors security/performance",
+      "verificationCriteria": "마이그레이션 적용 성공, 이 Task로 생긴 보안 경고 0건.",
+      "analysisResult": "ROADMAP Task 008: docs/db-schema.md 기준으로 groups/group_members/group_invites 스키마, RLS 헬퍼(is_group_member/is_group_admin), RLS 정책, RPC 6종(create_group, get_invite_preview, accept_invite, regenerate_invite, change_member_role, remove_member)을 마이그레이션으로 구현한다. 규칙: security definer + set search_path='', revoke 후 필요한 것만 grant, p_ 인자, (select auth.uid()), 에러는 'CODE: 메시지' P0001. D8은 무기한으로 확정. 작업 파일 tasks/008-group-schema.md. 커밋은 관심사별·서명 없음.",
+      "summary": "헬퍼 2개, RLS 정책 4개, groups 컬럼 update 권한(name·description만), RPC 6종, 내부 함수 2개(require_auth_uid, sync_group_owner_id)를 마이그레이션 20261003190100으로 반영했다. get_advisors에서 린트 0028/0029 경고 9건이 나왔다(public의 security definer 함수를 anon/authenticated가 실행 가능). 그래서 마이그레이션 20261003190200을 추가했다. 구현과 헬퍼를 API 비노출 private 스키마로 옮기고, public에는 security invoker 래퍼만 남겼다. 정책은 OID 참조라 그대로 동작한다. 재확인 결과 이 Task로 생긴 보안 경고는 0건이다. 남은 것은 기존 Auth 설정 경고 1건과 새 인덱스의 unused_index INFO뿐이다.",
+      "completedAt": "2026-10-03T10:44:37.930Z"
+    },
+    {
+      "id": "996fd796-8f23-4670-943d-e12a3918a2d8",
+      "name": "Task 008 SQL 시나리오 검증·타입·문서 반영",
+      "description": "트랜잭션 안에서 역할별 JWT를 흉내 내 테스트 체크리스트를 검증하고 롤백한다. database.types.ts를 재생성하고, db-schema·작업 파일·ROADMAP을 갱신해 커밋한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "be260680-ab29-4c0d-a271-2c35673b631d"
+        }
+      ],
+      "createdAt": "2026-10-03T09:46:28.692Z",
+      "updatedAt": "2026-10-03T10:49:02.952Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/008-group-schema.md",
+          "type": "TO_MODIFY",
+          "description": "작업 파일"
+        },
+        {
+          "path": "lib/supabase/database.types.ts",
+          "type": "TO_MODIFY",
+          "description": "생성 타입"
+        }
+      ],
+      "implementationGuide": "1) execute_sql로 begin; set local role/claims; ... rollback 시나리오 2) generate_typescript_types → lib/supabase/database.types.ts 3) npm run check 4) 문서 갱신 5) 커밋 분할(마이그레이션 / 타입 / 문서 / shrimp)",
+      "verificationCriteria": "체크리스트 전부 통과, 테스트 데이터 잔존 0, check 통과, 커밋 완료.",
+      "analysisResult": "ROADMAP Task 008: docs/db-schema.md 기준으로 groups/group_members/group_invites 스키마, RLS 헬퍼(is_group_member/is_group_admin), RLS 정책, RPC 6종(create_group, get_invite_preview, accept_invite, regenerate_invite, change_member_role, remove_member)을 마이그레이션으로 구현한다. 규칙: security definer + set search_path='', revoke 후 필요한 것만 grant, p_ 인자, (select auth.uid()), 에러는 'CODE: 메시지' P0001. D8은 무기한으로 확정. 작업 파일 tasks/008-group-schema.md. 커밋은 관심사별·서명 없음.",
+      "summary": "SQL 시나리오 46개를 모두 통과했다. DO 블록 하나에서 역할별 request.jwt.claims로 전환하며 실행하고 마지막 예외로 롤백했고, 실행 후 세 테이블 0행을 확인했다. 검증 범위는 create_group, 직접 insert 거부, anon 미리보기, 비멤버 0행, 중복 수락, member/admin/owner 권한, 마지막 owner CONFLICT, owner_id 이전, 재발급 후 이전 토큰 무효, 만료 토큰, UNAUTHENTICATED다. database.types.ts를 재생성했고 npm run check(86개)를 통과했다. db-schema(§1 private 스키마 규칙, D8 확정, 구현 메모, 내부 함수), ROADMAP Task 008 ✅, CLAUDE.md, tasks/008을 갱신하고 마이그레이션 / 타입 / 문서로 나눠 커밋했다.",
+      "completedAt": "2026-10-03T10:49:02.949Z"
     }
   ]
 }
