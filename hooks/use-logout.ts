@@ -1,6 +1,7 @@
 "use client";
 
 import { routes } from "@/lib/constants/routes";
+import { logger } from "@/lib/logger";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -16,8 +17,7 @@ export function useLogout(): () => Promise<void> {
     const { error } = await createClient().auth.signOut();
 
     if (error) {
-      // TODO(Task 004): lib/logger.ts 도입 후 로거로 교체
-      console.error("[use-logout] 로그아웃 실패:", error);
+      logger.error("use-logout", "로그아웃 실패", error);
       toast.error("로그아웃하지 못했어요. 다시 시도해 주세요.");
       return;
     }

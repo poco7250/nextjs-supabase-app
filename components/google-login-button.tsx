@@ -1,6 +1,7 @@
 "use client";
 
 import { DEFAULT_AUTH_REDIRECT } from "@/lib/constants/routes";
+import { logger } from "@/lib/logger";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -70,7 +71,7 @@ export function GoogleLoginButton({
       options: { redirectTo: redirectTo.toString() },
     });
     if (error) {
-      console.error("[google-login] OAuth 시작 실패:", error.message);
+      logger.error("google-login", "OAuth 시작 실패", error.message);
       setError("Could not start Google sign-in. Please try again.");
       setIsLoading(false);
     }

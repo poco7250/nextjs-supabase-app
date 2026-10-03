@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { logger } from "@/lib/logger";
 
 type SegmentErrorProps = {
   error: Error & { digest?: string };
@@ -14,8 +15,8 @@ type SegmentErrorProps = {
  */
 export function SegmentError({ error, retry }: SegmentErrorProps) {
   useEffect(() => {
-    // logger 도입 전까지는 console.error로 기록한다
-    console.error("[segment-error]", error.digest ?? error.message);
+    // 서버 에러는 digest만 오므로 서버 로그와 대조할 수 있게 digest를 우선 기록한다
+    logger.error("segment-error", error.digest ?? error.message);
   }, [error]);
 
   return (
