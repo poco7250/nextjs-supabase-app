@@ -210,3 +210,19 @@ export function getMockInviteScenario(scenario: MockInviteScenario) {
   const token = INVITE_SCENARIO_TOKEN[scenario];
   return { token, ...resolveMockInvite(token, U.me) };
 }
+
+/**
+ * id로 더미 그룹을 찾는다. 없으면 undefined.
+ */
+export function getMockGroup(groupId: string): Group | undefined {
+  return MOCK_GROUPS.find((group) => group.id === groupId);
+}
+
+/**
+ * 그룹의 활성 초대(재발급으로 무효화되지 않은 것). 만료됐어도 활성 행이면 돌려준다.
+ */
+export function getMockActiveInvite(groupId: string): GroupInvite | undefined {
+  return MOCK_GROUP_INVITES.find(
+    (invite) => invite.groupId === groupId && invite.revokedAt === null,
+  );
+}
