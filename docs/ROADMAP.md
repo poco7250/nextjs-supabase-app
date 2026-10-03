@@ -182,15 +182,15 @@
   - [x] 그룹 홈 셸(공지/이벤트 목록 영역은 Phase 2에서 채움)
   - 완료 조건: 더미 데이터로 랜딩 → 대시보드 → 그룹 생성 → 그룹 홈 → 설정/멤버 흐름을 클릭으로 끝까지 이동할 수 있다
 
-- **Task 008: 그룹·멤버·초대 스키마, RLS, 헬퍼 함수 구축**
+- **Task 008: 그룹·멤버·초대 스키마, RLS, 헬퍼 함수 구축** ✅ - 완료
   - 규모: M | 기능 ID: F001~F005 | 의존: Task 004
-  - [ ] (1) 마이그레이션: `groups`, `group_members`(role CHECK, `unique(group_id, user_id)`), `group_invites`(`unique(token)`, `unique(group_id) where revoked_at is null`), 조회 인덱스
-  - [ ] (2) 헬퍼 함수 `is_group_member(group_id)`, `is_group_admin(group_id)` (`security definer`, `set search_path = ''`, `stable`)
-  - [ ] (2) RLS: 그룹·멤버 조회는 멤버만, 그룹 수정은 admin 이상, 멤버/초대 쓰기는 RPC 전용
-  - [ ] (2) RPC: `create_group(name, description)`(그룹 + owner 멤버를 한 트랜잭션으로), `get_invite_preview(token)`(anon 허용, 그룹명·설명·유효 여부만 반환), `accept_invite(token)`(중복 가입 무시, 무효 토큰 에러), `regenerate_invite(group_id)`(기존 토큰 `revoked_at` 기록 + 신규 발급을 한 트랜잭션으로), `change_member_role(group_id, user_id, role)`, `remove_member(group_id, user_id)`
-  - [ ] (2) 권한 규칙: owner는 최소 1명 유지(마지막 owner 강등·내보내기 불가), admin은 owner를 변경·내보낼 수 없음, owner 위임 시 `groups.owner_id` 동기화
-  - [ ] (2) `get_advisors`로 보안 경고 0건 확인
-  - [ ] (3) `generate_typescript_types`로 타입 재생성
+  - [x] (1) 마이그레이션: `groups`, `group_members`(role CHECK, `unique(group_id, user_id)`), `group_invites`(`unique(token)`, `unique(group_id) where revoked_at is null`), 조회 인덱스
+  - [x] (2) 헬퍼 함수 `is_group_member(group_id)`, `is_group_admin(group_id)` (`security definer`, `set search_path = ''`, `stable`)
+  - [x] (2) RLS: 그룹·멤버 조회는 멤버만, 그룹 수정은 admin 이상, 멤버/초대 쓰기는 RPC 전용
+  - [x] (2) RPC: `create_group(name, description)`(그룹 + owner 멤버를 한 트랜잭션으로), `get_invite_preview(token)`(anon 허용, 그룹명·설명·유효 여부만 반환), `accept_invite(token)`(중복 가입 무시, 무효 토큰 에러), `regenerate_invite(group_id)`(기존 토큰 `revoked_at` 기록 + 신규 발급을 한 트랜잭션으로), `change_member_role(group_id, user_id, role)`, `remove_member(group_id, user_id)`
+  - [x] (2) 권한 규칙: owner는 최소 1명 유지(마지막 owner 강등·내보내기 불가), admin은 owner를 변경·내보낼 수 없음, owner 위임 시 `groups.owner_id` 동기화
+  - [x] (2) `get_advisors`로 보안 경고 0건 확인
+  - [x] (3) `generate_typescript_types`로 타입 재생성
   - 완료 조건: 비멤버 JWT로 `groups`/`group_members` 조회 시 0행, anon이 `get_invite_preview`로 그룹명·설명 외 컬럼을 얻을 수 없다
 
 - **Task 009: 그룹 생성/수정 및 대시보드 연동**

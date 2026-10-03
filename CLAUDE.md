@@ -65,8 +65,8 @@ Next.js 16에서는 middleware 대신 루트의 `proxy.ts`가 `proxy()` 함수�
 
 ### 데이터베이스
 
-- 마이그레이션: `supabase/migrations/*.sql`. 현재 `profiles` 테이블(auth.users와 1:1, RLS 적용)과 트리거들(`handle_new_user`로 가입 시 프로필 자동 생성, 이메일 변경 동기화, `updated_at` 자동 갱신)이 정의되어 있다. 트리거 함수는 `security definer` + `set search_path = ''`이고 RPC 실행 권한을 revoke한다 — 새 함수도 같은 패턴을 따른다.
-- 타입: `lib/supabase/database.types.ts`는 Supabase에서 생성한 파일이다(현재 `instruments`, `profiles`). 스키마를 바꾸면 Supabase MCP의 `generate_typescript_types`로 다시 생성하고, 직접 수정하지 않는다.
+- 마이그레이션: `supabase/migrations/*.sql`. 현재 `profiles` 테이블(auth.users와 1:1, RLS 적용)과 트리거들(`handle_new_user`로 가입 시 프로필 자동 생성, 이메일 변경 동기화, `updated_at` 자동 갱신)이 정의되어 있다. 트리거 함수는 `security definer` + `set search_path = ''`이고 RPC 실행 권한을 revoke한다. Task 008에서 `groups`·`group_members`·`group_invites`와 그룹 RPC를 추가했다. 새 `security definer` 함수(RPC 구현, RLS 헬퍼)는 API 비노출 `private` 스키마에 두고, 클라이언트 RPC는 `public`에 같은 이름의 `security invoker` 래퍼만 둔다(Supabase 린트 0028/0029). 규칙 전체는 `docs/db-schema.md` §1을 따른다.
+- 타입: `lib/supabase/database.types.ts`는 Supabase에서 생성한 파일이다(현재 `profiles`, `groups`, `group_members`, `group_invites`와 그룹 RPC). 스키마를 바꾸면 Supabase MCP의 `generate_typescript_types`로 다시 생성하고, 직접 수정하지 않는다.
 - Supabase 프로젝트는 `.mcp.json`의 supabase MCP 서버(project_ref 지정)로 연결되어 있다. 스키마 변경은 마이그레이션 파일로 남긴다.
 
 ### 경로 별칭

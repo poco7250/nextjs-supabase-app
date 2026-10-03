@@ -11,19 +11,19 @@
 
 ## 1. 공통 규칙
 
-| 항목         | 규칙                                                                                                                                                                                      |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| PK           | `id uuid primary key default gen_random_uuid()`. 예외: `payment_accounts`는 `user_id`가 PK                                                                                                |
-| 시각         | `timestamptz`. 앱에서는 ISO 8601 문자열로 다룬다                                                                                                                                          |
-| 금액         | `integer`, 원 단위. 부동소수점 금지                                                                                                                                                       |
-| 상태 값      | `text` + CHECK. 값 목록은 `lib/types/domain.ts`의 `as const` 배열(`GROUP_ROLES` 등)과 같아야 한다. Postgres enum 타입은 값 추가·삭제가 번거로워서 쓰지 않는다                             |
-| 타임스탬프   | 수정되는 테이블은 `created_at timestamptz not null default now()`, `updated_at timestamptz not null default now()`와 기존 `public.set_updated_at()` 트리거(`before update`)를 단다        |
-| 함수         | `security definer` + `set search_path = ''`. 테이블·함수는 `public.`, 확장 함수는 `extensions.`처럼 스키마를 붙여 참조한다. 첫 줄에서 `auth.uid()`로 로그인·권한을 확인한다               |
-| 함수 권한    | 모든 함수에 `revoke execute ... from public, anon, authenticated`를 먼저 적용한다. 그다음 클라이언트가 호출할 RPC만 `grant execute ... to authenticated`(초대 미리보기는 `anon`도)를 준다 |
-| RPC 인자     | plpgsql에서 컬럼명과 충돌하지 않게 `p_` 접두를 붙인다(`p_group_id`). 이름은 Zod DTO 필드를 snake_case로 바꾼 것과 맞춘다(`groupId` → `p_group_id`)                                        |
-| RLS          | 모든 테이블에 `enable row level security`. 정책 안의 `auth.uid()`는 `(select auth.uid())`로 감싸 행마다 다시 평가하지 않게 한다. 반복되는 판정은 헬퍼 함수(§6.1)로 뺀다                   |
-| 동시성       | RSVP·대기자 승급·카풀 좌석·정산 재계산은 RLS로 직접 쓰기를 막고 RPC 안에서만 처리한다. 대상 `events`/`carpools` 행을 `select ... for update`로 잠근 뒤 검증하고 한 트랜잭션으로 반영한다  |
-| 마이그레이션 | `supabase/migrations/<timestamp>_<설명>.sql` 파일로 남기고 같은 내용을 MCP `apply_migration`으로 반영한다. 그 뒤 `get_advisors` 확인 → `generate_typescript_types` 순서로 진행한다        |
+| 항목         | 규칙                                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PK           | `id uuid primary key default gen_random_uuid()`. 예외: `payment_accounts`는 `user_id`가 PK                                                                                                                                                                                                                                                                                                   |
+| 시각         | `timestamptz`. 앱에서는 ISO 8601 문자열로 다룬다                                                                                                                                                                                                                                                                                                                                             |
+| 금액         | `integer`, 원 단위. 부동소수점 금지                                                                                                                                                                                                                                                                                                                                                          |
+| 상태 값      | `text` + CHECK. 값 목록은 `lib/types/domain.ts`의 `as const` 배열(`GROUP_ROLES` 등)과 같아야 한다. Postgres enum 타입은 값 추가·삭제가 번거로워서 쓰지 않는다                                                                                                                                                                                                                                |
+| 타임스탬프   | 수정되는 테이블은 `created_at timestamptz not null default now()`, `updated_at timestamptz not null default now()`와 기존 `public.set_updated_at()` 트리거(`before update`)를 단다                                                                                                                                                                                                           |
+| 함수         | `security definer` 함수는 API에 노출되지 않는 `private` 스키마에 두고 `set search_path = ''`를 단다. 클라이언트 RPC는 `public`에 같은 이름의 `security invoker` 래퍼(`select private.<이름>(...)`)만 둔다(Supabase 린트 0028/0029 대응, Task 008). 테이블·함수는 `public.`·`private.`, 확장 함수는 `extensions.`처럼 스키마를 붙여 참조한다. 첫 줄에서 `auth.uid()`로 로그인·권한을 확인한다 |
+| 함수 권한    | 모든 함수에 `revoke execute ... from public, anon, authenticated`를 먼저 적용한다. 그다음 클라이언트 RPC의 public 래퍼와 private 구현, RLS 헬퍼에만 `grant execute ... to authenticated`(초대 미리보기는 `anon`도)를 준다. 내부 함수는 grant하지 않는다. `private` 스키마는 `usage`만 anon·authenticated에 준다                                                                              |
+| RPC 인자     | plpgsql에서 컬럼명과 충돌하지 않게 `p_` 접두를 붙인다(`p_group_id`). 이름은 Zod DTO 필드를 snake_case로 바꾼 것과 맞춘다(`groupId` → `p_group_id`)                                                                                                                                                                                                                                           |
+| RLS          | 모든 테이블에 `enable row level security`. 정책 안의 `auth.uid()`는 `(select auth.uid())`로 감싸 행마다 다시 평가하지 않게 한다. 반복되는 판정은 헬퍼 함수(§6.1)로 뺀다                                                                                                                                                                                                                      |
+| 동시성       | RSVP·대기자 승급·카풀 좌석·정산 재계산은 RLS로 직접 쓰기를 막고 RPC 안에서만 처리한다. 대상 `events`/`carpools` 행을 `select ... for update`로 잠근 뒤 검증하고 한 트랜잭션으로 반영한다                                                                                                                                                                                                     |
+| 마이그레이션 | `supabase/migrations/<timestamp>_<설명>.sql` 파일로 남기고 같은 내용을 MCP `apply_migration`으로 반영한다. 그 뒤 `get_advisors` 확인 → `generate_typescript_types` 순서로 진행한다                                                                                                                                                                                                           |
 
 ## 2. ERD
 
@@ -208,15 +208,15 @@ erDiagram
 
 ### 3.5 group_invites (Task 008)
 
-| 컬럼       | 타입        | NULL | 기본값  | 비고                                         |
-| ---------- | ----------- | ---- | ------- | -------------------------------------------- |
-| id         | uuid        | N    | gen     | PK                                           |
-| group_id   | uuid        | N    |         | → `groups(id)` cascade                       |
-| token      | text        | N    | 아래 식 | unique                                       |
-| created_by | uuid        | N    |         | → `profiles(id)` restrict                    |
-| expires_at | timestamptz | Y    |         | null이면 무기한. 만료 기간 **확정 필요**(D8) |
-| revoked_at | timestamptz | Y    |         | 재발급으로 무효화된 시각                     |
-| created_at | timestamptz | N    | now()   | 추가                                         |
+| 컬럼       | 타입        | NULL | 기본값  | 비고                             |
+| ---------- | ----------- | ---- | ------- | -------------------------------- |
+| id         | uuid        | N    | gen     | PK                               |
+| group_id   | uuid        | N    |         | → `groups(id)` cascade           |
+| token      | text        | N    | 아래 식 | unique                           |
+| created_by | uuid        | N    |         | → `profiles(id)` restrict        |
+| expires_at | timestamptz | Y    |         | null이면 무기한(D8 확정: 무기한) |
+| revoked_at | timestamptz | Y    |         | 재발급으로 무효화된 시각         |
+| created_at | timestamptz | N    | now()   | 추가                             |
 
 - 토큰 기본값은 `translate(encode(extensions.gen_random_bytes(24), 'base64'), '+/', '-_')`다. 24바이트라서 패딩 없이 base64url 32자가 나온다. `INVITE_TOKEN_PATTERN`(`/^[A-Za-z0-9_-]{16,64}$/`, `lib/validations/invite.ts`)을 만족한다.
 - "활성 초대"는 `revoked_at is null`인 행이다. 기한이 지났는지는 `expires_at`으로 따로 판정한다. 만료된 초대도 재발급 전까지는 활성 행으로 남는다.
@@ -429,9 +429,9 @@ erDiagram
 
 ## 6. 함수·RPC
 
-### 6.1 RLS 헬퍼 (stable, security definer)
+### 6.1 RLS 헬퍼 (stable, security definer, `private` 스키마)
 
-RLS 정책 안에서 다른 테이블을 조회할 때 재귀를 피하고 재사용하기 위한 함수다. `security definer`라서 RLS를 거치지 않으므로 반환은 boolean만 한다. 정책에서 쓰려면 `authenticated`에 실행 권한이 필요하다.
+RLS 정책 안에서 다른 테이블을 조회할 때 재귀를 피하고 재사용하기 위한 함수다. 정책에서는 `private.is_group_member(...)`처럼 스키마를 붙여 부른다. `security definer`라서 RLS를 거치지 않으므로 반환은 boolean만 한다. 정책에서 쓰려면 `authenticated`에 실행 권한이 필요하다.
 
 | 함수                                 | 반환    | 판정                                                                           | grant         | Task |
 | ------------------------------------ | ------- | ------------------------------------------------------------------------------ | ------------- | ---- |
@@ -443,7 +443,7 @@ RLS 정책 안에서 다른 테이블을 조회할 때 재귀를 피하고 재�
 
 ### 6.2 클라이언트 RPC
 
-모두 `security definer`, `set search_path = ''`, `volatile`이다. 첫 줄에서 `auth.uid()`가 null이면 `UNAUTHENTICATED` 에러를 낸다(초대 미리보기는 예외). grant는 따로 적지 않았으면 `authenticated`에만 준다.
+구현은 모두 `private` 스키마의 `security definer`, `set search_path = ''`, `volatile` 함수이고, 클라이언트는 `public`의 같은 이름 `security invoker` 래퍼를 `supabase.rpc('<이름>')`으로 부른다(§1). 첫 줄에서 `auth.uid()`가 null이면 `UNAUTHENTICATED` 에러를 낸다(초대 미리보기는 예외). grant는 따로 적지 않았으면 `authenticated`에만 준다.
 
 | 함수(시그니처)                                                                                                                                   | 반환                                                                             | 잠금 행                    | 검증·처리                                                                                                                                                                                                | Task    |
 | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -463,6 +463,11 @@ RLS 정책 안에서 다른 테이블을 조회할 때 재귀를 피하고 재�
 | `mark_transfer_sent(p_transfer_id uuid)`                                                                                                         | `void`                                                                           | 해당 transfer 행           | `from_user_id = auth.uid()`만 가능. `transfer_marked_at = now()`                                                                                                                                         | 026     |
 | `confirm_transfer(p_transfer_id uuid)`                                                                                                           | `void`                                                                           | 해당 transfer 행           | `to_user_id = auth.uid()`만 가능. 송금 표시가 먼저 있어야 함. `confirmed_at = now()`. 확인 취소는 **확정 필요**(D7)                                                                                      | 026     |
 
+- Task 008 구현 메모
+  - 그룹 행을 바꾸는 RPC(`regenerate_invite`, `change_member_role`, `remove_member`)는 `groups` 행을 `for no key update`로 잠근다. 같은 그룹의 변경이 직렬화되고, `accept_invite`의 FK 삽입(`key share`)은 막지 않는다. `accept_invite`는 초대 행을 `for share`로 잠근다.
+  - 같은 역할로 바꾸는 `change_member_role`은 에러 없이 아무것도 하지 않는다.
+  - 에러 판정 순서는 목 액션(`lib/mocks/actions.ts`)과 같다: 대상 없음(NOT_FOUND) → 마지막 owner(CONFLICT) → 권한 위반(FORBIDDEN).
+  - 생성 타입은 `get_invite_preview`의 `group_name`·`group_description`을 `string`으로 표시하지만, 무효·만료면 null이다. repository에서 null로 다룬다.
 - 그룹 수정, 이벤트·공지 생성/수정/삭제, 카풀 등록/수정/삭제, 계좌 upsert는 RPC 없이 RLS 정책(§7)으로 처리한다.
 - 비용 등록 화면의 `CreateExpenseInput`/`UpdateExpenseInput`(`lib/validations/expense.ts`)은 `save_expense` 하나로 들어간다. `createExpense`는 `p_expense_id = null`로 호출한다.
 
@@ -474,6 +479,8 @@ RLS 정책 안에서 다른 테이블을 조회할 때 재귀를 피하고 재�
 | `events_capacity_changed()` 트리거        | `events` after update of capacity      | 정원이 늘면 `promote_waitlist` 호출                                                                                                                                                     | 017  |
 | `carpools_check_seat_count()` 트리거      | `carpools` before update of seat_count | 신청 중 탑승자 수보다 작게 줄이면 에러(`CONFLICT`)                                                                                                                                      | 021  |
 | `recalculate_settlement(p_event_id uuid)` | `save_expense`, `delete_expense`       | Task 025 규칙대로 쌍별 합산 → 상계 → upsert. 금액이 바뀐 행은 `transfer_marked_at`을 초기화. 0원 행은 삭제. 확인된 행은 유지                                                            | 026  |
+| `private.require_auth_uid()`              | 모든 클라이언트 RPC                    | `auth.uid()`를 돌려주고, null이면 `UNAUTHENTICATED`                                                                                                                                     | 008  |
+| `private.sync_group_owner_id(p_group_id)` | `change_member_role`, `remove_member`  | `owner_id` 사용자가 더 이상 owner가 아니면 남은 owner 중 가장 먼저 가입한 사람으로 `groups.owner_id`를 옮긴다                                                                           | 008  |
 | `set_updated_at()` (기존)                 | 각 테이블 `before update`              | `updated_at = now()`                                                                                                                                                                    | -    |
 
 ### 6.4 RPC 에러 → ActionResult 매핑
@@ -522,16 +529,16 @@ RPC는 `raise exception '<CODE>: <메시지>' using errcode = 'P0001'`로 실패
 
 ROADMAP "결정 필요 사항"을 참조만 한다. 이 문서는 권장안 기준으로 설계했다.
 
-| #   | 주제                                   | 권장안(이 문서 기준)                                  | 영향받는 곳                                             | 확정 시점 |
-| --- | -------------------------------------- | ----------------------------------------------------- | ------------------------------------------------------- | --------- |
-| D1  | 멤버 내보내기와 미래 이벤트 RSVP       | 미래 `scheduled` 이벤트 응답을 `not_going`으로 + 승급 | `remove_member`, `promote_waitlist`                     | Task 011  |
-| D2  | 정원 축소 시 초과 참석자               | 강등하지 않고 승급만 멈춤                             | `promote_waitlist`, `events_capacity_changed`           | Task 017  |
-| D3  | 한 이벤트 여러 카풀 동시 탑승          | 이벤트당 1개만(RPC에서 검증)                          | `request_carpool_seat`                                  | Task 021  |
-| D4  | RSVP 변경 시 카풀                      | 운전자 불참 → 카풀 삭제, 탑승자 불참 → 자동 취소      | `respond_rsvp`(카풀 정리 추가 여부)                     | Task 022  |
-| D5  | 조정 항목(음수) 분배                   | 절댓값으로 나눈 뒤 부호를 붙임, 나머지는 결제자       | `save_expense`, `lib/settlement/split.ts`               | Task 025  |
-| D6  | 비용 등록·수정 권한                    | 등록은 참석자 누구나, 수정·삭제는 등록자·결제자·admin | `save_expense`, `delete_expense`, `expenses.created_by` | Task 026  |
-| D7  | 입금 확인 취소                         | 받는 사람이 취소 가능, 취소 시 잠금 재평가            | `confirm_transfer`(취소 RPC 추가 여부)                  | Task 029  |
-| D8  | 초대 링크 만료 기간 (이 문서에서 추가) | 무기한(`expires_at = null`), 재발급으로만 무효화      | `create_group`, `regenerate_invite`                     | Task 008  |
+| #   | 주제                                   | 권장안(이 문서 기준)                                                 | 영향받는 곳                                             | 확정 시점 |
+| --- | -------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------- | --------- |
+| D1  | 멤버 내보내기와 미래 이벤트 RSVP       | 미래 `scheduled` 이벤트 응답을 `not_going`으로 + 승급                | `remove_member`, `promote_waitlist`                     | Task 011  |
+| D2  | 정원 축소 시 초과 참석자               | 강등하지 않고 승급만 멈춤                                            | `promote_waitlist`, `events_capacity_changed`           | Task 017  |
+| D3  | 한 이벤트 여러 카풀 동시 탑승          | 이벤트당 1개만(RPC에서 검증)                                         | `request_carpool_seat`                                  | Task 021  |
+| D4  | RSVP 변경 시 카풀                      | 운전자 불참 → 카풀 삭제, 탑승자 불참 → 자동 취소                     | `respond_rsvp`(카풀 정리 추가 여부)                     | Task 022  |
+| D5  | 조정 항목(음수) 분배                   | 절댓값으로 나눈 뒤 부호를 붙임, 나머지는 결제자                      | `save_expense`, `lib/settlement/split.ts`               | Task 025  |
+| D6  | 비용 등록·수정 권한                    | 등록은 참석자 누구나, 수정·삭제는 등록자·결제자·admin                | `save_expense`, `delete_expense`, `expenses.created_by` | Task 026  |
+| D7  | 입금 확인 취소                         | 받는 사람이 취소 가능, 취소 시 잠금 재평가                           | `confirm_transfer`(취소 RPC 추가 여부)                  | Task 029  |
+| D8  | 초대 링크 만료 기간 (이 문서에서 추가) | **확정(Task 008)**: 무기한(`expires_at = null`), 재발급으로만 무효화 | `create_group`, `regenerate_invite`                     | Task 008  |
 
 ## 9. PRD 매핑 체크리스트
 
