@@ -32,6 +32,11 @@ export type ActionResult<T> =
   { ok: true; data: T } | { ok: false; error: ActionError };
 
 /**
+ * useActionState로 쓰는 Server Action의 상태. 첫 제출 전에는 null이다.
+ */
+export type ActionState<T = null> = ActionResult<T> | null;
+
+/**
  * 성공 응답을 만든다.
  */
 export function ok<T>(data: T): ActionResult<T> {
