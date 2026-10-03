@@ -140,14 +140,14 @@
   - [x] 다크 모드(`theme-switcher.tsx`) 유지, 터치 영역 44px 이상, 활성 탭 `aria-current`
   - 완료 조건: 360px 폭에서 가로 스크롤 없이 모든 탭이 보이고, 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다
 
-- **Task 004: 도메인 타입·Zod 스키마·레이어 구조 및 DB 스키마 설계**
-  - 규모: M | 기능 ID: 전체 | 의존: Task 001
-  - [ ] `zod` 설치, `lib/validations/*.ts`에 그룹·초대·이벤트·RSVP·공지·카풀·비용·계좌 입력 스키마 정의
-  - [ ] `lib/types/domain.ts`: PRD 데이터 모델 기준 도메인 타입과 상태 enum(`GroupRole`, `EventStatus`, `RsvpStatus`, `CarpoolRiderStatus`) 정의. DB 타입 생성 후에는 `Database['public']['Tables']` 기반으로 연결
-  - [ ] `lib/types/action-result.ts`(`ActionResult<T>`, 에러 코드 목록), `lib/logger.ts`(레벨별 로거, pino 등 검토) 작성
-  - [ ] `lib/services/`, `lib/repositories/` 디렉토리와 작성 규칙(README 주석) 마련
-  - [ ] `lib/mocks/`에 Phase 1~4 UI용 더미 데이터 생성기 작성(도메인 타입 준수)
-  - [ ] `docs/db-schema.md`에 전체 ERD, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 목록과 시그니처 설계(구현은 각 Phase에서)
+- **Task 004: 도메인 타입·Zod 스키마·레이어 구조 및 DB 스키마 설계** ✅ - 완료
+  - 규모: M | 기능 ID: 전체 | 의존: Task 001 | 작업 파일: `tasks/004-domain-foundation.md`
+  - [x] `zod` 설치, `lib/validations/*.ts`에 그룹·초대·이벤트·RSVP·공지·카풀·비용·계좌 입력 스키마 정의
+  - [x] `lib/types/domain.ts`: PRD 데이터 모델 기준 도메인 타입과 상태 enum(`GroupRole`, `EventStatus`, `RsvpStatus`, `CarpoolRiderStatus`) 정의. DB 타입 생성 후에는 `Database['public']['Tables']` 기반으로 연결
+  - [x] `lib/types/action-result.ts`(`ActionResult<T>`, 에러 코드 목록), `lib/logger.ts`(레벨별 로거, 의존성 없는 자체 구현으로 결정) 작성
+  - [x] `lib/services/`, `lib/repositories/` 디렉토리와 작성 규칙(README 주석) 마련
+  - [x] `lib/mocks/`에 Phase 1~4 UI용 더미 데이터 생성기 작성(도메인 타입 준수)
+  - [x] `docs/db-schema.md`에 전체 ERD, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 목록과 시그니처 설계(구현은 각 Phase에서)
   - 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고, DB 설계 문서에 PRD의 12개 테이블과 제약이 빠짐없이 매핑된다
 
 - **Task 005: 테스트 러너 도입 및 CI 연결**
