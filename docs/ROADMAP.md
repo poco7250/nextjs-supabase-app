@@ -193,18 +193,18 @@
   - [x] (3) `generate_typescript_types`로 타입 재생성
   - 완료 조건: 비멤버 JWT로 `groups`/`group_members` 조회 시 0행, anon이 `get_invite_preview`로 그룹명·설명 외 컬럼을 얻을 수 없다
 
-- **Task 009: 그룹 생성/수정 및 대시보드 연동**
+- **Task 009: 그룹 생성/수정 및 대시보드 연동** ✅ - 완료
   - 규모: M | 기능 ID: F001, F022 | 의존: Task 007, 008
-  - [ ] `lib/repositories/group-repository.ts`, `lib/services/group-service.ts`, `app/(app)/groups/actions.ts`(Server Action) 구현
-  - [ ] 그룹 생성 → `create_group` RPC → 그룹 홈으로 리다이렉트
-  - [ ] 그룹 설정에서 그룹명/설명 수정(admin 이상), 비관리자가 URL로 접근하면 그룹 홈으로 리다이렉트
-  - [ ] `groups/[groupId]/layout.tsx`에서 멤버 여부와 역할을 조회해 비멤버는 `notFound()`, 역할을 하단 탭에 주입
-  - [ ] 대시보드 그룹 목록을 실데이터로 교체(다음 이벤트 요약은 Task 015에서 연결, 그 전에는 "예정 이벤트 없음")
+  - [x] `lib/repositories/group-repository.ts`, `lib/services/group-service.ts`, `app/(app)/groups/actions.ts`(Server Action) 구현
+  - [x] 그룹 생성 → `create_group` RPC → 그룹 홈으로 리다이렉트
+  - [x] 그룹 설정에서 그룹명/설명 수정(admin 이상), 비관리자가 URL로 접근하면 그룹 홈으로 리다이렉트
+  - [x] `groups/[groupId]/layout.tsx`에서 멤버 여부와 역할을 조회해 비멤버는 `notFound()`, 역할을 하단 탭에 주입
+  - [x] 대시보드 그룹 목록을 실데이터로 교체(다음 이벤트 요약은 Task 015에서 연결, 그 전에는 "예정 이벤트 없음")
   - 테스트 체크리스트 (Playwright MCP)
-    - [ ] 그룹 생성 후 대시보드에 owner 배지와 함께 표시
-    - [ ] 빈 그룹명·길이 초과 입력 시 Zod 에러 메시지 표시
-    - [ ] member 계정으로 `/groups/[id]/settings` 직접 접근 시 차단
-    - [ ] 비멤버 계정으로 그룹 URL 접근 시 404
+    - [x] 그룹 생성 후 대시보드에 owner 배지와 함께 표시
+    - [x] 빈 그룹명·길이 초과 입력 시 Zod 에러 메시지 표시
+    - [x] member 계정으로 `/groups/[id]/settings` 직접 접근 시 차단
+    - [x] 비멤버 계정으로 그룹 URL 접근 시 404
   - 완료 조건: 위 시나리오 전부 통과
 
 - **Task 010: 초대 링크 발급/재발급 및 초대 가입 플로우 구현**

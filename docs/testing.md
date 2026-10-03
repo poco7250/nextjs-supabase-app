@@ -98,6 +98,8 @@ E2E_MEMBER_PASSWORD=
 | 6    | Task 022    | 참석 확정자 중 1명이 카풀 등록 → 다른 참석자가 탑승 신청                                     |
 | 7    | Task 028    | 비용 항목 등록(10,000원, 3명 분담) → 정산 요약 확인                                          |
 
+- 현재 상태(2026-10-03, Task 009): 1단계 완료. owner 계정의 "E2E 테스트 그룹"에 member 계정이 `accept_invite` RPC로 가입해 있다. admin 계정은 아직 비멤버다.
+- E2E 셀렉터: Next 16은 이전에 방문한 화면을 숨긴 채 DOM에 남긴다. 여러 화면에 같은 요소(`button[type="submit"]`, `#group-name` 등)가 있으면 `:visible`로 한정한다.
 - 초기화: 테스트 그룹을 지우면 하위 데이터가 cascade로 함께 지워진다(`docs/db-schema.md` §3.0). 그룹 삭제 화면이 없으므로 MCP `execute_sql`로 `delete from public.groups where name = 'E2E 테스트 그룹'`을 실행한다(실행 전 대상 확인).
 - 더미 데이터(`lib/mocks/`)는 UI Task용이며 DB 시드에 쓰지 않는다.
 
