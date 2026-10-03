@@ -1,5 +1,7 @@
 "use client";
 
+import { DEFAULT_AUTH_REDIRECT } from "@/lib/constants/routes";
+import { logger } from "@/lib/logger";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -47,7 +49,11 @@ export function OrDivider() {
  * 구글 OAuth 로그인 버튼. 첫 로그인이면 계정이 자동으로 생성된다.
  * 성공하면 /auth/callback에서 세션을 교환한 뒤 next 경로로 이동한다.
  */
-export function GoogleLoginButton({ next = "/protected" }: { next?: string }) {
+export function GoogleLoginButton({
+  next = DEFAULT_AUTH_REDIRECT,
+}: {
+  next?: string;
+}) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,7 +71,7 @@ export function GoogleLoginButton({ next = "/protected" }: { next?: string }) {
       options: { redirectTo: redirectTo.toString() },
     });
     if (error) {
-      console.error("[google-login] OAuth 시작 실패:", error.message);
+      logger.error("google-login", "OAuth 시작 실패", error.message);
       setError("Could not start Google sign-in. Please try again.");
       setIsLoading(false);
     }

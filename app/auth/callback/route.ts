@@ -1,7 +1,7 @@
+import { DEFAULT_AUTH_REDIRECT } from "@/lib/constants/routes";
+import { logger } from "@/lib/logger";
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse, type NextRequest } from "next/server";
-
-const defaultNext = "/protected";
 
 /**
  * 리다이렉트 대상 경로를 검증한다.
@@ -9,7 +9,7 @@ const defaultNext = "/protected";
  */
 function getSafeNext(next: string | null): string {
   if (!next || !next.startsWith("/") || next.startsWith("//")) {
-    return defaultNext;
+    return DEFAULT_AUTH_REDIRECT;
   }
   return next;
 }
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   if (error) {
-    console.error("[auth/callback] 세션 교환 실패:", error.message);
+    logger.error("auth/callback", "세션 교환 실패", error.message);
     return redirectToError(origin, "로그인 처리 중 문제가 발생했어요.");
   }
 

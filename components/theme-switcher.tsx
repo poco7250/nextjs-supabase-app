@@ -15,7 +15,10 @@ import { useSyncExternalStore } from "react";
 /** 구독할 외부 상태가 없으므로 아무것도 하지 않는 구독 함수 */
 const subscribe = () => () => {};
 
-const ThemeSwitcher = () => {
+/**
+ * 라이트/다크/시스템 테마 선택 메뉴. className으로 트리거 버튼 크기를 조절한다.
+ */
+const ThemeSwitcher = ({ className }: { className?: string }) => {
   // 서버/하이드레이션 시점엔 false, 클라이언트에선 true → effect 없이 hydration mismatch 방지
   const mounted = useSyncExternalStore(
     subscribe,
@@ -33,7 +36,12 @@ const ThemeSwitcher = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size={"sm"}>
+        <Button
+          variant="ghost"
+          size={"sm"}
+          className={className}
+          aria-label="테마 변경"
+        >
           {theme === "light" ? (
             <Sun
               key="light"

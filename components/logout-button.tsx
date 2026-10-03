@@ -1,17 +1,22 @@
 "use client";
 
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useLogout } from "@/hooks/use-logout";
+import { LogOut } from "lucide-react";
+import type { ComponentProps } from "react";
 
-export function LogoutButton() {
-  const router = useRouter();
+/**
+ * 로그아웃 버튼. 로그아웃 후 랜딩 페이지로 이동한다.
+ */
+export function LogoutButton(
+  props: Omit<ComponentProps<typeof Button>, "onClick">,
+) {
+  const logout = useLogout();
 
-  const logout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/auth/login");
-  };
-
-  return <Button onClick={logout}>Logout</Button>;
+  return (
+    <Button onClick={logout} {...props}>
+      <LogOut aria-hidden />
+      로그아웃
+    </Button>
+  );
 }

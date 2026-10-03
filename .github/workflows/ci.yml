@@ -25,3 +25,5 @@ jobs:
         run: npm run lint -- --max-warnings=0
       - name: 포맷 검사
         run: npm run format:check
+      - name: 테스트
+        run: npm run test

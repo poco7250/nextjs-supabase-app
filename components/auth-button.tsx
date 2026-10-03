@@ -1,28 +1,31 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
+import { routes } from "@/lib/constants/routes";
+import { createClient } from "@/lib/supabase/server";
 
+/**
+ * 랜딩 상단의 인증 영역. 로그인 상태면 내 그룹 링크와 로그아웃, 아니면 로그인/회원가입 버튼을 보여준다.
+ * 쿠키를 읽으므로 Suspense 안에서 렌더한다.
+ */
 export async function AuthButton() {
   const supabase = await createClient();
-
-  // You can also use getUser() which will be slower.
   const { data } = await supabase.auth.getClaims();
 
-  const user = data?.claims;
-
-  return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {user.email}!
-      <LogoutButton />
+  return data?.claims ? (
+    <div className="flex items-center gap-2">
+      <Button asChild size="sm" variant="outline">
+        <Link href={routes.dashboard}>내 그룹</Link>
+      </Button>
+      <LogoutButton size="sm" variant="ghost" />
     </div>
   ) : (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
-        <Link href="/auth/login">Sign in</Link>
+      <Button asChild size="sm" variant="outline">
+        <Link href={routes.login}>로그인</Link>
       </Button>
-      <Button asChild size="sm" variant={"default"}>
-        <Link href="/auth/sign-up">Sign up</Link>
+      <Button asChild size="sm">
+        <Link href={routes.signUp}>회원가입</Link>
       </Button>
     </div>
   );

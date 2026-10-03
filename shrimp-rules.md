@@ -45,7 +45,7 @@
 - 코드를 쓰기 전에 `node_modules/next/dist/docs/`에서 해당 API 문서를 확인한다. 학습 데이터에 있는 Next 13~15 방식을 그대로 쓰지 않는다.
 - `middleware.ts`를 만들지 않는다. 요청 가로채기는 루트 `proxy.ts`의 `proxy()`에서 처리한다.
 - `cacheComponents: true` 환경이다. 쿠키, 세션, `createClient()`(server)를 쓰는 async 컴포넌트는 반드시 `<Suspense>` 안에 둔다.
-  - 해도 됨: 페이지는 동기 컴포넌트로 두고, 안쪽의 `async function XxxData()`를 `<Suspense>`로 감싼다(`app/instruments/page.tsx`, `app/protected/page.tsx`).
+  - 해도 됨: 페이지는 동기 컴포넌트로 두고, 안쪽의 `async function XxxData()`를 `<Suspense>`로 감싼다(예: `app/page.tsx`의 `<Suspense><AuthButton /></Suspense>`).
   - 하면 안 됨: 페이지 최상위에서 바로 `await createClient()`를 호출하고 Suspense 없이 렌더링한다.
 - 사용자별 데이터를 캐시되는 영역(`"use cache"`)에 넣지 않는다.
 
@@ -67,7 +67,7 @@
 
 - ⚠️ `createServerClient(...)`와 `supabase.auth.getClaims()` 사이에 코드를 넣지 않는다.
 - ⚠️ `supabaseResponse`를 그대로 반환한다. 새 응답을 만들어야 하면 쿠키를 복사한다.
-- 공개 경로 화이트리스트는 `/`, `/login*`, `/auth*`, `/instruments`, `/instruments/*`이며 `if` 조건에 하드코딩되어 있다. **비로그인 사용자가 접근해야 하는 페이지(예: 초대 수락)를 추가하면 이 조건에도 경로를 추가한다.**
+- 공개 경로 화이트리스트는 `/`, `/login*`, `/auth*`이며 `if` 조건에 하드코딩되어 있다. **비로그인 사용자가 접근해야 하는 페이지(예: 초대 수락)를 추가하면 이 조건에도 경로를 추가한다.**
 
 ### DB 작업 순서 (순서 변경 금지)
 
@@ -104,8 +104,8 @@ type ActionResult<T> =
 ### 인증 리다이렉트
 
 - `next` 파라미터를 받는 곳에서는 오픈 리다이렉트를 막는다. `/`로 시작하고 `//`로 시작하지 않는 값만 허용한다(`app/auth/callback/route.ts`의 `getSafeNext`). 새로 만들 때는 이 함수를 공용 유틸로 옮겨서 재사용한다.
-- 로그인 후 이동 경로 `/protected`가 아래 파일에 하드코딩되어 있다. 목적지를 바꾸면 **전부 같이** 바꾼다:
-  - `components/login-form.tsx`, `components/sign-up-form.tsx`, `components/update-password-form.tsx`, `components/google-login-button.tsx`, `app/auth/callback/route.ts`
+- 로그인 후 기본 목적지는 `lib/constants/routes.ts`의 `DEFAULT_AUTH_REDIRECT`다. 목적지를 바꿀 때는 이 상수만 바꾼다. 컴포넌트에 경로 문자열을 하드코딩하지 않는다.
+  - 사용처: `components/login-form.tsx`, `components/sign-up-form.tsx`, `components/update-password-form.tsx`, `components/google-login-button.tsx`, `app/auth/callback/route.ts`
 
 ### UI
 
@@ -128,7 +128,7 @@ type ActionResult<T> =
 | ----------------------------- | ------------------------------------------------------------------------------- |
 | DB 스키마(테이블, 컬럼, 함수) | 마이그레이션 SQL 파일 + MCP 반영 + `database.types.ts` 재생성                   |
 | 비로그인 공개 페이지 추가     | `lib/supabase/proxy.ts`의 공개 경로 조건                                        |
-| 로그인 후 목적지              | 위 인증 리다이렉트 파일 5개                                                     |
+| 로그인 후 목적지              | `lib/constants/routes.ts`의 `DEFAULT_AUTH_REDIRECT`만 변경                      |
 | 새 npm 스크립트나 도구 추가   | `package.json` + `CLAUDE.md`의 명령어 섹션(필요하면 `.github/workflows/ci.yml`) |
 | 아키텍처나 규칙 변경          | `CLAUDE.md` + 이 문서(`shrimp-rules.md`)                                        |
 | Task 완료                     | `tasks/XXX-*.md`의 체크박스와 변경 요약 + `docs/ROADMAP.md`의 ✅ 표시           |
@@ -156,7 +156,7 @@ type ActionResult<T> =
   - 재사용 UI → `components/`, 한 라우트에서만 쓰는 UI → 해당 `app/` 경로의 `_components/`
 - 정산 계산은 SQL RPC 결과를 정답으로 둔다. TS 구현은 미리보기용이며, SQL과 결과가 다르면 SQL을 기준으로 맞춘다.
 - 요청이 PRD의 "MVP 이후 기능(제외)"에 해당하면 구현하기 전에 사용자에게 알린다.
-- 스타터 잔재(`components/tutorial`, `hero.tsx`, `deploy-button.tsx`, `app/protected` 등)는 ROADMAP Phase 0 정리 대상이다. 새 기능에서 의존하지 않는다.
+- 서비스명·소개 문구가 필요하면 `lib/constants/site.ts`의 `siteConfig`를 쓴다. 문자열을 새로 하드코딩하지 않는다.
 
 ## 금지 사항
 

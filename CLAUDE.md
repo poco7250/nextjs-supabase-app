@@ -18,16 +18,23 @@ npm run lint        # eslint . (flat config: core-web-vitals + typescript + pret
 npm run lint:fix    # 자동 수정
 npm run format      # prettier --write . (Tailwind 클래스 자동 정렬 포함)
 npm run typecheck   # next typegen && tsc --noEmit
-npm run check       # typecheck + lint + format:check (작업 마무리 전 실행)
+npm run check       # typecheck + lint + format:check + test (작업 마무리 전 실행)
 ```
 
-테스트 러너는 아직 설정되어 있지 않다.
+```bash
+npm run test           # Vitest 단위 테스트 (CI와 같음)
+npm run test:watch     # 변경 감지 모드
+npm run test:coverage  # 커버리지 리포트
+```
+
+- 단위 테스트는 소스 옆 `*.test.ts`에 두고 `describe`/`it`/`expect`를 `vitest`에서 import한다. 설정은 `vitest.config.mts`.
+- 테스트 규칙, E2E 테스트 계정(`.env.test.local`), 시드 절차는 `docs/testing.md`를 따른다.
 
 ### 품질 게이트
 
 - **Claude Code 훅**: `.claude/settings.json`의 PostToolUse 훅(`.claude/hooks/format-lint-hook.sh`)이 Edit/Write 직후 해당 파일에 Prettier + `eslint --fix`를 돌린다. 자동 수정 안 되는 에러가 남으면 피드백이 오니 바로 고친다.
 - **pre-commit**: husky + lint-staged로 스테이징된 파일을 린트/포맷하고, 전체 `typecheck`를 실행한다. `--no-verify`로 우회하지 않는다.
-- **CI**: `.github/workflows/ci.yml`에서 PR마다 typecheck / lint(`--max-warnings=0`) / format:check.
+- **CI**: `.github/workflows/ci.yml`에서 PR마다 typecheck / lint(`--max-warnings=0`) / format:check / test.
 - `console.log`는 ESLint 경고 대상이다(`console.warn`/`error`만 허용).
 
 환경 변수(`.env.local`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. 값이 없으면 `lib/utils.ts`의 `hasEnvVars`가 false가 되어 proxy 인증 검사를 건너뛰고 UI에 `EnvVarWarning`이 표시된다.
@@ -46,19 +53,20 @@ npm run check       # typecheck + lint + format:check (작업 마무리 전 실�
 
 Next.js 16에서는 middleware 대신 루트의 `proxy.ts`가 `proxy()` 함수를 export한다. 이 함수가 `lib/supabase/proxy.ts`의 `updateSession()`을 호출한다.
 
-- 공개 경로 화이트리스트는 `updateSession()` 안에 하드코딩되어 있다: `/`, `/login*`, `/auth*`, `/instruments`, `/instruments/*`. 그 외 경로는 비로그인 시 `/auth/login`으로 리다이렉트된다. **새 공개 페이지를 추가하면 여기에 경로를 추가해야 한다.**
+- 공개 경로 화이트리스트는 `updateSession()` 안에 하드코딩되어 있다: `/`, `/login*`, `/auth*`. 그 외 경로는 비로그인 시 `/auth/login`으로 리다이렉트된다. **새 공개 페이지를 추가하면 여기에 경로를 추가해야 한다.**
 - `createServerClient`와 `supabase.auth.getClaims()` 사이에 코드를 넣지 말고, `supabaseResponse` 객체를 그대로 반환해야 한다(쿠키 동기화가 깨지면 사용자가 랜덤하게 로그아웃됨).
 
 ### 인증 흐름
 
 - 인증 UI는 `components/*-form.tsx`(Client Component, 브라우저 클라이언트 사용)와 `app/auth/*` 페이지로 구성된다.
 - 이메일 확인/비밀번호 재설정 링크는 `app/auth/confirm/route.ts`에서 `verifyOtp({ token_hash, type })`로 처리하고 `next` 파라미터로 리다이렉트한다.
-- `app/protected/`는 로그인이 필요한 영역 예시.
+- 로그인·가입·비밀번호 변경 후 기본 목적지는 `lib/constants/routes.ts`의 `DEFAULT_AUTH_REDIRECT`(`/dashboard`)다. 경로 문자열을 하드코딩하지 않는다.
+- 로그인이 필요한 화면은 `app/(app)/` route group 아래에 둔다. 서비스명·소개 문구는 `lib/constants/site.ts`에서 관리한다.
 
 ### 데이터베이스
 
-- 마이그레이션: `supabase/migrations/*.sql`. 현재 `profiles` 테이블(auth.users와 1:1, RLS 적용)과 트리거들(`handle_new_user`로 가입 시 프로필 자동 생성, 이메일 변경 동기화, `updated_at` 자동 갱신)이 정의되어 있다. 트리거 함수는 `security definer` + `set search_path = ''`이고 RPC 실행 권한을 revoke한다 — 새 함수도 같은 패턴을 따른다.
-- 타입: `lib/supabase/database.types.ts`는 Supabase에서 생성한 파일이다(현재 `instruments`, `profiles`). 스키마를 바꾸면 Supabase MCP의 `generate_typescript_types`로 다시 생성하고, 직접 수정하지 않는다.
+- 마이그레이션: `supabase/migrations/*.sql`. 현재 `profiles` 테이블(auth.users와 1:1, RLS 적용)과 트리거들(`handle_new_user`로 가입 시 프로필 자동 생성, 이메일 변경 동기화, `updated_at` 자동 갱신)이 정의되어 있다. 트리거 함수는 `security definer` + `set search_path = ''`이고 RPC 실행 권한을 revoke한다. Task 008에서 `groups`·`group_members`·`group_invites`와 그룹 RPC를 추가했다. 새 `security definer` 함수(RPC 구현, RLS 헬퍼)는 API 비노출 `private` 스키마에 두고, 클라이언트 RPC는 `public`에 같은 이름의 `security invoker` 래퍼만 둔다(Supabase 린트 0028/0029). 규칙 전체는 `docs/db-schema.md` §1을 따른다.
+- 타입: `lib/supabase/database.types.ts`는 Supabase에서 생성한 파일이다(현재 `profiles`, `groups`, `group_members`, `group_invites`와 그룹 RPC). 스키마를 바꾸면 Supabase MCP의 `generate_typescript_types`로 다시 생성하고, 직접 수정하지 않는다.
 - Supabase 프로젝트는 `.mcp.json`의 supabase MCP 서버(project_ref 지정)로 연결되어 있다. 스키마 변경은 마이그레이션 파일로 남긴다.
 
 ### 경로 별칭

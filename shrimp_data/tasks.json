@@ -5,10 +5,10 @@
       "name": "경로 상수 도입 및 인증 후 목적지를 /dashboard로 변경",
       "description": "lib/constants/routes.ts를 만들어 routes 객체와 DEFAULT_AUTH_REDIRECT(/dashboard)를 정의하고, /protected 하드코딩 5곳을 이 상수로 교체한다. 로그인 후 404가 나지 않도록 app/(app)/dashboard/page.tsx 빈 페이지를 만든다.",
       "notes": "route group (app)은 layout 없이도 URL에서 생략된다(node_modules/next/dist/docs/01-app/01-getting-started/02-project-structure.md). Task 002가 같은 위치에 layout.tsx를 추가한다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-29T14:59:38.693Z",
       "relatedFiles": [
         {
           "path": "lib/constants/routes.ts",
@@ -58,21 +58,23 @@
       ],
       "implementationGuide": "1) lib/constants/routes.ts: export const routes = { home: '/', dashboard: '/dashboard', login: '/auth/login' } as const; export const DEFAULT_AUTH_REDIRECT = routes.dashboard; 한국어 JSDoc\\n2) components/login-form.tsx:43, components/update-password-form.tsx:37 router.push(DEFAULT_AUTH_REDIRECT)\\n3) components/sign-up-form.tsx:48 emailRedirectTo = `${window.location.origin}${DEFAULT_AUTH_REDIRECT}` (confirm?next= 경유는 Task 010 범위라 바꾸지 않는다)\\n4) components/google-login-button.tsx:50 next 기본값 = DEFAULT_AUTH_REDIRECT (prop 시그니처 유지)\\n5) app/auth/callback/route.ts:4 defaultNext 제거, getSafeNext fallback에 DEFAULT_AUTH_REDIRECT 사용\\n6) app/(app)/dashboard/page.tsx: 제목 '내 그룹'만 있는 동기 서버 컴포넌트. 공개 경로에 추가하지 않는다(proxy가 보호)",
       "verificationCriteria": "grep -rn '/protected' app components lib 결과가 0건이다. /dashboard가 로그인 상태에서 렌더되고, 비로그인이면 /auth/login으로 리다이렉트된다. npm run typecheck와 lint가 통과한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "lib/constants/routes.ts(routes, DEFAULT_AUTH_REDIRECT=/dashboard)를 만들고 /protected 하드코딩 5곳(login-form, update-password-form, sign-up-form emailRedirectTo, google-login-button next 기본값, auth/callback getSafeNext fallback)을 이 상수로 교체했다. 스타터 영어 TODO 주석 2줄도 삭제했다. app/(app)/dashboard/page.tsx에 빈 대시보드를 만들었다. 검증: /protected grep 0건, typecheck와 lint(--max-warnings=0) 통과, 비로그인 /dashboard 접근 시 307 → /auth/login, / 200. 미검증: 로그인 상태의 /dashboard 렌더와 실제 로그인 후 이동은 테스트 계정이 필요해서 작업 4의 Playwright E2E로 넘긴다.",
+      "completedAt": "2026-09-29T14:59:38.691Z"
     },
     {
       "id": "73e9494e-58b5-4c66-81e5-fcbfa405a097",
       "name": "스타터 페이지·컴포넌트 삭제, 랜딩 재작성, proxy·메타데이터 정리",
       "description": "app/instruments, app/protected, components/tutorial/, hero.tsx, deploy-button.tsx, next-logo.tsx, supabase-logo.tsx를 삭제한다. 이 파일들을 import하는 app/page.tsx를 최소 한국어 랜딩으로 다시 쓰고, proxy 공개 경로에서 /instruments 조건을 제거하고, app/layout.tsx 메타데이터를 한국어로 바꾸고 lang을 ko로 바꾼다.",
       "notes": "AuthButton은 쿠키를 읽으므로 cacheComponents 환경에서 Suspense 경계를 반드시 유지한다. 서비스명은 PRD에 없으니 확정값을 사용자에게 받는다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "cec180a4-6893-4246-b8a5-c42d9c16493a"
         }
       ],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-30T14:13:58.983Z",
       "relatedFiles": [
         {
           "path": "app/page.tsx",
@@ -109,21 +111,23 @@
       ],
       "implementationGuide": "1) git rm -r app/instruments app/protected components/tutorial components/hero.tsx components/deploy-button.tsx components/next-logo.tsx components/supabase-logo.tsx\\n2) app/page.tsx: nav(서비스명 Link + hasEnvVars ? <Suspense><AuthButton/></Suspense> : <EnvVarWarning/>) + 한 줄 소개 섹션 + footer(ThemeSwitcher). DeployButton, Hero, tutorial import 제거. 카피 완성은 Task 007 범위\\n3) lib/supabase/proxy.ts 55-56줄의 /instruments 조건 두 줄만 삭제. createServerClient~getClaims 구간과 supabaseResponse 반환은 건드리지 않는다\\n4) app/layout.tsx: title '모임 이벤트 관리'(가칭, 사용자 확인 필요), description은 PRD 목적 요약 한국어 문장, <html lang='ko'>. OG 이미지는 Task 032 범위라 그대로 둔다",
       "verificationCriteria": "grep -rnE 'tutorial/|components/hero|deploy-button|next-logo|supabase-logo|instruments' app components lib 결과가 0건이다(database.types.ts 제외). / 페이지가 렌더되고, /instruments에 비로그인으로 접근하면 /auth/login으로 리다이렉트된다. html lang이 ko다. npm run typecheck와 lint가 통과한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "스타터 잔재 12개 파일(app/instruments, app/protected, components/tutorial 5개, hero, deploy-button, next-logo, supabase-logo)을 git rm으로 삭제했다. app/page.tsx는 서비스명 nav(AuthButton은 Suspense 유지, EnvVarWarning) + 소개 섹션 + ThemeSwitcher footer로 재작성했다. 서비스명과 설명은 lib/constants/site.ts의 siteConfig로 분리했다(가칭 '모임 이벤트 관리', 한 곳에서 교체 가능). app/layout.tsx는 메타데이터를 siteConfig로 바꾸고 lang을 ko로 바꿨다. proxy에서 /instruments 조건 두 줄만 삭제했다(getClaims 구간은 건드리지 않음). CLAUDE.md와 shrimp-rules.md의 공개 경로, 리다이렉트 상수, 예시 파일 설명도 동기화했다. 검증: 잔존 참조 grep 0건, typecheck(오래된 .next/dev/types는 dev 재시작으로 재생성)와 lint --max-warnings=0, prettier 통과. / 200(lang=ko, title·description 한국어), /instruments·/protected·/dashboard는 비로그인 시 307 → /auth/login. instruments 타입과 테이블 관련 문서 문구는 다음 작업(DB)에서 처리한다.",
+      "completedAt": "2026-09-30T14:13:58.981Z"
     },
     {
       "id": "73b05d01-4baf-4d3d-81f9-43536f07a3ad",
       "name": "instruments 테이블 drop 마이그레이션 및 DB 타입 재생성",
       "description": "DB 작업 3단계 순서로 instruments 테이블을 제거하고 lib/supabase/database.types.ts를 재생성한다.",
       "notes": "app/instruments 삭제(이전 작업) 뒤에 실행해야 타입 재생성 후 typecheck가 깨지지 않는다. 원격 DB에 바로 반영되고 되돌릴 수 없는 작업이니 실행 전에 사용자 확인을 받는다.",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "73e9494e-58b5-4c66-81e5-fcbfa405a097"
         }
       ],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-09-30T14:25:19.585Z",
       "relatedFiles": [
         {
           "path": "supabase/migrations/20260926000000_create_profiles_table.sql",
@@ -138,14 +142,16 @@
       ],
       "implementationGuide": "0) MCP list_tables로 instruments를 참조하는 FK가 없는지 확인한다(있으면 중단하고 보고. cascade 금지)\\n1) supabase/migrations/<YYYYMMDDHHMMSS>_drop_instruments_table.sql 작성: 한국어 주석 + drop table if exists public.instruments;\\n2) 같은 SQL을 MCP apply_migration(name: drop_instruments_table)으로 반영\\n3) MCP get_advisors(security, performance)로 새 경고가 없는지 확인\\n4) MCP generate_typescript_types 결과로 lib/supabase/database.types.ts 전체를 덮어쓴다(직접 편집 금지)",
       "verificationCriteria": "MCP list_migrations에 drop_instruments_table이 있다. database.types.ts에서 grep instruments 결과가 0건이다. get_advisors에 새 경고가 없다. npm run typecheck가 통과한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "instruments를 참조하는 FK·뷰·함수가 없음을 확인(전용 RLS 정책 1개는 테이블과 함께 삭제)한 뒤 supabase/migrations/20260930232356_drop_instruments_table.sql을 작성하고 apply_migration(drop_instruments_table)으로 원격에 반영. list_migrations에 20260930142410 drop_instruments_table 등록 확인. get_advisors performance 0건, security는 기존 Auth 설정 경고(leaked password protection)만 있고 신규 경고 없음. generate_typescript_types 결과로 database.types.ts를 덮어써 instruments 0건, npm run typecheck 통과. 참고: 로컬 파일 타임스탬프와 원격 버전 번호는 다름(기존 profiles 마이그레이션도 동일한 상황).",
+      "completedAt": "2026-09-30T14:25:19.583Z"
     },
     {
       "id": "60252374-0d43-47d2-87f3-52951e014657",
       "name": "Task 001 최종 검증 및 로드맵 반영",
       "description": "전체 품질 게이트와 로그인 흐름 E2E를 검증하고, tasks/001-starter-cleanup.md(와 000-sample.md) 작업 파일과 ROADMAP 체크를 갱신한다.",
       "notes": "테스트 계정 자격 증명은 사용자에게 받는다(.env 읽기 금지).",
-      "status": "pending",
+      "status": "completed",
       "dependencies": [
         {
           "taskId": "cec180a4-6893-4246-b8a5-c42d9c16493a"
@@ -158,7 +164,7 @@
         }
       ],
       "createdAt": "2026-09-29T14:39:43.805Z",
-      "updatedAt": "2026-09-29T14:39:43.805Z",
+      "updatedAt": "2026-10-01T14:20:26.357Z",
       "relatedFiles": [
         {
           "path": "docs/ROADMAP.md",
@@ -180,7 +186,1078 @@
       ],
       "implementationGuide": "1) npm run check, npm run build\\n2) Playwright MCP: npm run dev → /auth/login에서 테스트 계정으로 로그인 → URL이 /dashboard인지 확인 → 비로그인 상태로 /dashboard 접근 시 /auth/login 리다이렉트 확인 → / 랜딩 렌더와 콘솔 에러 없음 확인\\n3) 구글: google-login-button 기본 next와 callback fallback이 /dashboard인지 코드로 확인하고, 실제 OAuth는 사용자에게 수동 확인을 요청한다\\n4) tasks/000-sample.md, tasks/001-starter-cleanup.md 작성(체크박스, 변경 요약, 테스트 체크리스트)\\n5) /docs:update-roadmap으로 Task 001 ✅ 표시",
       "verificationCriteria": "npm run check와 build가 통과한다. Playwright로 이메일 로그인 후 /dashboard 도착을 확인한다. ROADMAP Task 001의 완료 조건 3개를 모두 충족한다.",
-      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다."
+      "analysisResult": "ROADMAP Task 001: 스타터 잔여물(instruments·protected 페이지, tutorial·hero·deploy-button·logo 컴포넌트, instruments DB 테이블)을 제거하고, 인증 후 목적지를 lib/constants/routes.ts의 DEFAULT_AUTH_REDIRECT(/dashboard)로 일원화하고, 루트 메타데이터를 한국어로 바꾼다. shrimp-rules.md 준수(Next 16 proxy·cacheComponents, DB 3단계 순서, database.types.ts 직접 수정 금지, 한국어 JSDoc, console.log 금지). 완료 조건: 삭제 파일을 가리키는 import가 0건이고, 이메일·구글 로그인 후 /dashboard로 이동하며, database.types.ts에 instruments가 없고, npm run check와 build가 통과한다.",
+      "summary": "2026-10-01 Task 003 E2E 중 실제 로그인 후 /dashboard 도착과 콘솔 에러 없음을 확인했고, 구글 OAuth 시작 시 redirect_to가 /auth/callback?next=/dashboard임도 확인했다. 사용한 로그인 방식(이메일/구글)은 기록되지 않아 구글 로그인 방식별 수동 재확인 1건은 남겼다. tasks/001 갱신, ROADMAP Task 001 ✅.",
+      "completedAt": "2026-10-01T14:20:26.355Z"
+    },
+    {
+      "id": "7dd7429f-2c01-45d4-88d1-bfefd87f96e3",
+      "name": "경로 빌더 확장 및 공용 라우트 상태 컴포넌트 작성",
+      "description": "lib/constants/routes.ts에 정적 경로(profile, newGroup)와 동적 경로 빌더를 추가하고, 세그먼트 상태 파일이 위임할 공용 컴포넌트 3개와 루트 app/not-found.tsx를 만든다.",
+      "notes": "error prop 이름은 16.3에서 stable이 된 retry다(docs 03-file-conventions/error.md). logger가 생기기 전까지는 console.error를 허용한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "73b05d01-4baf-4d3d-81f9-43536f07a3ad"
+        }
+      ],
+      "createdAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-30T14:30:11.478Z",
+      "relatedFiles": [
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "TO_MODIFY",
+          "description": "경로 빌더 추가"
+        },
+        {
+          "path": "components/route-states/segment-loading.tsx",
+          "type": "CREATE",
+          "description": "공용 로딩"
+        },
+        {
+          "path": "components/route-states/segment-error.tsx",
+          "type": "CREATE",
+          "description": "공용 에러"
+        },
+        {
+          "path": "components/route-states/segment-not-found.tsx",
+          "type": "CREATE",
+          "description": "공용 404"
+        },
+        {
+          "path": "app/not-found.tsx",
+          "type": "CREATE",
+          "description": "루트 404"
+        },
+        {
+          "path": "components/ui/button.tsx",
+          "type": "REFERENCE",
+          "description": "재사용"
+        }
+      ],
+      "implementationGuide": "1) routes.ts: 기존 export 유지. 내부 헬퍼 segment(v)=encodeURIComponent(v). routes에 profile:'/profile', newGroup:'/groups/new', invite(token), group(groupId), groupSettings(groupId), groupMembers(groupId), newEvent(groupId), event(groupId,eventId), eventCarpool(groupId,eventId), eventSettlement(groupId,eventId)를 추가하고 각각 한국어 JSDoc\\n2) components/route-states/segment-loading.tsx: 서버 컴포넌트, '불러오는 중...' + aria-busy\\n3) components/route-states/segment-error.tsx: 'use client', props { error: Error & { digest?: string }; retry: () => void }, useEffect에서 console.error('[segment-error]', error.digest ?? error.message), '문제가 발생했어요' + 다시 시도 Button(onClick=retry)\\n4) components/route-states/segment-not-found.tsx: '페이지를 찾을 수 없어요' + Button asChild Link href=routes.dashboard\\n5) app/not-found.tsx: SegmentNotFound 재사용(매칭 안 되는 URL용)",
+      "verificationCriteria": "typecheck와 lint가 통과한다. routes.event('a b','c')가 '/groups/a%20b/events/c'를 반환한다. 존재하지 않는 URL에 접근하면 한국어 404가 표시된다.",
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다.",
+      "summary": "routes.ts에 profile·newGroup 정적 경로와 invite/group/groupSettings/groupMembers/newEvent/event/eventCarpool/eventSettlement 빌더(encodeURIComponent 적용, 한국어 JSDoc)를 추가하고 기존 export는 유지했다. components/route-states에 SegmentLoading(role=status, aria-busy), SegmentError('use client', {error, retry}, digest 기준 console.error), SegmentNotFound(대시보드 링크)를 만들고 app/not-found.tsx에서 재사용했다. 검증: typecheck·lint 통과, routes.event('a b','c') → /groups/a%20b/events/c, /auth/nope에서 HTTP 404와 한국어 404 문구 확인(비로그인 보호 경로는 proxy가 먼저 /auth/login으로 보냄).",
+      "completedAt": "2026-09-30T14:30:11.476Z"
+    },
+    {
+      "id": "19be88dd-0729-4842-820d-ba3df042f958",
+      "name": "(app)·초대 라우트 골격과 세그먼트 상태 파일 생성",
+      "description": "빈 페이지 10개(invite/[token], profile, groups/new, groups/[groupId] 홈·settings·members·events/new, events/[eventId] 상세·carpool·settlement)와 레이아웃 3개((app), groups/[groupId], events/[eventId])를 만들고, 4개 세그먼트((app), groups/[groupId], events/[eventId], invite/[token])에 loading/error/not-found 래퍼를 배치한다.",
+      "notes": "loading.tsx는 같은 세그먼트의 layout을 감싸지 않는다. 그래서 레이아웃에서 params를 await하면 build 오류가 나거나 static shell이 깨진다. invite는 (app) 밖이다. proxy를 수정하지 않는다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "7dd7429f-2c01-45d4-88d1-bfefd87f96e3"
+        }
+      ],
+      "createdAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-09-30T14:31:12.981Z",
+      "relatedFiles": [
+        {
+          "path": "app/(app)/layout.tsx",
+          "type": "CREATE",
+          "description": "로그인 후 공통 레이아웃"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/layout.tsx",
+          "type": "CREATE",
+          "description": "그룹 컨텍스트"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/events/[eventId]/layout.tsx",
+          "type": "CREATE",
+          "description": "이벤트 컨텍스트"
+        },
+        {
+          "path": "app/invite/[token]/page.tsx",
+          "type": "CREATE",
+          "description": "초대 수락"
+        },
+        {
+          "path": "app/(app)/dashboard/page.tsx",
+          "type": "REFERENCE",
+          "description": "기존 빈 페이지 스타일"
+        }
+      ],
+      "implementationGuide": "1) 정적 페이지(profile, groups/new): 동기 컴포넌트, <main><h1>내 프로필</h1></main>\\n2) 동적 페이지: export default async function XxxPage(props: PageProps<'/groups/[groupId]/settings'>) { const { groupId } = await props.params; return <main><h1>그룹 설정</h1><p className=text-muted-foreground>{groupId}</p></main> }\\n3) 레이아웃: (app)/layout.tsx는 children 컨테이너. [groupId]/layout.tsx와 [eventId]/layout.tsx는 LayoutProps를 받고 children만 반환한다. params를 await하지 않으며, 멤버 확인은 Task 009에서 Suspense 안에 넣는다는 JSDoc을 단다\\n4) 세그먼트 상태 래퍼: loading.tsx→<SegmentLoading/>, error.tsx→'use client' + props를 SegmentError로 전달, not-found.tsx→<SegmentNotFound/>\\n5) 페이지 제목: 초대 수락, 내 프로필, 그룹 만들기, 그룹 홈, 그룹 설정, 멤버 관리, 이벤트 만들기, 이벤트 상세, 카풀, 정산",
+      "verificationCriteria": "typecheck와 lint가 통과하고 npm run build에서 cacheComponents 관련 오류가 없다. 레이아웃 파일에 await params가 없다.",
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다.",
+      "summary": "빈 페이지 10개(invite/[token], profile, groups/new, groups/[groupId] 홈·settings·members·events/new, events/[eventId] 상세·carpool·settlement)와 레이아웃 3개((app), groups/[groupId], events/[eventId])를 만들고, 4개 세그먼트((app), groups/[groupId], events/[eventId], invite/[token])에 loading/error/not-found 래퍼를 배치했다. 동적 페이지는 PageProps<route>로 params를 await하고, 레이아웃은 LayoutProps만 받고 params를 await하지 않는다(Task 009/Phase 2 확장 지점은 JSDoc에 적음). error.tsx 기본 export 이름은 전역 Error를 가리지 않게 ErrorBoundary로 지었다. proxy는 수정하지 않았다. 검증: typecheck·lint·prettier 통과, npm run build 성공(동적 경로 전부 Partial Prerender, cacheComponents 오류 없음).",
+      "completedAt": "2026-09-30T14:31:12.979Z"
+    },
+    {
+      "id": "1429f0a4-e456-4ec9-a488-0d1fcc9351b0",
+      "name": "Task 002 전 경로 렌더 검증 및 로드맵 반영",
+      "description": "npm run build와 check를 실행하고, 로그인 세션으로 전체 경로를 순회해 404 없이 렌더되는지 확인한 뒤, tasks/002 작업 파일과 ROADMAP을 갱신한다.",
+      "notes": "테스트 계정은 사용자에게 받는다. /invite/*는 Task 010 전까지 로그인 상태에서만 확인한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "19be88dd-0729-4842-820d-ba3df042f958"
+        },
+        {
+          "taskId": "60252374-0d43-47d2-87f3-52951e014657"
+        }
+      ],
+      "createdAt": "2026-09-29T15:03:06.242Z",
+      "updatedAt": "2026-10-01T14:20:39.786Z",
+      "relatedFiles": [
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 002 체크",
+          "lineStart": 105,
+          "lineEnd": 128
+        },
+        {
+          "path": "tasks/002-route-skeleton.md",
+          "type": "CREATE",
+          "description": "작업 파일"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\\n2) Playwright MCP: 테스트 계정으로 로그인 → routes 빌더로 만든 더미 id(예: g1, e1, t1) 경로 11개를 순회하며 h1 텍스트와 콘솔 에러 없음 확인 → 없는 URL은 한국어 404 확인 → 비로그인 상태로 /groups/g1에 접근하면 /auth/login 리다이렉트 확인\\n3) tasks/002-route-skeleton.md 작성(체크박스, 변경 요약, 테스트 체크리스트)\\n4) /docs:update-roadmap으로 Task 002 ✅",
+      "verificationCriteria": "build와 check가 통과한다. 로그인 상태에서 11개 경로 모두 200으로 제목이 표시된다. ROADMAP Task 002 완료 조건을 충족한다.",
+      "analysisResult": "ROADMAP Task 002: Next 16.3.6 + cacheComponents 환경에서 (app) 영역과 공개 초대 경로의 라우트 골격을 만들고, lib/constants/routes.ts에 경로 빌더를 추가하고, 세그먼트별 loading/error/not-found와 루트 not-found를 배치한다. 규칙: params는 Promise(PageProps/LayoutProps 전역 헬퍼, route group은 키에서 제외). params 접근은 loading.tsx(Suspense) 안에서만. layout에서는 params를 await하지 않는다. error.tsx는 'use client'이고 { error, retry }. not-found.tsx는 props가 없다. proxy는 변경하지 않는다(/invite 공개화는 Task 010). 완료 조건: 모든 경로가 404 없이 렌더되고 npm run build가 통과한다.",
+      "summary": "npm run check·build 통과(동적 경로 모두 ◐). 로그인 상태 360px에서 (app) 10개 경로가 제목과 함께 렌더되고 콘솔 에러 없음을 Task 003 E2E로 확인했다. 비로그인으로 /groups/g1·/invite/abc·없는 경로는 307 → /auth/login. 미확인: 로그인 상태의 /invite/[token] 렌더와 한국어 404(테스트 세션 종료 후라 실행 못 함, Task 010에서 확인). tasks/002-route-skeleton.md 작성, ROADMAP Task 002 ✅.",
+      "completedAt": "2026-10-01T14:20:39.784Z"
+    },
+    {
+      "id": "4f02e55c-b75c-4b32-9af3-102aaf99218b",
+      "name": "shadcn 컴포넌트 추가, Toaster 배치, 로그아웃 훅 정리",
+      "description": "Task 003에 필요한 shadcn/ui 컴포넌트(dialog, alert-dialog, sheet, select, textarea, tabs, avatar, separator, skeleton, sonner, field)를 CLI로 추가하고, app/layout.tsx에 sonner Toaster를 배치한다. 로그아웃 로직을 hooks/use-logout.ts로 추출하고 LogoutButton을 한국어로 바꾸며 로그아웃 후 랜딩(routes.home)으로 이동하게 한다. ROADMAP의 'form 대체용 필드 래퍼'는 shadcn field로 대체한다(레지스트리에 registry:ui로 존재 확인).",
+      "notes": "shadcn sonner 컴포넌트는 next-themes useTheme을 쓰므로 ThemeProvider 안에 있어야 한다. auth-button.tsx(랜딩)에서도 LogoutButton을 쓰므로 동작 변경(로그아웃 후 '/')이 랜딩에도 반영된다. 새 radix 의존성이 package.json에 추가되는지 확인.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "1429f0a4-e456-4ec9-a488-0d1fcc9351b0"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-10-01T14:20:55.301Z",
+      "relatedFiles": [
+        {
+          "path": "components/ui/",
+          "type": "CREATE",
+          "description": "shadcn 컴포넌트 11종 추가 위치"
+        },
+        {
+          "path": "app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "Toaster 배치"
+        },
+        {
+          "path": "hooks/use-logout.ts",
+          "type": "CREATE",
+          "description": "로그아웃 공용 훅"
+        },
+        {
+          "path": "components/logout-button.tsx",
+          "type": "TO_MODIFY",
+          "description": "훅 사용, 한국어화, 랜딩 이동"
+        },
+        {
+          "path": "components/auth-button.tsx",
+          "type": "REFERENCE",
+          "description": "LogoutButton 기존 사용처"
+        },
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "DEPENDENCY",
+          "description": "routes.home"
+        }
+      ],
+      "implementationGuide": "1) npx shadcn@latest add dialog alert-dialog sheet select textarea tabs avatar separator skeleton sonner field (components/ui에 생성, 기존 button 등 덮어쓰기 프롬프트가 나오면 덮어쓰지 않음)\n2) app/layout.tsx: ThemeProvider 안쪽 children 뒤에 <Toaster richColors position=top-center /> 추가\n3) hooks/use-logout.ts ('use client'): export function useLogout(): () => Promise<void>. createClient().auth.signOut() → error면 console.error('[use-logout] 로그아웃 실패:', error) + toast.error('로그아웃하지 못했어요. 다시 시도해 주세요.') 후 return → 성공 시 router.replace(routes.home); router.refresh()\n4) components/logout-button.tsx: useLogout 사용, 문구 '로그아웃', 하드코딩 '/auth/login' 제거, JSDoc 추가",
+      "verificationCriteria": "components/ui에 11개 컴포넌트 파일 존재, npm run typecheck·lint 통과, 로그아웃 버튼 클릭 시 '/'로 이동하고 세션이 사라진다.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다.",
+      "summary": "shadcn 10종을 Tailwind v3용 shadcn@2.3.0으로 추가했다. 최신 CLI는 components.json의 빈 tailwind.config 때문에 v4 코드를 생성해서 되돌렸고, tailwind.config를 tailwind.config.ts로 지정했다. v3 레지스트리에 field가 없어 components/form-field.tsx로 대체했다. Toaster를 ThemeProvider 안에 배치했다. useLogout 훅은 signOut 후 routes.home으로 replace+refresh, 실패 시 토스트를 띄운다. LogoutButton은 한국어로 바꾸고 props를 전달하게 했다. typecheck·lint 통과, 헤더 로그아웃 E2E로 '/' 이동과 세션 삭제 확인. 커밋 adefb12, be9f230.",
+      "completedAt": "2026-10-01T14:20:55.299Z"
+    },
+    {
+      "id": "cadad379-11af-4806-a50d-4bf631d5176c",
+      "name": "내비게이션 순수 로직과 BottomTabNav·AppHeader 컴포넌트 구현",
+      "description": "탭 정의·활성 판정·페이지 제목·상위 경로 계산을 순수 함수로 lib/navigation/에 두고, 이를 쓰는 components/layout/bottom-tab-nav.tsx, app-header.tsx, nav-skeleton.tsx를 만든다. 탭 구성: app(대시보드/내 프로필), group(그룹 홈/이벤트 만들기*/멤버*/설정*, *는 owner·admin 전용), event(상세/카풀/정산). BottomTabNav는 props { context: 'app'|'group'|'event'; role?: GroupRole }를 받고, 현재 URL의 컨텍스트가 자기 context와 다르면 null을 반환한다.",
+      "notes": "useParams/usePathname은 cacheComponents에서 동적 param 라우트일 때 suspend하므로 이 컴포넌트들은 반드시 Suspense 안에서 렌더된다(연결은 다음 작업). routes 빌더는 encodeURIComponent를 적용하므로 isTabActive 비교에는 usePathname 값(인코딩된 경로)과 빌더 결과를 그대로 비교한다. 그룹 탭에 대시보드 복귀 탭은 없고 헤더 뒤로 가기로 복귀한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "4f02e55c-b75c-4b32-9af3-102aaf99218b"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-10-01T14:21:46.038Z",
+      "relatedFiles": [
+        {
+          "path": "lib/navigation/tabs.ts",
+          "type": "CREATE",
+          "description": "탭 정의·컨텍스트 판별·활성 판정"
+        },
+        {
+          "path": "lib/navigation/page-meta.ts",
+          "type": "CREATE",
+          "description": "페이지 제목·상위 경로 계산"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "CREATE",
+          "description": "Phase 0 더미 역할 상수"
+        },
+        {
+          "path": "components/layout/bottom-tab-nav.tsx",
+          "type": "CREATE",
+          "description": "하단 탭 바"
+        },
+        {
+          "path": "components/layout/app-header.tsx",
+          "type": "CREATE",
+          "description": "상단 헤더"
+        },
+        {
+          "path": "components/layout/nav-skeleton.tsx",
+          "type": "CREATE",
+          "description": "Suspense fallback"
+        },
+        {
+          "path": "components/theme-switcher.tsx",
+          "type": "REFERENCE",
+          "description": "헤더에서 재사용"
+        },
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "DEPENDENCY",
+          "description": "Task 002에서 추가된 경로 빌더"
+        },
+        {
+          "path": "lib/constants/site.ts",
+          "type": "DEPENDENCY",
+          "description": "제목 fallback"
+        },
+        {
+          "path": "node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md",
+          "type": "REFERENCE",
+          "description": "Cache Components에서 Suspense 필요 조건"
+        }
+      ],
+      "implementationGuide": "1) lib/navigation/tabs.ts\n  - export type GroupRole = 'owner'|'admin'|'member' (JSDoc: Task 004에서 lib/types/domain.ts로 이동)\n  - export type NavContext = 'app'|'group'|'event'; type NavTab = { href: string; label: string; icon: LucideIcon; adminOnly?: boolean; exact?: boolean }\n  - detectNavContext({ groupId?, eventId? }): eventId 있으면 event, groupId 있으면 group, 아니면 app\n  - isAdminRole(role?): owner|admin이면 true\n  - getTabs(context, { groupId, eventId, role }): 컨텍스트별 배열을 routes 빌더로 생성 후 adminOnly는 isAdminRole일 때만 포함. 그룹 홈·이벤트 상세 탭은 exact true\n  - isTabActive(pathname, tab): exact면 ===, 아니면 pathname === href || startsWith(href + '/')\n2) lib/navigation/page-meta.ts\n  - getPageTitle(pathname): 정규식 패턴 테이블(/dashboard→내 그룹, /profile→내 프로필, /groups/new→그룹 만들기, /groups/x→그룹 홈, /settings→그룹 설정, /members→멤버 관리, /events/new→이벤트 만들기, /events/y→이벤트 상세, /carpool→카풀, /settlement→정산), 매칭 없으면 siteConfig.name\n  - getParentHref(pathname): 이벤트 하위(carpool/settlement)→이벤트 상세, 이벤트 상세·events/new·settings·members→그룹 홈, 그룹 홈·groups/new→대시보드, 대시보드·프로필→null\n3) lib/mocks/dummy-role.ts: export const DUMMY_GROUP_ROLE: GroupRole = 'owner' (JSDoc: Task 009에서 제거, 검증 시 값을 바꿔 확인)\n4) components/layout/bottom-tab-nav.tsx ('use client'): useParams<{groupId?: string; eventId?: string}>(), usePathname(). context 불일치 시 null. <nav aria-label='주요 메뉴' className='fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur pb-[env(safe-area-inset-bottom)]'> + <ul className='mx-auto grid max-w-5xl' style gridTemplateColumns repeat(n)>. TabItem 분리: Link min-h-14 min-w-0, 아이콘 20px + text-xs truncate 라벨, 활성 시 aria-current='page'와 text-primary\n5) components/layout/app-header.tsx ('use client'): sticky top-0 z-40 h-14 border-b bg-background/95. 좌측: getParentHref가 있으면 Button variant ghost size icon className size-11 asChild Link(aria-label '뒤로 가기', ChevronLeft). 가운데: h1 truncate getPageTitle. 우측: ThemeSwitcher + DropdownMenu(트리거 size-11, aria-label '메뉴', 항목: 내 프로필 Link routes.profile, 로그아웃 onSelect useLogout)\n6) components/layout/nav-skeleton.tsx: 헤더용(h-14)·탭 바용(h-14 fixed bottom) Skeleton 두 개 export",
+      "verificationCriteria": "npm run typecheck·lint 통과, 모든 함수 30줄 이하·JSDoc 존재, 경로 문자열 하드코딩 없음(routes 빌더만 사용), getTabs('group', role member)는 1개, owner/admin은 4개 탭을 반환.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다.",
+      "summary": "lib/navigation/tabs.ts(컨텍스트 판정, getTabs, isTabActive)와 page-meta.ts(정규식 표 기반 제목·상위 경로, 동적 조각은 디코딩 후 routes 빌더로 재인코딩), lib/mocks/dummy-role.ts, components/layout의 BottomTabNav·AppHeader·nav-skeleton을 구현했다. 경로는 routes 빌더만 쓴다. 30줄 넘는 함수 2개는 MenuLink 추출과 타입 분리로 줄였다(efda7dd). E2E로 그룹 탭이 member일 때 1개, owner일 때 4개임을 확인했다. 이벤트 상세 아이콘은 CalendarDays로 구분했다.",
+      "completedAt": "2026-10-01T14:21:46.036Z"
+    },
+    {
+      "id": "c13c8d5e-d87b-427c-9037-6571992a7608",
+      "name": "컨텍스트 레이아웃에 앱 셸 연결 및 프로필 로그아웃 배치",
+      "description": "(app)/layout.tsx에 AppHeader와 셸 main 컨테이너, app 컨텍스트 BottomTabNav를 배치하고, groups/[groupId]/layout.tsx와 events/[eventId]/layout.tsx에 각각 group(role 주입)·event 컨텍스트 BottomTabNav를 배치한다. Task 002에서 만든 페이지들의 중첩 <main>을 정리하고, 내 프로필 페이지에 LogoutButton을 둔다.",
+      "notes": "탭 바는 layout에 있어 페이지 이동 시 리렌더만 되고 재마운트되지 않는다. app 컨텍스트 BottomTabNav는 그룹·이벤트 경로에서 null, group은 이벤트 경로에서 null을 반환하므로 항상 하나만 보인다. 헤더 h1과 페이지 h1이 겹치지 않도록 한 페이지에 h1은 하나만.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "cadad379-11af-4806-a50d-4bf631d5176c"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-10-01T14:21:53.160Z",
+      "relatedFiles": [
+        {
+          "path": "app/(app)/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "셸 헤더·main·app 탭 바"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "group 탭 바 + 더미 역할 주입"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/events/[eventId]/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "event 탭 바"
+        },
+        {
+          "path": "app/(app)/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "main→section 정리"
+        },
+        {
+          "path": "app/(app)/profile/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "로그아웃 버튼 배치"
+        },
+        {
+          "path": "app/(app)/groups/",
+          "type": "TO_MODIFY",
+          "description": "Task 002 페이지들의 main/h1 정리"
+        }
+      ],
+      "implementationGuide": "1) app/(app)/layout.tsx: <>\n  <Suspense fallback={<HeaderSkeleton/>}><AppHeader/></Suspense>\n  <main className='mx-auto w-full max-w-5xl px-4 pb-24 pt-4'>{children}</main>\n  <Suspense fallback={null}><BottomTabNav context='app'/></Suspense></>\n2) groups/[groupId]/layout.tsx: children + <Suspense fallback={null}><BottomTabNav context='group' role={DUMMY_GROUP_ROLE}/></Suspense>. params는 await하지 않는다(Task 002 규칙). JSDoc에 'Task 009에서 멤버 확인과 실제 역할 조회를 Suspense 안 async 컴포넌트로 교체' 명시\n3) events/[eventId]/layout.tsx: children + <Suspense fallback={null}><BottomTabNav context='event'/></Suspense>\n4) (app) 하위 페이지들의 <main>을 <section className='flex flex-col gap-6'>로 교체(셸 main 중첩 방지), 페이지 h1은 헤더 제목과 중복되므로 sr-only가 아니라 유지할지 결정: 헤더 h1을 쓰므로 페이지 h1은 h2로 낮추거나 제거\n5) app/(app)/profile/page.tsx: 섹션 하단에 <LogoutButton /> 배치\n6) 탭 바 fallback은 null로 두어 레이아웃 이동을 막되 main pb-24로 공간은 항상 확보",
+      "verificationCriteria": "npm run build 통과(Suspense 누락으로 인한 blocking-prerender 오류 없음), 대시보드·그룹·이벤트 경로에서 탭 바가 정확히 하나씩 보이고, 페이지마다 h1이 하나다.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다.",
+      "summary": "(app) 레이아웃에 헤더(Suspense+HeaderSkeleton), 셸 main(하단 safe-area 포함 패딩), app 탭 바(Suspense+TabBarSkeleton)를 배치했다. 그룹 레이아웃은 DUMMY_GROUP_ROLE을 주입한 group 탭 바를, 이벤트 레이아웃은 event 탭 바를 렌더한다(params await 없음). 페이지 main/h1은 section/h2로 바꾸고 프로필에 LogoutButton을 배치했다. build 통과, E2E로 10개 경로 모두 탭 바 1개·h1 1개 확인. 계획에 없던 수정 1건: 탭 이동 시 params 대기로 내비게이션이 막혀 페이지 params 읽기를 내부 Suspense로 옮겼다(0ce32f0).",
+      "completedAt": "2026-10-01T14:21:53.157Z"
+    },
+    {
+      "id": "51bff4f5-af68-4552-82ae-133bb612417d",
+      "name": "Task 003 360px 반응형·역할 탭 검증 및 로드맵 반영",
+      "description": "npm run check와 build를 통과시키고, Playwright MCP로 360px 뷰포트에서 셸을 검증한 뒤 tasks/003-app-shell-navigation.md를 작성하고 ROADMAP의 Task 003을 완료 처리한다.",
+      "notes": "테스트 계정은 Task 002 검증 때 쓴 계정을 재사용하고 없으면 사용자에게 받는다. 더미 역할 전환 검증 후 반드시 원래 값으로 되돌린다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "c13c8d5e-d87b-427c-9037-6571992a7608"
+        }
+      ],
+      "createdAt": "2026-09-30T14:22:24.738Z",
+      "updatedAt": "2026-10-01T14:22:01.684Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/003-app-shell-navigation.md",
+          "type": "CREATE",
+          "description": "Task 003 작업 파일"
+        },
+        {
+          "path": "tasks/002-route-skeleton.md",
+          "type": "REFERENCE",
+          "description": "작업 파일 형식 참고"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 003 완료 표시"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "OTHER",
+          "description": "역할 전환 검증용(원복 필수)"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\n2) Playwright MCP(browser_resize 360x740): 테스트 계정 로그인 → /dashboard, /groups/g1, /groups/g1/events/e1/carpool 순회하며 browser_evaluate로 document.documentElement.scrollWidth <= 360 확인, 탭 개수와 aria-current='page' 요소가 활성 탭 1개인지 확인, 탭 링크 높이 >= 44px 확인\n3) DUMMY_GROUP_ROLE을 'member'로 바꿔 /groups/g1에서 탭 1개, 'owner'로 되돌려 4개 확인(검증 후 원복)\n4) 헤더 뒤로 가기: 카풀→이벤트 상세→그룹 홈→대시보드 순서, 대시보드에서는 버튼 없음\n5) 헤더 메뉴 로그아웃 → '/' 이동, 이후 /dashboard 접근 시 /auth/login 리다이렉트\n6) 다크 모드 전환 후 헤더·탭 바 대비 스크린샷 확인, 콘솔 에러 없음\n7) tasks/003-app-shell-navigation.md: 명세, 관련 파일, 수락 기준, 구현 단계(체크), 테스트 체크리스트 결과, 변경 사항 요약 (002 작업 파일 형식 참고)\n8) /docs:update-roadmap으로 Task 003 ✅",
+      "verificationCriteria": "npm run check·build 통과, 360px에서 세 컨텍스트 모두 가로 스크롤 없음, 역할 전환 시 관리자 탭 노출 변화 확인, 로그아웃 후 랜딩 이동, tasks/003 파일과 ROADMAP 갱신 완료.",
+      "analysisResult": "ROADMAP Task 003: app/(app)/ 로그인 후 영역에 모바일 우선 앱 셸(sticky 상단 헤더 + fixed 하단 탭 바)을 만든다. 각 컨텍스트 레이아웃((app), groups/[groupId], events/[eventId])이 자기 BottomTabNav를 렌더하고, 더 깊은 컨텍스트면 useParams로 판별해 스스로 null을 반환해 항상 하나만 보이게 한다. role은 group 레이아웃이 prop으로 직접 주입(Phase 0은 lib/mocks/dummy-role.ts 상수, Task 009에서 실제 역할로 교체). cacheComponents 환경에서 useParams/usePathname은 동적 param 라우트에서 suspend하므로 헤더·탭 바는 반드시 Suspense로 감싼다(node_modules/next/dist/docs/01-app/03-api-reference/04-functions/use-params.md, use-pathname.md). 경로는 lib/constants/routes.ts 빌더만 사용, 한국어 JSDoc, 함수 30줄 이하, console.log 금지, 터치 영역 44px 이상, 활성 탭 aria-current=page. 완료 조건: 360px에서 가로 스크롤 없이 모든 탭이 보이고 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다.",
+      "summary": "npm run check·build 통과. Playwright MCP는 시스템 Chrome 번들이 깨져 실행되지 않아, 캐시된 Chromium 1243으로 360×740 스크립트를 돌렸다(로그인은 사용자가 직접). 10개 경로에서 가로 스크롤 없음, 탭 바 1개, 활성 탭 1개, 탭 56px·헤더 44px, h1 1개를 확인했다. 뒤로 가기 체인, 역할 전환(member 1개·owner 4개, 원복 완료), 헤더 로그아웃 → '/'와 이후 /auth/login 리다이렉트, 라이트·다크 스크린샷, 콘솔 에러 없음도 확인했다. tasks/003 작성, ROADMAP ✅. 남은 것: 30줄 분리 리팩터링(efda7dd) 후 E2E 재실행과 프로필 페이지 로그아웃 버튼 수동 확인.",
+      "completedAt": "2026-10-01T14:22:01.682Z"
+    },
+    {
+      "id": "1a2b23d3-3233-4f09-83c9-d16d08b308a4",
+      "name": "Task 004 기반: zod 설치, 로거, ActionResult, 레이어 규칙",
+      "description": "zod@^4를 직접 의존성으로 설치하고 lib/logger.ts(레벨별 자체 로거), lib/types/action-result.ts(ActionResult<T>, ActionErrorCode, ok/fail/fromZodError), lib/services·lib/repositories README(레이어 규칙)를 만든다. 기존 console.error 2곳(hooks/use-logout.ts, components/route-states/segment-error.tsx)을 로거로 교체한다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-01T14:55:33.002Z",
+      "relatedFiles": [
+        {
+          "path": "lib/logger.ts",
+          "type": "CREATE",
+          "description": "자체 경량 로거"
+        },
+        {
+          "path": "lib/types/action-result.ts",
+          "type": "CREATE",
+          "description": "Server Action 응답 형식"
+        },
+        {
+          "path": "lib/services/README.md",
+          "type": "CREATE",
+          "description": "service 작성 규칙"
+        },
+        {
+          "path": "lib/repositories/README.md",
+          "type": "CREATE",
+          "description": "repository 작성 규칙"
+        },
+        {
+          "path": "hooks/use-logout.ts",
+          "type": "TO_MODIFY",
+          "description": "console.error → logger"
+        },
+        {
+          "path": "components/route-states/segment-error.tsx",
+          "type": "TO_MODIFY",
+          "description": "console.error → logger"
+        }
+      ],
+      "implementationGuide": "1) npm install zod@^4\n2) lib/logger.ts: type LogLevel; export const logger = { debug, info, warn, error }(scope: string, message: string, meta?: unknown). NODE_ENV==='production'이면 debug/info 무시. warn→console.warn, error/info/debug→console.error 또는 warn(ESLint no-console 허용 범위). 출력 형식 '[scope] message'.\n3) lib/types/action-result.ts: ACTION_ERROR_CODES as const(VALIDATION, UNAUTHENTICATED, FORBIDDEN, NOT_FOUND, CONFLICT, CAPACITY_FULL, LOCKED, INVALID_INVITE, INTERNAL); ActionResult<T> = {ok:true;data:T}|{ok:false;error:{code;message;fieldErrors?:Record<string,string>}}; ok(), fail(), fromZodError(z.ZodError)→첫 이슈 message + path별 첫 메시지 맵\n4) README 2개: 컨트롤러→service→repository, repository만 Supabase 사용, createClient는 함수마다 생성, Row→도메인 매핑은 repository, service는 DTO 입력·ActionResult 반환\n5) use-logout.ts TODO 제거, segment-error.tsx 주석 갱신",
+      "verificationCriteria": "package.json dependencies에 zod ^4, npm run typecheck·lint 통과, logger.ts 외부에 console.error/warn 직접 호출 0건, fromZodError가 필드별 메시지 맵을 돌려준다.",
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "zod ^4.6.5를 직접 의존성으로 추가했다. lib/logger.ts는 debug/info/warn/error 4단계이고, 운영에서는 warn 이상만 남기며 console.warn/error만 쓴다. lib/types/action-result.ts에는 ACTION_ERROR_CODES 9종, ActionResult, ok/fail/fromZodError(경로별 첫 메시지 맵)를 두었다. services/repositories README에 레이어 규칙을 적었다. console.error를 로거로 교체한 곳은 계획한 2곳에 grep으로 찾은 auth/callback과 google-login-button까지 모두 4곳이며, logger 밖 console 호출은 0건이다. npm run check 통과. tsx 스모크로 fieldErrors 맵과 운영 모드 info 억제를 확인했다.",
+      "completedAt": "2026-10-01T14:55:33.000Z"
+    },
+    {
+      "id": "d557e183-ddc4-4cfa-a814-c7b89eee38eb",
+      "name": "Task 004 도메인 타입 정의 및 GroupRole 이전",
+      "description": "lib/types/domain.ts에 상태 enum 값 목록·유니온·한국어 라벨과 PRD 13개 엔티티(profiles 포함) camelCase 타입을 정의하고, lib/navigation/tabs.ts의 GroupRole을 domain으로 옮긴다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "1a2b23d3-3233-4f09-83c9-d16d08b308a4"
+        }
+      ],
+      "createdAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-01T15:07:28.479Z",
+      "relatedFiles": [
+        {
+          "path": "lib/types/domain.ts",
+          "type": "CREATE",
+          "description": "도메인 타입·enum"
+        },
+        {
+          "path": "lib/navigation/tabs.ts",
+          "type": "TO_MODIFY",
+          "description": "GroupRole 정의 제거"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "TO_MODIFY",
+          "description": "import 경로 변경"
+        },
+        {
+          "path": "components/layout/bottom-tab-nav.tsx",
+          "type": "TO_MODIFY",
+          "description": "import 경로 변경"
+        },
+        {
+          "path": "docs/PRD.md",
+          "type": "REFERENCE",
+          "description": "데이터 모델 327~474행"
+        }
+      ],
+      "implementationGuide": "1) GROUP_ROLES=['owner','admin','member'] as const, EVENT_STATUSES=['scheduled','closed','completed','canceled'], RSVP_STATUSES=['going','not_going','maybe','waitlisted'], CARPOOL_RIDER_STATUSES=['requested','canceled']; type X=(typeof X_S)[number]; *_LABEL: Record<X,string> 한국어\n2) 엔티티: Profile, PaymentAccount, Group, GroupMember, GroupInvite, Event, EventRsvp, Announcement, Carpool, CarpoolRider, Expense, ExpenseShare, SettlementTransfer. id string, 시각 ISO string(nullable은 string|null), 금액 number\n3) 파일 상단 JSDoc: DB 타입 재생성 후 repository 매퍼에서 Database['public']['Tables'] Row → 도메인 변환\n4) tabs.ts에서 GroupRole 정의 삭제 후 import, dummy-role.ts·bottom-tab-nav.tsx import 변경, 'Task 004에서 이동' 주석 제거",
+      "verificationCriteria": "typecheck 통과, GroupRole 정의(type GroupRole =)가 domain.ts에만 존재, 13개 엔티티 타입 export, 상태 값이 PRD CHECK 목록과 일치.",
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "lib/types/domain.ts를 만들었다. 상태 값 목록 4종(GROUP_ROLES, EVENT_STATUSES, RSVP_STATUSES, CARPOOL_RIDER_STATUSES)과 파생 유니온, 한국어 라벨 맵 4종, PRD 13개 엔티티 camelCase 타입을 정의했고, 상태 값은 PRD CHECK 목록과 일치한다. PRD에 없던 필드는 Announcement.createdAt(정렬)과 Expense.createdBy/createdAt(수정 권한, 결정 필요 사항 6) 세 개를 추가하고 주석으로 표시했다. GroupRole은 tabs.ts에서 domain으로 옮기고, tabs.ts·dummy-role.ts·bottom-tab-nav.tsx의 import를 바꿨다. 정의는 domain.ts에만 있다. typecheck·lint 통과.",
+      "completedAt": "2026-10-01T15:07:28.477Z"
+    },
+    {
+      "id": "3ba8d544-8a47-433a-9b0a-1ecd12460f97",
+      "name": "Task 004 Zod 입력 스키마 작성",
+      "description": "lib/validations/common.ts와 도메인별 8개 파일(group, invite, event, rsvp, announcement, carpool, expense, payment-account; 프로필 표시 이름 포함)에 Zod v4 입력 스키마와 z.infer DTO 타입을 만든다. 메시지는 한국어, 길이 상한은 파일 상단 상수로 둔다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "d557e183-ddc4-4cfa-a814-c7b89eee38eb"
+        }
+      ],
+      "createdAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-01T15:13:21.034Z",
+      "relatedFiles": [
+        {
+          "path": "lib/validations/",
+          "type": "CREATE",
+          "description": "입력 스키마 9개 파일"
+        },
+        {
+          "path": "lib/types/domain.ts",
+          "type": "DEPENDENCY",
+          "description": "상태 enum 재사용"
+        },
+        {
+          "path": "components/form-field.tsx",
+          "type": "REFERENCE",
+          "description": "필드 에러 연결 지점"
+        }
+      ],
+      "implementationGuide": "common.ts: uuidSchema=z.uuid({error}), requiredText(max)/optionalText(max)(trim, 빈 문자열→null), wonAmount=z.int(), isoDateTime=z.iso.datetime({offset:true}).\nevent: capacity 빈값→null 또는 int>=1, refine(rsvpDeadline<=startAt, path:['rsvpDeadline']). rsvp: z.enum(['going','not_going','maybe']). expense: refine(!isAdjustment ? amount>=0 : true), sharerIds min(1) + 중복 없음 refine, payerId uuid. payment-account: bankAccountNumber regex ^[0-9-]+$, tossLink z.url({protocol:/^https$/}) + hostname이 TOSS_LINK_HOSTS(잠정 ['toss.me']) 포함 refine. 상태 enum은 domain.ts 상수 재사용.",
+      "verificationCriteria": "typecheck·lint 통과, 각 파일이 xxxInputSchema와 XxxInput 타입 export, scratchpad 스모크 스크립트에서 정상 입력 통과·오류 입력(마감>시작, 일반 항목 음수, 분담자 0명, http 토스 링크, 문자 섞인 계좌번호) 거부와 한국어 메시지 확인.",
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "lib/validations에 common.ts와 도메인별 9개 파일(group, invite, event, rsvp, announcement, carpool, expense, payment-account, profile)을 작성했다. 각 파일은 xxxInputSchema와 XxxInput 타입을 export한다. 공통 조각: 빈 문자열→null, 숫자 문자열 변환, 체크박스 boolean, 받침에 맞춘 조사(withJosa), 오프셋 없는 일시는 KST(+09:00)로 바꾸고 초를 채움. 규칙: 응답 마감 ≤ 시작, 일반 항목 0 이상·조정 항목 0 아님, 분담자 1명 이상·중복 없음, 계좌번호 숫자·하이픈만, 토스 링크 https + TOSS_LINK_HOSTS(잠정 toss.me), RSVP waitlisted 직접 입력 거부. 스모크 24케이스 통과, npm run check 통과. 스모크 중 오프셋+초 없는 형식 변환 문제를 발견해 수정했고, 변환 결과가 같은 스키마를 다시 통과하는 것도 확인했다.",
+      "completedAt": "2026-10-01T15:13:21.032Z"
+    },
+    {
+      "id": "3374cd72-ca8b-4937-98aa-dfe94c8f23db",
+      "name": "Task 004 Phase 1~4 UI용 더미 데이터 작성",
+      "description": "lib/mocks/에 결정적 id 상수와 users, groups, events, carpools, settlements 더미 데이터를 도메인 타입으로 작성하고, UI Task(007·013·020·024)가 필요한 상태를 시나리오 getter로 제공한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "d557e183-ddc4-4cfa-a814-c7b89eee38eb"
+        }
+      ],
+      "createdAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-03T04:07:41.708Z",
+      "relatedFiles": [
+        {
+          "path": "lib/mocks/",
+          "type": "CREATE",
+          "description": "더미 데이터"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "REFERENCE",
+          "description": "Task 009에서 제거 예정, 유지"
+        },
+        {
+          "path": "lib/types/domain.ts",
+          "type": "DEPENDENCY",
+          "description": "도메인 타입"
+        }
+      ],
+      "implementationGuide": "ids.ts: MOCK_USER_IDS 등 고정 uuid(Math.random 금지). users: 5명(나간 멤버 1명). groups: 그룹·멤버(owner/admin/member)·초대(활성/만료/revoked). events: 정원 초과+대기자, 마감, 취소, 정원 NULL, RSVP, 공지(고정/일반). carpools: 만석, 잔여, 내가 탑승, 내가 운전자. settlements: 일반/조정 비용, 분담, 송금(정산 전/송금 표시/입금 확인→잠금). 모든 export에 satisfies 도메인 타입. getMockEventScenario 등 시나리오 getter, 함수 30줄 이하. 금액은 PRD 예시(10,000원 ÷ 3 → 3,333)와 맞춘다.",
+      "verificationCriteria": "typecheck 통과(satisfies로 모든 더미 데이터 타입 검사), ROADMAP 007·013·020·024 완료 조건의 상태가 각각 시나리오로 존재, 함수 30줄 이하.",
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "lib/mocks에 ids/users/groups/events/carpools/settlements 6개 파일을 작성했다. mockId(entity, seq)로 z.uuid를 통과하는 결정적 v4 id를 만들고, 기준 시각은 MOCK_NOW로 고정했다. 모든 export 데이터는 satisfies 도메인 타입으로 검사한다. 시나리오 getter는 getMockInviteScenario(valid/alreadyMember/expired/invalid), getMockDashboardGroups(빈 상태 포함), getMockEventScenario(overCapacity/unlimited/closed/canceled/completed), getMockCarpoolScenario(full/available/riding/driver/notAttendee), getMockSettlementScenario(beforeSettlement/transferMarked/locked)다. 정산 금액은 PRD 규칙(10,000÷3→3,333, 쌍별 상계)대로 계산했고, 스모크 스크립트로 분담 합계와 송금 재계산이 일치하는 것을 확인했다. 조정 항목은 음수 나머지 규칙이 아직 결정 전이라 나누어떨어지는 금액(-9,000)을 썼다. typecheck, eslint, prettier 통과, 함수는 모두 30줄 이하다.",
+      "completedAt": "2026-10-03T04:07:41.706Z"
+    },
+    {
+      "id": "c5ece238-1a34-4185-b763-cd65491848a2",
+      "name": "Task 004 DB 스키마 설계 문서 작성",
+      "description": "docs/db-schema.md에 ERD(Mermaid), 테이블 정의, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 시그니처, RLS 매트릭스, PRD 매핑 체크리스트를 작성한다. 구현은 각 Phase DB Task에서 한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "3ba8d544-8a47-433a-9b0a-1ecd12460f97"
+        }
+      ],
+      "createdAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-03T04:24:52.782Z",
+      "relatedFiles": [
+        {
+          "path": "docs/db-schema.md",
+          "type": "CREATE",
+          "description": "전체 DB 설계"
+        },
+        {
+          "path": "docs/PRD.md",
+          "type": "REFERENCE",
+          "description": "데이터 모델·제약 327~515행"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "REFERENCE",
+          "description": "DB Task 008·014·017·018·021·026, 결정 필요 사항"
+        },
+        {
+          "path": "supabase/migrations/20260926000000_create_profiles_table.sql",
+          "type": "REFERENCE",
+          "description": "함수·RLS 패턴"
+        }
+      ],
+      "implementationGuide": "1) erDiagram 13개 엔티티\n2) 테이블별 컬럼·타입·NULL·기본값·FK·on delete 정책(멤버 내보내기 후 이력 보존: profiles FK는 restrict, group/event 하위는 cascade 여부 명시), created_at/updated_at + set_updated_at 트리거 재사용\n3) 제약 표: PRD 477~491행 전부 + 문자열 길이 CHECK(Zod 상수와 일치)\n4) 인덱스: 유니크 겸 조회 인덱스, events(group_id,start_at), event_rsvps(event_id,waitlisted_at) where status='waitlisted', FK 인덱스\n5) 헬퍼·RPC: is_group_member, is_group_admin, is_event_member, is_event_attendee, create_group, get_invite_preview(anon), accept_invite, regenerate_invite, change_member_role, remove_member, respond_rsvp, promote_waitlist(내부), set_check_in, request/cancel_carpool_seat, get_payee_accounts, save/delete_expense, recalculate_settlement(내부), mark_transfer_sent, confirm_transfer — 시그니처, security definer, stable, grant, 잠금 행, 담당 Task\n6) RLS 매트릭스\n7) PRD 매핑 체크리스트\n8) ROADMAP 결정 필요 사항 1~7 참조, 권장안 기준에 '확정 필요' 표시",
+      "verificationCriteria": "PRD 12개 신규 테이블명이 모두 정의 절과 ERD에 있고, PRD의 CHECK·UNIQUE 항목이 매핑 체크리스트에서 전부 체크되며, ROADMAP의 RPC가 모두 목록에 있다. prettier 통과.",
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "docs/db-schema.md를 작성했다. 구성은 공통 규칙, Mermaid ERD(13개 엔티티), 테이블 정의 13개(삭제 정책: profiles FK는 restrict, 그룹·이벤트 하위는 cascade, cloned_from은 set null), CHECK·문자열 길이 CHECK(Zod 상수와 같은 값), UNIQUE·부분 유니크, 인덱스(대기열 부분 인덱스, FK 인덱스), 함수·RPC다. RPC는 헬퍼 5개, 클라이언트 RPC 15개, 내부 함수·트리거로 나누고 각각 시그니처·반환·잠금 행·검증·Task를 적었다. 이어서 RPC 에러와 ActionErrorCode 매핑, RLS 매트릭스, 결정 필요 사항 D1~D8(초대 만료 기간 추가), PRD 매핑 체크리스트를 넣었다. 검증: grep으로 12개 테이블이 ERD와 정의 절에 모두 있고 ROADMAP 함수 21개가 전부 시그니처와 함께 있음을 확인했다. prettier 통과. 도메인 타입에 없는 events.created_by는 빼서 더미 데이터·타입과 일치시켰다.",
+      "completedAt": "2026-10-03T04:24:52.780Z"
+    },
+    {
+      "id": "0e75b9a1-1702-4909-8366-aa34c5752bae",
+      "name": "Task 004 검증 및 로드맵 반영",
+      "description": "npm run check·build, 스모크 스크립트, grep 검증을 실행하고 tasks/004 작업 파일을 완료 상태로 갱신한 뒤 ROADMAP Task 004를 ✅로 표시하고 관심사별로 커밋한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "3374cd72-ca8b-4937-98aa-dfe94c8f23db"
+        },
+        {
+          "taskId": "c5ece238-1a34-4185-b763-cd65491848a2"
+        }
+      ],
+      "createdAt": "2026-10-01T14:51:58.661Z",
+      "updatedAt": "2026-10-03T08:06:41.125Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/004-domain-foundation.md",
+          "type": "TO_MODIFY",
+          "description": "작업 파일"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 004 완료 표시"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\n2) grep: logger.ts 밖 console.error/warn 0건, 'type GroupRole =' 1건(domain.ts), db-schema.md에 12개 테이블명\n3) tasks/004-domain-foundation.md 체크박스·테스트 체크리스트·변경 요약 작성, Zod 단위 테스트는 Task 005 TODO로 기록\n4) ROADMAP Task 004 ✅\n5) 커밋 분할(기반 / 도메인·스키마 / 목업 / 설계 문서 / 작업 파일·로드맵), Claude 서명 없음",
+      "verificationCriteria": "check·build 통과, grep 검증 통과, ROADMAP 완료 조건 2개 충족, tasks/004와 ROADMAP 갱신, 커밋 완료.",
+      "analysisResult": "ROADMAP Task 004: Phase 1~4가 공유할 계약(도메인 타입, Zod 입력 DTO, ActionResult, 자체 경량 로거, services/repositories 레이어 규칙, 더미 데이터, 전체 DB 설계 문서)을 만든다. 마이그레이션은 만들지 않는다. 결정: 로거는 의존성 없는 자체 구현(console.warn/error만 사용, 운영에서 debug/info 끔), Zod v4(error 파라미터, z.uuid/z.url/z.int, 한국어 메시지), 도메인 모델은 camelCase이고 DB Row 변환은 repository 매퍼가 담당, 상태 enum은 as const 배열에서 유니온 파생. 규칙: 함수 30줄 이하, 한국어 JSDoc, 경로는 routes 빌더만, console.log 금지. 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고 docs/db-schema.md에 PRD 12개 신규 테이블과 제약이 빠짐없이 매핑된다. 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-task-cryptic-forest.md",
+      "summary": "npm run check(typecheck·lint·format)과 npm run build를 통과했다. grep 결과: logger.ts 밖 console.* 직접 호출 0건, type GroupRole 정의는 lib/types/domain.ts 1건, db-schema.md의 ERD와 정의 절에 12개 테이블이 모두 있다. tasks/004-domain-foundation.md의 체크박스를 전부 체크하고 변경 사항 요약을 작성했다(Zod·더미 데이터 정식 단위 테스트는 Task 005 TODO). ROADMAP Task 004에 ✅ 완료와 작업 파일 경로를 표시하고, 로거 항목을 자체 구현 결정으로 정정했다. ROADMAP 완료 조건 2개(더미 데이터 satisfies 타입 체크, 12개 테이블·제약 매핑)를 충족한다. 커밋은 이전 단계 커밋들(기반/도메인/스키마/목업)에 이어 설계 문서와 작업 파일·로드맵을 관심사별로 나눠 했고, 서명은 넣지 않았다.",
+      "completedAt": "2026-10-03T08:06:41.123Z"
+    },
+    {
+      "id": "424169c3-f366-4000-9b4d-14493acb99b3",
+      "name": "Task 005 Vitest 설치·설정·샘플 테스트",
+      "description": "vitest·@vitest/coverage-v8·vite를 devDependency로 설치하고 @types/node를 ^22로 올린다. vitest.config.ts와 test/test:watch/test:coverage 스크립트를 추가하고, check에 test를 붙인다. lib/utils.test.ts로 cn() 샘플 테스트를 작성해 @/ 별칭 해석을 확인한다.",
+      "notes": "peer 충돌이 나면 원인과 해결을 기록. --legacy-peer-deps로 우회하지 않는다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:18:30.066Z",
+      "relatedFiles": [
+        {
+          "path": "package.json",
+          "type": "TO_MODIFY",
+          "description": "의존성·스크립트"
+        },
+        {
+          "path": "vitest.config.ts",
+          "type": "CREATE",
+          "description": "Vitest 설정"
+        },
+        {
+          "path": "lib/utils.test.ts",
+          "type": "CREATE",
+          "description": "cn 샘플 테스트"
+        },
+        {
+          "path": "lib/utils.ts",
+          "type": "REFERENCE",
+          "description": "cn()"
+        }
+      ],
+      "implementationGuide": "1) npm install -D vitest@^5 @vitest/coverage-v8@^5 vite@^8 @types/node@^22\n2) vitest.config.ts: defineConfig from 'vitest/config', resolve.tsconfigPaths true, test.environment 'node', include ['**/*.test.ts'], exclude node_modules/.next, coverage provider v8 include lib/**/*.ts exclude database.types.ts·*.test.ts, reporter text/html\n3) scripts: test 'vitest run', test:watch 'vitest', test:coverage 'vitest run --coverage', check 끝에 '&& npm run test'\n4) lib/utils.test.ts: import { cn } from '@/lib/utils'; 클래스 결합, tailwind 충돌 시 뒤 클래스 우선, falsy 무시",
+      "verificationCriteria": "npm run test 통과, @/ 별칭 import 해석, npm run typecheck가 vitest.config.ts·테스트 파일 포함해 통과, npm install에 peer 경고/에러 없음.",
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "vitest 5.0.3, @vitest/coverage-v8 5.0.3, vite 8.3.2를 devDependency로 설치하고 @types/node를 ^22로 올렸다. npm install에서 peer 경고나 에러는 없었다. npm audit의 high 8건은 기존 tailwindcss·eslint-config-next의 braces 체인이라 이번 범위에서 제외했다. 설정 파일은 vitest.config.mts로 만들었다: resolve.tsconfigPaths, node 환경, *.test.ts include, v8 커버리지(lib/**/*.ts). package.json에 \"type\": \"module\"이 없어 .ts 설정이 CJS로 로드되면서 Vite configLoader 경고가 났고, 영향 범위가 작은 .mts로 바꿔 해결했다. tsconfig include에 **/*.mts를 추가해 타입 체크 대상에 넣었다. 스크립트 test·test:watch·test:coverage를 추가하고 check 끝에 test를 붙였다. lib/utils.test.ts는 @/lib/utils를 import하는 cn() 샘플 테스트 3개로, 모두 통과해서 별칭 해석을 확인했다. typecheck·eslint·prettier 통과.",
+      "completedAt": "2026-10-03T08:18:30.060Z"
+    },
+    {
+      "id": "703eaa5c-cfb8-4c99-8a8c-782ab207005e",
+      "name": "Task 005 Task 004 계약 단위 테스트 이관",
+      "description": "Task 004에서 일회성 스크립트로 확인한 계약을 정식 Vitest 테스트로 옮긴다: action-result, validations(common·event·expense·payment-account·rsvp), mocks 정합성.",
+      "notes": "scratchpad mock-smoke.ts 로직 재사용. 스키마 동작을 바꾸지 말고 현재 동작을 고정하는 테스트로 쓴다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "424169c3-f366-4000-9b4d-14493acb99b3"
+        }
+      ],
+      "createdAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:21:10.315Z",
+      "relatedFiles": [
+        {
+          "path": "lib/validations/",
+          "type": "REFERENCE",
+          "description": "입력 스키마"
+        },
+        {
+          "path": "lib/types/action-result.ts",
+          "type": "REFERENCE",
+          "description": "응답 헬퍼"
+        },
+        {
+          "path": "lib/mocks/",
+          "type": "REFERENCE",
+          "description": "더미 데이터"
+        },
+        {
+          "path": "lib/mocks/mocks.test.ts",
+          "type": "CREATE",
+          "description": "더미 정합성 테스트"
+        }
+      ],
+      "implementationGuide": "- lib/types/action-result.test.ts: ok/fail 형태, fromZodError 첫 메시지·경로별 첫 메시지\n- lib/validations/common.test.ts: withJosa, 빈 문자열→null, 숫자 문자열·체크박스 변환, KST 오프셋\n- event.test.ts: 정상 통과, 마감>시작 거부, 정원 빈 값 null\n- expense.test.ts: 일반 음수 거부, 조정 0원 거부·음수 허용, 분담자 0명·중복 거부\n- payment-account.test.ts: http·비허용 호스트 토스 링크 거부, 문자 섞인 계좌번호 거부\n- rsvp.test.ts: waitlisted 거부\n- lib/mocks/mocks.test.ts: id z.uuid 통과·중복 없음, 분담 합계=금액·비결제자 floor, 송금 요약 = 쌍별 합산·상계 재계산, 시나리오 getter(초대 4종, 대시보드 빈 상태, 이벤트 정원초과·마감, 카풀 5종, 정산 3종)\n- 거부 케이스는 fromZodError(...).error.fieldErrors로 한국어 메시지 확인\n- 재계산 헬퍼는 테스트 파일 내부 함수(30줄 이하)",
+      "verificationCriteria": "npm run test 전체 통과, 계획 표의 케이스가 모두 테스트로 존재, 한국어 메시지 검증 포함, lint 통과.",
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "Task 004 계약을 Vitest 테스트 7개 파일로 옮겼다. 샘플 포함 전체 8파일 71케이스가 통과한다.\n- action-result: ok/fail 형태, fromZodError의 대표 메시지·경로별 첫 메시지·점으로 이은 중첩 경로·경로 없는 이슈 제외\n- common: withJosa, 텍스트 trim과 null 변환, 양의 정수·금액 범위, 체크박스, datetime-local의 초 보충과 KST 부착\n- event: DTO 변환, 마감 역전 거부, 시간대가 달라도 실제 시각으로 비교\n- expense: 일반 음수 거부, 조정 항목 음수 허용·0원 거부, 분담자 0명·중복 거부\n- payment-account: 계좌번호 문자 거부, http·비허용 호스트 거부\n- rsvp: waitlisted 직접 입력 거부\n- mocks: uuid 형식·중복 없음, db-schema 제약(대기 시각, 활성 초대 1개, 송금 무결성), 분담 합계·floor·PRD 3,333 예시, 송금 요약 재계산 일치, Task 007·013·020·024 시나리오\n거부 케이스는 공용 헬퍼 lib/test-utils/zod.ts(fieldErrorsOf, 커버리지 제외)로 한국어 메시지까지 검증한다. 더미 송금액 하나를 일부러 틀리게 바꾸면 해당 테스트만 실패하는 것을 확인했고, 원본은 복구했다. 스키마 코드는 바꾸지 않았다. eslint·prettier·typecheck 통과.",
+      "completedAt": "2026-10-03T08:21:10.312Z"
+    },
+    {
+      "id": "bda1ff8c-e603-43b8-8e26-8670b542ddbf",
+      "name": "Task 005 CI 연결과 실패 감지 확인",
+      "description": ".github/workflows/ci.yml에 테스트 단계를 추가하고, 임시 실패 테스트로 npm run test가 0이 아닌 종료 코드를 내는지 확인한 뒤 제거한다.",
+      "notes": "원격 CI 확인은 사용자가 push/PR을 지시할 때 한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "424169c3-f366-4000-9b4d-14493acb99b3"
+        }
+      ],
+      "createdAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:24:38.731Z",
+      "relatedFiles": [
+        {
+          "path": ".github/workflows/ci.yml",
+          "type": "TO_MODIFY",
+          "description": "CI 워크플로"
+        }
+      ],
+      "implementationGuide": "1) ci.yml 포맷 검사 뒤에 '- name: 테스트 / run: npm run test'\n2) 임시 lib/__fail__.test.ts(expect(1).toBe(2)) 생성 → npm run test; echo $? 확인 → 파일 삭제 → 다시 통과 확인",
+      "verificationCriteria": "ci.yml에 test 단계 존재·prettier 통과, 실패 테스트 시 종료 코드 ≠ 0 기록, 임시 파일 제거됨.",
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": ".github/workflows/ci.yml의 포맷 검사 뒤에 '테스트'(npm run test) 단계를 추가했고 prettier를 통과했다. 임시 lib/__fail__.test.ts(expect(1).toBe(2))를 넣었을 때 npm run test 종료 코드가 1, 제거 후에는 0인 것을 확인했고 임시 파일은 지웠다. CI 설치 단계가 npm ci이므로 npm ci --dry-run으로 lock 파일이 package.json과 맞는지도 확인했다. CI의 Node는 .nvmrc 22라 vitest 5의 engines(^22.12)를 만족한다. 원격 CI 실행은 push·PR 시점에 확인한다.",
+      "completedAt": "2026-10-03T08:24:38.728Z"
+    },
+    {
+      "id": "9f70ce79-9612-44d8-9b02-14bb377717ec",
+      "name": "Task 005 testing 문서와 테스트 계정",
+      "description": "docs/testing.md에 단위 테스트 규칙, E2E 실행 전제, 테스트 계정 3개(owner/admin/member)와 대시보드 생성 절차, 시드 절차, 브라우저 우회 방법을 정리한다. 사용자에게 계정 생성을 요청하고 로그인 스모크를 확인한다. CLAUDE.md 테스트 안내를 갱신한다.",
+      "notes": "비밀번호는 문서·커밋에 넣지 않는다. .env*.local은 이미 gitignore.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "424169c3-f366-4000-9b4d-14493acb99b3"
+        }
+      ],
+      "createdAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:52:48.535Z",
+      "relatedFiles": [
+        {
+          "path": "docs/testing.md",
+          "type": "CREATE",
+          "description": "테스트 문서"
+        },
+        {
+          "path": "CLAUDE.md",
+          "type": "TO_MODIFY",
+          "description": "명령어 안내"
+        }
+      ],
+      "implementationGuide": "1) docs/testing.md: 단위 테스트(명령어, *.test.ts 규칙, 커버리지), E2E 전제, 계정 표(역할·이메일·.env.test.local 변수명 E2E_OWNER_EMAIL/PASSWORD 등), 대시보드 생성 절차(Add user, Auto Confirm), 시드 순서(그룹 생성→초대 수락→역할 변경, DB Task에서 갱신), 브라우저 우회(캐시 Chromium, 구글 OAuth 거부 시 이메일 로그인)\n2) 사용자에게 계정 3개 생성 요청, 이메일 확인\n3) 이메일 로그인 → /dashboard 진입 스모크\n4) CLAUDE.md '테스트 러너는 아직...' 문구를 test 명령어 안내로 교체\n5) 메모리 e2e-browser-workaround에 docs/testing.md 연결",
+      "verificationCriteria": "docs/testing.md에 계정 3개와 시드 절차 존재, 비밀번호 미포함, 계정 로그인 스모크 통과, prettier 통과.",
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "docs/testing.md를 작성했다. 내용은 단위 테스트 명령어·작성 규칙·fieldErrorsOf·커버리지, E2E 실행 전제, 테스트 계정 표(역할과 .env.test.local 변수명만 적고 실제 이메일·비밀번호는 넣지 않음), 대시보드 계정 생성 절차(Auto Confirm)와 profiles 확인 SQL, Task 009~028 시드 순서와 cascade 초기화, 브라우저 우회 방법, 동시성 테스트 자리다. CLAUDE.md는 테스트 명령어 안내를 넣고 check·CI 설명에 test를 추가했다. 사용자가 처음 만든 계정 중 하나는 도메인 오타로 미확인 상태여서 다시 만들어 달라고 요청했다. 재생성 후 확인 결과: SQL에서 3개 계정 모두 confirmed이고 profile 있음. Supabase Auth signInWithPassword와 프로필 조회 3/3 성공. 캐시된 Chromium Playwright 스크립트로 이메일 로그인 → /dashboard 진입 → 보호 경로 /profile 접근 3/3 성공, 콘솔 에러 0건. 비밀번호는 출력하지 않고 스크립트가 .env.test.local을 직접 읽게 했다. .env.test.local이 gitignore 대상임을 확인했다. 메모리 e2e-browser-workaround에 계정 위치와 사용법을 기록했다.",
+      "completedAt": "2026-10-03T08:52:48.534Z"
+    },
+    {
+      "id": "ce4d122f-2095-43fe-8b66-feddad3eac8a",
+      "name": "Task 005 검증 및 로드맵 반영",
+      "description": "npm run check(test 포함)·build·test:coverage를 실행하고 tasks/005 작업 파일과 ROADMAP을 완료 상태로 갱신한 뒤 관심사별로 커밋한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "703eaa5c-cfb8-4c99-8a8c-782ab207005e"
+        },
+        {
+          "taskId": "bda1ff8c-e603-43b8-8e26-8670b542ddbf"
+        },
+        {
+          "taskId": "9f70ce79-9612-44d8-9b02-14bb377717ec"
+        }
+      ],
+      "createdAt": "2026-10-03T08:10:45.579Z",
+      "updatedAt": "2026-10-03T08:55:40.694Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/005-test-runner.md",
+          "type": "TO_MODIFY",
+          "description": "작업 파일"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 005 완료 표시"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build, npm run test:coverage\n2) tasks/005-test-runner.md 체크박스·변경 요약\n3) ROADMAP Task 005 ✅, vite-tsconfig-paths 문구를 Vite 8 내장 resolve.tsconfigPaths로 정정, Phase 0 마무리 npm run test 체크\n4) 커밋 분할: ➕ 의존성·설정·샘플 / ✅ 계약 테스트 / 👷 CI / 📝 testing·CLAUDE.md / 📝 작업 파일·로드맵 / 🔧 shrimp, Claude 서명 없음",
+      "verificationCriteria": "check·build·coverage 통과, ROADMAP 완료 조건 충족, tasks/005와 ROADMAP 갱신, 커밋 완료.",
+      "analysisResult": "ROADMAP Task 005: Vitest 테스트 러너를 도입하고 npm run check·CI에 연결한다. 완료 조건: 로컬과 CI에서 npm run test가 통과하고, CI가 실패 테스트를 잡아낸다. 결정: Vitest 5 + Vite 8(vite는 필수 peer라 직접 설치, @types/node는 ^22로 상향), @/* 별칭은 Vite 8 내장 resolve.tsconfigPaths(vite-tsconfig-paths 미사용), environment node, 소스 옆 *.test.ts + 명시적 import(globals 끔), check에 test 포함·pre-commit은 유지, @vitest/coverage-v8 함께 도입(Task 025에서 thresholds). 테스트 계정은 사용자가 Supabase 대시보드에서 직접 생성, 비밀번호는 .env.test.local에만. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, console.log 금지, 커밋은 관심사별 분할·Claude 서명 없음. 작업 파일: tasks/005-test-runner.md, 계획 파일: ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "검증 결과: npm run check(typecheck·lint·format·test)와 npm run build가 모두 종료 코드 0으로 통과했다. npm run test:coverage는 coverage/ 리포트를 생성했고(gitignore 대상), 기준선은 lines 58%다. tasks/005-test-runner.md는 체크박스를 전부 체크하고 변경 사항 요약(버전·peer 대응, .mts 전환, 테스트 이관, CI 연결, 테스트 계정 처리)을 썼다. ROADMAP Task 005에 ✅와 작업 파일 경로를 표시하고, vite-tsconfig-paths 문구를 Vite 8 내장 resolve.tsconfigPaths로 정정했다. Phase 0 마무리의 check·test 항목도 체크했다. 커밋은 관심사별로 나눴고 Claude 서명은 넣지 않았으며 pre-commit을 통과했다: ➕ 러너·샘플 / ✅ 계약 테스트 / 👷 CI / 📝 테스트 문서·CLAUDE.md / 📝 작업 파일·로드맵. ROADMAP 완료 조건 중 로컬 통과와 실패 감지는 확인했고, 원격 CI 실행은 push 시점에 확인한다.",
+      "completedAt": "2026-10-03T08:55:40.692Z"
+    },
+    {
+      "id": "17891638-1021-4f24-a126-aaff1a560250",
+      "name": "Task 007 공통 기반: 권한 규칙·날짜 포맷·목 액션·역할 연결",
+      "description": "멤버 권한 순수 함수와 KST 날짜 포맷 유틸(각 단위 테스트), 목 Server Action 6종, 그룹 레이아웃의 그룹별 역할 주입(dummy-role.ts 제거), EmptyState·RoleBadge 공용 컴포넌트를 만든다.",
+      "notes": "redirect는 try/catch 밖에서 호출. 목 액션은 상태를 저장하지 않는다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-10-03T09:00:21.000Z",
+      "updatedAt": "2026-10-03T09:18:26.238Z",
+      "relatedFiles": [
+        {
+          "path": "lib/groups/member-permissions.ts",
+          "type": "CREATE",
+          "description": "권한 규칙"
+        },
+        {
+          "path": "lib/format/date.ts",
+          "type": "CREATE",
+          "description": "날짜 포맷"
+        },
+        {
+          "path": "lib/mocks/actions.ts",
+          "type": "CREATE",
+          "description": "목 액션"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "역할 주입"
+        },
+        {
+          "path": "lib/mocks/dummy-role.ts",
+          "type": "TO_MODIFY",
+          "description": "삭제"
+        },
+        {
+          "path": "docs/db-schema.md",
+          "type": "REFERENCE",
+          "description": "RPC 권한 규칙"
+        }
+      ],
+      "implementationGuide": "1) lib/groups/member-permissions.ts: canManageMembers(role), getAssignableRoles(viewerRole,targetRole,ownerCount), canRemoveMember(viewer:{userId,role}, target:{userId,role}, ownerCount) — admin은 owner 변경·owner 승격 불가, 마지막 owner 강등·내보내기 불가, 자기 자신 내보내기 불가\n2) lib/format/date.ts: formatEventDateTime(iso), formatDate(iso), Intl ko-KR timeZone Asia/Seoul\n3) 테스트 *.test.ts\n4) lib/mocks/actions.ts 'use server': createGroupMock(redirect), updateGroupMock, regenerateInviteMock, changeMemberRoleMock, removeMemberMock, acceptInviteMock(redirect) — (prevState, formData) 시그니처, 스키마 safeParse→fromZodError, 권한→fail\n5) groups/[groupId]/layout.tsx: Suspense 안 async GroupTabNav({params}) → getMockRole → BottomTabNav role\n6) dummy-role.ts 삭제\n7) components/empty-state.tsx, components/groups/role-badge.tsx",
+      "verificationCriteria": "권한·날짜 테스트 통과, 등반 모임 owner 탭 4개·독서 모임 탭 1개, dummy-role 참조 0건, check·build 통과.",
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "공통 기반을 구현했다.\n- lib/groups/member-permissions.ts: canManageMembers, getAssignableRoles, canChangeRole, canRemoveMember, isLastOwner. 규칙은 admin의 owner 변경·승격 금지, 마지막 owner 강등·내보내기 금지, 자기 자신 내보내기 금지이고 db-schema RPC 규칙과 같다.\n- lib/format/date.ts: formatEventDateTime, formatDate (ko-KR, Asia/Seoul).\n- 단위 테스트 15개를 추가했다. UTC 자정 경계와 오프셋 입력도 포함하며, 전체 테스트는 86개가 통과한다.\n- lib/mocks/actions.ts(\"use server\"): createGroupMock·acceptInviteMock은 성공 시 redirect하고, updateGroupMock·regenerateInviteMock·changeMemberRoleMock·removeMemberMock은 ActionResult를 반환한다. 시그니처는 (prevState, formData)이고, Zod 검증 실패는 fromZodError, 마지막 owner는 CONFLICT, 권한 위반은 FORBIDDEN, 대상 없음은 NOT_FOUND로 돌려준다. resolveMockInvite의 status 유니온으로는 group이 좁혀지지 않는 타입 에러가 있어서 group 존재 여부로 판정하게 고쳤다.\n- groups/[groupId]/layout.tsx: 최상단에서 await하지 않고, Suspense 안 async GroupTabNav가 params를 읽어 getMockRole로 역할을 넘긴다. dummy-role.ts를 삭제해서 참조는 0건이다.\n- EmptyState와 RoleBadge 컴포넌트를 추가했다.\n검증: check(86 테스트)와 build를 통과했다. 테스트 계정 E2E에서 등반 모임 탭 4개, 독서 모임 탭 1개, 콘솔 에러 0건을 확인했다.",
+      "completedAt": "2026-10-03T09:18:26.236Z"
+    },
+    {
+      "id": "e4a91a1b-8e43-4616-879d-84cc1f583bff",
+      "name": "Task 007 랜딩·대시보드",
+      "description": "랜딩 페이지 카피·기능 소개·로그인/회원가입 버튼, 대시보드 그룹 카드 목록(역할 배지, 멤버 수, 다음 이벤트 요약)·빈 상태·새 그룹 만들기 버튼을 만든다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "17891638-1021-4f24-a126-aaff1a560250"
+        }
+      ],
+      "createdAt": "2026-10-03T09:00:21.000Z",
+      "updatedAt": "2026-10-03T09:22:06.909Z",
+      "relatedFiles": [
+        {
+          "path": "app/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "랜딩"
+        },
+        {
+          "path": "app/(app)/dashboard/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "대시보드"
+        },
+        {
+          "path": "components/groups/group-card.tsx",
+          "type": "CREATE",
+          "description": "그룹 카드"
+        },
+        {
+          "path": "lib/constants/routes.ts",
+          "type": "TO_MODIFY",
+          "description": "signUp"
+        }
+      ],
+      "implementationGuide": "1) routes.signUp 추가\n2) app/page.tsx: siteConfig 카피 + 기능 카드 4개 + 로그인/회원가입 버튼, AuthButton·ThemeSwitcher 유지\n3) components/groups/group-card.tsx(서버): 그룹명, RoleBadge, 멤버 수, 다음 이벤트(formatEventDateTime) 또는 '예정 이벤트 없음'\n4) dashboard/page.tsx: 동기 페이지 + Suspense 안 async 목록(searchParams preview=empty면 빈 상태), EmptyState + 새 그룹 버튼",
+      "verificationCriteria": "대시보드 카드 2개(owner/member 배지, 다음 이벤트), ?preview=empty 빈 상태, 360px 가로 스크롤 없음, build 통과.",
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "랜딩과 대시보드를 구현했다.\n- routes.signUp을 추가했다.\n- 랜딩(app/page.tsx): 소개 카피와 기능 카드 4개를 넣었다. 히어로 버튼은 로그인 상태에 따라 바뀐다. 비로그인이면 무료로 시작하기·로그인, 로그인이면 내 그룹으로 가기이고, getClaims를 쓰므로 Suspense 안에서 렌더한다. AuthButton은 스타터 영어 문구와 하드코딩된 경로를 한국어와 routes로 바꿨다.\n- GroupCard(서버 컴포넌트): 그룹명, RoleBadge, 설명, 멤버 수, 다음 이벤트(formatEventDateTime) 또는 '예정 이벤트 없음'을 보여주고, 카드 전체가 그룹 홈 링크다.\n- 대시보드: 동기 페이지 안의 Suspense에서 async GroupList가 searchParams를 읽는다. ?preview=empty면 EmptyState를 보여주고, 상단에 새 그룹 만들기 버튼과 로딩 스켈레톤을 뒀다.\n- 360px 스크린샷 검수 중 한글이 단어 중간에서 끊기는 문제를 발견해서 랜딩 본문과 EmptyState에 break-keep을 적용했다.\nE2E 결과(360×740): 비로그인 랜딩의 버튼과 히어로 로그인에서 /auth/login으로 이동, 로그인 랜딩의 내 그룹으로 가기에서 /dashboard로 이동, 그룹 카드 2개(소유자/멤버 배지, 멤버 수, 다음 이벤트 일시), 빈 상태, 카드 클릭 시 그룹 홈 이동을 모두 확인했다. 모든 화면 scrollWidth는 360이고 콘솔 에러는 0건이다. check와 build를 통과했다.",
+      "completedAt": "2026-10-03T09:22:06.908Z"
+    },
+    {
+      "id": "f8ffd722-828d-40b0-afec-ed319f54dbe5",
+      "name": "Task 007 그룹 생성·설정(초대 링크)",
+      "description": "GroupForm(useActionState, FormField 에러 연결)을 만들고 그룹 생성 페이지와 그룹 설정 페이지(수정 폼 + 초대 링크 카드: 복사·재발급 다이얼로그)를 구현한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "17891638-1021-4f24-a126-aaff1a560250"
+        }
+      ],
+      "createdAt": "2026-10-03T09:00:21.000Z",
+      "updatedAt": "2026-10-03T09:25:46.370Z",
+      "relatedFiles": [
+        {
+          "path": "components/groups/group-form.tsx",
+          "type": "CREATE",
+          "description": "그룹 폼"
+        },
+        {
+          "path": "components/groups/invite-link-card.tsx",
+          "type": "CREATE",
+          "description": "초대 링크"
+        },
+        {
+          "path": "app/(app)/groups/new/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "생성"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/settings/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "설정"
+        },
+        {
+          "path": "components/form-field.tsx",
+          "type": "REFERENCE",
+          "description": "필드 래퍼"
+        }
+      ],
+      "implementationGuide": "1) components/groups/group-form.tsx client: props action, defaultValues, submitLabel, groupId; fieldErrors→FormField error, pending 비활성, 성공 토스트\n2) groups/new/page.tsx: Card + GroupForm action=createGroupMock\n3) settings/page.tsx: 동기 + Suspense async 컨텐츠: 그룹 없으면 notFound, 비관리자 redirect(routes.group), GroupForm action=updateGroupMock + InviteLinkCard\n4) components/groups/invite-link-card.tsx client: origin+routes.invite(token), clipboard 복사 토스트, AlertDialog 재발급→regenerateInviteMock→새 링크, 만료일",
+      "verificationCriteria": "빈 그룹명 에러 메시지 표시, 정상 제출 시 그룹 홈 이동, 복사·재발급 동작, member는 설정 접근 시 그룹 홈으로, build 통과.",
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "그룹 생성·설정 화면을 구현했다.\n- GroupForm(client): useActionState와 FormField로 fieldErrors를 aria-describedby·aria-invalid에 연결했다. pending 중에는 제출 버튼을 비활성화하고 maxLength를 Zod 상수와 맞췄다. React 19가 액션 후 비제어 입력을 초기화해서 검증 실패 시 입력이 사라지는 문제가 있어 제어 입력으로 만들었다.\n- 공용 코드: hooks/use-action-toast.ts는 성공 시, 그리고 필드 에러가 없는 실패 시 토스트를 띄운다. lib/types/action-result.ts의 ActionState<T>를 실제 액션과 목 액션이 함께 쓴다.\n- groups/new: 카드 안 GroupForm이 createGroupMock을 호출하고, 성공하면 그룹 홈으로 이동한다.\n- settings: 동기 페이지 안 Suspense의 async 컨텐츠가 처리한다. 없는 그룹은 notFound, 비관리자는 그룹 홈으로 redirect하고, 관리자에게는 수정 폼과 InviteLinkCard를 보여준다.\n- InviteLinkCard: useSyncExternalStore로 origin을 읽어 hydration 불일치를 피한다. 클립보드 복사 실패 시 logger와 안내 토스트를 쓰고, AlertDialog로 재발급하면 regenerateInviteMock으로 새 링크를 보여준다. 만료일도 표시한다.\n- mock 조회 함수 getMockGroup, getMockActiveInvite를 추가했다.\nE2E 결과(360×740): 빈 그룹명 에러와 aria-invalid, 설명 입력 유지, 정상 제출 후 그룹 홈 이동, 초대 링크 표시·복사(클립보드에 전체 URL), 저장 토스트, 재발급 다이얼로그 후 새 링크, member 그룹 설정에서 그룹 홈으로 이동, 없는 그룹 not-found를 확인했다. 콘솔 에러는 0건이고 scrollWidth는 360이다. check와 build를 통과했다.",
+      "completedAt": "2026-10-03T09:25:46.367Z"
+    },
+    {
+      "id": "3c2522e0-f2ca-4ee3-8dcd-b8d001090a33",
+      "name": "Task 007 초대 수락 페이지",
+      "description": "app/invite/[token]에서 resolveMockInvite 결과(valid/alreadyMember/expired/invalid)별 화면과 가입하기(acceptInviteMock) 폼을 구현한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "17891638-1021-4f24-a126-aaff1a560250"
+        }
+      ],
+      "createdAt": "2026-10-03T09:00:21.001Z",
+      "updatedAt": "2026-10-03T09:41:23.135Z",
+      "relatedFiles": [
+        {
+          "path": "app/invite/[token]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "초대 수락"
+        },
+        {
+          "path": "lib/mocks/groups.ts",
+          "type": "REFERENCE",
+          "description": "resolveMockInvite"
+        }
+      ],
+      "implementationGuide": "1) page.tsx 동기 + Suspense async InviteContent({params})\n2) valid: 그룹 미리보기 Card + 가입하기 form(useActionState, pending)\n3) alreadyMember: 안내 + 그룹 홈 링크\n4) expired/invalid: 에러 카드 + 안내 + 대시보드 링크\n5) 셸 밖 단독 레이아웃(main/h1, 가운데 카드)",
+      "verificationCriteria": "토큰 4개(runningActiveToken2026, climbingActiveToken2026, bookClubExpiredToken2026, climbingRevokedToken2026)별 화면, 가입하기 → 그룹 홈, build 통과.",
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "app/invite/[token]/page.tsx를 앱 셸 밖 단독 화면(main/h1, 가운데 카드)으로 만들고, 동기 페이지 + Suspense 안 async InviteContent에서 resolveMockInvite 결과별로 화면을 나눴다. valid는 그룹 미리보기 + AcceptInviteForm(useActionState, pending, 실패 토스트), alreadyMember는 안내 + 그룹 홈 링크, expired·invalid는 role=alert 에러 카드 + 대시보드 링크다. E2E에서 토큰 4개 화면과 가입하기 → 러닝 크루 그룹 홈 이동을 확인했고 build를 통과했다.",
+      "completedAt": "2026-10-03T09:41:23.132Z"
+    },
+    {
+      "id": "f1655fa1-e153-48b2-99e3-1a6c55f34c5d",
+      "name": "Task 007 멤버 관리·그룹 홈 셸",
+      "description": "멤버 관리 페이지(목록, 역할 변경 Select, 내보내기 AlertDialog)와 그룹 홈 셸(그룹 정보 카드, 관리자 바로가기, Phase 2 자리 표시)을 구현한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "17891638-1021-4f24-a126-aaff1a560250"
+        }
+      ],
+      "createdAt": "2026-10-03T09:00:21.001Z",
+      "updatedAt": "2026-10-03T09:41:39.176Z",
+      "relatedFiles": [
+        {
+          "path": "components/groups/member-list.tsx",
+          "type": "CREATE",
+          "description": "멤버 목록"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/members/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "멤버 관리"
+        },
+        {
+          "path": "app/(app)/groups/[groupId]/page.tsx",
+          "type": "TO_MODIFY",
+          "description": "그룹 홈"
+        }
+      ],
+      "implementationGuide": "1) members/page.tsx 동기 + Suspense async: notFound/비관리자 redirect, getMockGroupMembers\n2) components/groups/member-list.tsx client: 이름(getMockMemberDisplayName 결과를 서버에서 계산해 전달), 역할, 가입일(formatDate); getAssignableRoles로 Select 옵션, canRemoveMember로 내보내기 버튼; changeMemberRoleMock/removeMemberMock 결과 토스트, 성공 시 로컬 상태 갱신\n3) groups/[groupId]/page.tsx: 동기 + Suspense async: notFound, 그룹명·설명·멤버 수 카드, 관리자면 설정·멤버 바로가기, 공지·이벤트 EmptyState(Phase 2)",
+      "verificationCriteria": "owner 행 내보내기 버튼 없음, 역할 변경·내보내기 토스트, 없는 groupId not-found, build 통과.",
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "멤버 관리 페이지는 동기 + Suspense에서 그룹이 없으면 notFound, 비관리자는 그룹 홈으로 redirect하고, 표시 이름을 서버에서 계산해 MemberList(client)에 넘긴다. MemberList는 getAssignableRoles로 Select 옵션, canRemoveMember로 내보내기 AlertDialog를 노출하고, 목 액션 결과를 토스트로 알린 뒤 성공 시 로컬 목록을 갱신한다(예외는 logger.error). 그룹 홈은 정보 카드(설명·멤버 수·역할 배지), 관리자 바로가기, 공지·이벤트 EmptyState를 둔다. 결정: 더미 가입이 저장되지 않으므로 그룹 홈은 그룹이 없을 때만 404이고, 비멤버 404는 Task 009 레이아웃에서 처리한다. E2E에서 owner 행 내보내기 버튼 없음, 역할 변경·내보내기 토스트, 없는 groupId not-found를 확인했고 build를 통과했다.",
+      "completedAt": "2026-10-03T09:41:39.173Z"
+    },
+    {
+      "id": "eaf95611-4c3e-46a6-b827-3f83aa3e7c22",
+      "name": "Task 007 E2E 검증 및 로드맵 반영",
+      "description": "check·build 후 Playwright 스크립트(테스트 계정 owner, 360×740)로 전체 흐름을 검증하고 tasks/007·ROADMAP을 갱신해 관심사별로 커밋한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "e4a91a1b-8e43-4616-879d-84cc1f583bff"
+        },
+        {
+          "taskId": "f8ffd722-828d-40b0-afec-ed319f54dbe5"
+        },
+        {
+          "taskId": "3c2522e0-f2ca-4ee3-8dcd-b8d001090a33"
+        },
+        {
+          "taskId": "f1655fa1-e153-48b2-99e3-1a6c55f34c5d"
+        }
+      ],
+      "createdAt": "2026-10-03T09:00:21.001Z",
+      "updatedAt": "2026-10-03T09:42:05.313Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/007-group-ui.md",
+          "type": "TO_MODIFY",
+          "description": "작업 파일"
+        },
+        {
+          "path": "docs/ROADMAP.md",
+          "type": "TO_MODIFY",
+          "description": "Task 007 완료"
+        },
+        {
+          "path": "docs/testing.md",
+          "type": "REFERENCE",
+          "description": "E2E 절차"
+        }
+      ],
+      "implementationGuide": "1) npm run check, npm run build\n2) scratchpad Playwright 스크립트(.env.test.local 직접 읽기, 캐시 Chromium): 작업 파일 테스트 체크리스트 전 항목 + 각 화면 scrollWidth<=360·콘솔 에러 0\n3) tasks/007 체크·변경 요약, ROADMAP Task 007 ✅\n4) 커밋 분할(기반 / 랜딩·대시보드 / 그룹 생성·설정 / 초대 / 멤버·그룹 홈 / 작업 파일·로드맵 / shrimp), 서명 없음",
+      "verificationCriteria": "E2E 체크리스트 전부 통과, check·build 통과, ROADMAP 완료 조건 충족, 커밋 완료.",
+      "analysisResult": "ROADMAP Task 007: Phase 1 화면(랜딩, 대시보드, 그룹 생성·설정, 초대 수락, 멤버 관리, 그룹 홈 셸)을 lib/mocks 더미 데이터로 완성한다. 완료 조건: 더미 데이터로 랜딩→대시보드→그룹 생성→그룹 홈→설정/멤버 흐름을 클릭으로 끝까지 이동. 결정: 폼은 useActionState+Zod+ActionResult 형태의 목 Server Action(lib/mocks/actions.ts), 역할은 getMockRole(groupId, MOCK_CURRENT_USER_ID)(등반=owner, 독서=member), dummy-role.ts 제거, 권한 규칙은 lib/groups/member-permissions.ts 순수 함수+테스트(db-schema RPC 규칙과 일치), /invite 공개·next는 Task 010. 제약: cacheComponents라 페이지는 동기, params·searchParams는 Suspense 안 async 컴포넌트에서 접근, 레이아웃 최상단 await 금지, 페이지는 section/h2, shadcn은 @2.3.0, Next 문서 node_modules/next/dist/docs/01-app/02-guides/forms.md 패턴. 규칙: 함수 30줄 이하, 한국어 JSDoc·주석, routes 빌더만, console.log 금지, 커밋 관심사별·서명 없음. 작업 파일 tasks/007-group-ui.md, 계획 ~/.claude/plans/docs-roadmap-md-plan-cosmic-whistle.md",
+      "summary": "npm run check(86개 테스트)와 build를 통과했다. 캐시 Chromium 스크립트(owner 계정, 360×740)로 22개 항목을 모두 통과했다. 항목은 랜딩 → 로그인 → 대시보드(카드 2개·배지·다음 이벤트), 빈 상태, 그룹 생성 검증·제출 → 그룹 홈, 설정의 복사·재발급, 멤버 관리의 역할 변경·내보내기, member 그룹의 관리자 탭 숨김과 설정·멤버 차단, not-found, 초대 4개 상태와 가입 흐름이다. 전 화면 scrollWidth는 360이었고 콘솔 에러는 0건이었다. tasks/007과 ROADMAP Task 007을 완료로 갱신하고 초대 / 멤버·그룹 홈 / 문서로 나눠 커밋했다(서명 없음).",
+      "completedAt": "2026-10-03T09:42:05.311Z"
+    },
+    {
+      "id": "1e9f083e-99ff-4fc3-8ed6-c097dc9719cc",
+      "name": "Task 008 테이블 마이그레이션",
+      "description": "groups, group_members, group_invites 테이블과 CHECK·UNIQUE·부분 유니크·인덱스·updated_at 트리거·RLS 활성화를 마이그레이션 파일로 만들고 apply_migration으로 반영한다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-10-03T09:46:28.692Z",
+      "updatedAt": "2026-10-03T09:47:03.781Z",
+      "relatedFiles": [
+        {
+          "path": "docs/db-schema.md",
+          "type": "REFERENCE",
+          "description": "설계 문서"
+        }
+      ],
+      "implementationGuide": "1) supabase/migrations/<ts>_create_group_tables.sql 작성 2) 이름 길이 CHECK(trim 후 1자 이상, 50자 이하), 설명 500자, role CHECK, unique(group_id,user_id), unique(token), unique(group_id) where revoked_at is null 3) 인덱스 group_members(user_id), groups(owner_id), group_invites(created_by) 4) apply_migration 후 list_tables로 확인",
+      "verificationCriteria": "테이블 3개가 RLS 활성 상태로 생성되고 제약 이름이 문서와 같다.",
+      "analysisResult": "ROADMAP Task 008: docs/db-schema.md 기준으로 groups/group_members/group_invites 스키마, RLS 헬퍼(is_group_member/is_group_admin), RLS 정책, RPC 6종(create_group, get_invite_preview, accept_invite, regenerate_invite, change_member_role, remove_member)을 마이그레이션으로 구현한다. 규칙: security definer + set search_path='', revoke 후 필요한 것만 grant, p_ 인자, (select auth.uid()), 에러는 'CODE: 메시지' P0001. D8은 무기한으로 확정. 작업 파일 tasks/008-group-schema.md. 커밋은 관심사별·서명 없음.",
+      "summary": "supabase/migrations/20261003190000_create_group_tables.sql을 작성하고 apply_migration으로 반영했다. groups(이름 trim 1~50자·설명 500자 CHECK, owner_id restrict, updated_at 트리거), group_members(role CHECK, group_members_group_user_key), group_invites(base64url 32자 토큰 기본값, group_invites_token_key, 부분 유니크 group_invites_active_key)를 만들었다. 인덱스는 groups(owner_id), group_members(user_id), group_invites(created_by)를 추가했다. list_tables에서 3개 테이블 모두 RLS 활성 상태를 확인했다.",
+      "completedAt": "2026-10-03T09:47:03.779Z"
+    },
+    {
+      "id": "be260680-ab29-4c0d-a271-2c35673b631d",
+      "name": "Task 008 헬퍼·RLS·RPC 마이그레이션",
+      "description": "is_group_member/is_group_admin, RLS 정책, groups 컬럼 update 권한 제한, RPC 6종과 내부 함수 sync_group_owner_id를 마이그레이션으로 만들고 advisors를 확인한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "1e9f083e-99ff-4fc3-8ed6-c097dc9719cc"
+        }
+      ],
+      "createdAt": "2026-10-03T09:46:28.692Z",
+      "updatedAt": "2026-10-03T10:44:37.932Z",
+      "relatedFiles": [
+        {
+          "path": "lib/groups/member-permissions.ts",
+          "type": "REFERENCE",
+          "description": "권한 규칙(같은 기준)"
+        }
+      ],
+      "implementationGuide": "1) <ts>_create_group_policies_and_rpc.sql 2) 모든 함수 revoke from public, anon, authenticated 후 헬퍼·RPC는 authenticated, get_invite_preview는 anon에도 grant 3) 정책: groups select 멤버/update admin, group_members select 멤버, group_invites select admin 4) revoke update on groups, grant update(name, description) 5) get_advisors security/performance",
+      "verificationCriteria": "마이그레이션 적용 성공, 이 Task로 생긴 보안 경고 0건.",
+      "analysisResult": "ROADMAP Task 008: docs/db-schema.md 기준으로 groups/group_members/group_invites 스키마, RLS 헬퍼(is_group_member/is_group_admin), RLS 정책, RPC 6종(create_group, get_invite_preview, accept_invite, regenerate_invite, change_member_role, remove_member)을 마이그레이션으로 구현한다. 규칙: security definer + set search_path='', revoke 후 필요한 것만 grant, p_ 인자, (select auth.uid()), 에러는 'CODE: 메시지' P0001. D8은 무기한으로 확정. 작업 파일 tasks/008-group-schema.md. 커밋은 관심사별·서명 없음.",
+      "summary": "헬퍼 2개, RLS 정책 4개, groups 컬럼 update 권한(name·description만), RPC 6종, 내부 함수 2개(require_auth_uid, sync_group_owner_id)를 마이그레이션 20261003190100으로 반영했다. get_advisors에서 린트 0028/0029 경고 9건이 나왔다(public의 security definer 함수를 anon/authenticated가 실행 가능). 그래서 마이그레이션 20261003190200을 추가했다. 구현과 헬퍼를 API 비노출 private 스키마로 옮기고, public에는 security invoker 래퍼만 남겼다. 정책은 OID 참조라 그대로 동작한다. 재확인 결과 이 Task로 생긴 보안 경고는 0건이다. 남은 것은 기존 Auth 설정 경고 1건과 새 인덱스의 unused_index INFO뿐이다.",
+      "completedAt": "2026-10-03T10:44:37.930Z"
+    },
+    {
+      "id": "996fd796-8f23-4670-943d-e12a3918a2d8",
+      "name": "Task 008 SQL 시나리오 검증·타입·문서 반영",
+      "description": "트랜잭션 안에서 역할별 JWT를 흉내 내 테스트 체크리스트를 검증하고 롤백한다. database.types.ts를 재생성하고, db-schema·작업 파일·ROADMAP을 갱신해 커밋한다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "be260680-ab29-4c0d-a271-2c35673b631d"
+        }
+      ],
+      "createdAt": "2026-10-03T09:46:28.692Z",
+      "updatedAt": "2026-10-03T10:49:02.952Z",
+      "relatedFiles": [
+        {
+          "path": "tasks/008-group-schema.md",
+          "type": "TO_MODIFY",
+          "description": "작업 파일"
+        },
+        {
+          "path": "lib/supabase/database.types.ts",
+          "type": "TO_MODIFY",
+          "description": "생성 타입"
+        }
+      ],
+      "implementationGuide": "1) execute_sql로 begin; set local role/claims; ... rollback 시나리오 2) generate_typescript_types → lib/supabase/database.types.ts 3) npm run check 4) 문서 갱신 5) 커밋 분할(마이그레이션 / 타입 / 문서 / shrimp)",
+      "verificationCriteria": "체크리스트 전부 통과, 테스트 데이터 잔존 0, check 통과, 커밋 완료.",
+      "analysisResult": "ROADMAP Task 008: docs/db-schema.md 기준으로 groups/group_members/group_invites 스키마, RLS 헬퍼(is_group_member/is_group_admin), RLS 정책, RPC 6종(create_group, get_invite_preview, accept_invite, regenerate_invite, change_member_role, remove_member)을 마이그레이션으로 구현한다. 규칙: security definer + set search_path='', revoke 후 필요한 것만 grant, p_ 인자, (select auth.uid()), 에러는 'CODE: 메시지' P0001. D8은 무기한으로 확정. 작업 파일 tasks/008-group-schema.md. 커밋은 관심사별·서명 없음.",
+      "summary": "SQL 시나리오 46개를 모두 통과했다. DO 블록 하나에서 역할별 request.jwt.claims로 전환하며 실행하고 마지막 예외로 롤백했고, 실행 후 세 테이블 0행을 확인했다. 검증 범위는 create_group, 직접 insert 거부, anon 미리보기, 비멤버 0행, 중복 수락, member/admin/owner 권한, 마지막 owner CONFLICT, owner_id 이전, 재발급 후 이전 토큰 무효, 만료 토큰, UNAUTHENTICATED다. database.types.ts를 재생성했고 npm run check(86개)를 통과했다. db-schema(§1 private 스키마 규칙, D8 확정, 구현 메모, 내부 함수), ROADMAP Task 008 ✅, CLAUDE.md, tasks/008을 갱신하고 마이그레이션 / 타입 / 문서로 나눠 커밋했다.",
+      "completedAt": "2026-10-03T10:49:02.949Z"
     }
   ]
 }

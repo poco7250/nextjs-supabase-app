@@ -93,18 +93,18 @@
 
 ### Phase 0: 기반 정리 및 애플리케이션 골격
 
-- **Task 001: 스타터 킷 잔여물 제거 및 인증 리다이렉트 정리** - 우선순위
-  - 규모: S | 기능 ID: (기반), F020 | 의존: 없음
-  - [ ] `app/instruments`, `app/protected`, `components/tutorial/`, `hero.tsx`, `deploy-button.tsx`, `next-logo.tsx`, `supabase-logo.tsx` 삭제 및 참조 제거
-  - [ ] `instruments` 테이블 제거: 마이그레이션 파일(`drop table if exists public.instruments`) → `apply_migration` → `generate_typescript_types`로 타입 재생성
-  - [ ] `lib/supabase/proxy.ts` 공개 경로에서 `/instruments` 조건 제거
-  - [ ] 인증 후 기본 목적지를 `/protected`에서 `/dashboard`로 변경(`login-form.tsx`, `sign-up-form.tsx`, `update-password-form.tsx`, `google-login-button.tsx`, `app/auth/callback/route.ts`). 목적지 상수는 `lib/constants/routes.ts` 한 곳에서 관리
-  - [ ] `app/layout.tsx` 메타데이터를 서비스명·한국어 설명으로 교체, `<html lang="ko">`
+- **Task 001: 스타터 킷 잔여물 제거 및 인증 리다이렉트 정리** ✅ - 완료
+  - 규모: S | 기능 ID: (기반), F020 | 의존: 없음 | 작업 파일: `tasks/001-starter-cleanup.md`
+  - [x] `app/instruments`, `app/protected`, `components/tutorial/`, `hero.tsx`, `deploy-button.tsx`, `next-logo.tsx`, `supabase-logo.tsx` 삭제 및 참조 제거
+  - [x] `instruments` 테이블 제거: 마이그레이션 파일(`drop table if exists public.instruments`) → `apply_migration` → `generate_typescript_types`로 타입 재생성
+  - [x] `lib/supabase/proxy.ts` 공개 경로에서 `/instruments` 조건 제거
+  - [x] 인증 후 기본 목적지를 `/protected`에서 `/dashboard`로 변경(`login-form.tsx`, `sign-up-form.tsx`, `update-password-form.tsx`, `google-login-button.tsx`, `app/auth/callback/route.ts`). 목적지 상수는 `lib/constants/routes.ts` 한 곳에서 관리
+  - [x] `app/layout.tsx` 메타데이터를 서비스명·한국어 설명으로 교체, `<html lang="ko">`
   - 완료 조건: 삭제한 파일을 가리키는 import가 없고, 로그인·구글 로그인 후 `/dashboard`(빈 페이지)로 이동하며, `database.types.ts`에 `instruments`가 없다
 
-- **Task 002: 전체 라우트 구조 및 빈 페이지 생성**
-  - 규모: S | 기능 ID: 전체 페이지 골격 | 의존: Task 001
-  - [ ] 라우트 골격 생성 (각 페이지는 제목만 있는 빈 껍데기)
+- **Task 002: 전체 라우트 구조 및 빈 페이지 생성** ✅ - 완료
+  - 규모: S | 기능 ID: 전체 페이지 골격 | 의존: Task 001 | 작업 파일: `tasks/002-route-skeleton.md`
+  - [x] 라우트 골격 생성 (각 페이지는 제목만 있는 빈 껍데기)
     ```
     app/page.tsx                                      랜딩
     app/invite/[token]/page.tsx                       초대 수락 (공개)
@@ -122,40 +122,40 @@
     app/(app)/groups/[groupId]/events/[eventId]/carpool/page.tsx     카풀
     app/(app)/groups/[groupId]/events/[eventId]/settlement/page.tsx  정산
     ```
-  - [ ] `lib/constants/routes.ts`에 경로 빌더 함수 정의(`routes.group(groupId)` 등)
-  - [ ] 각 세그먼트에 `loading.tsx`, `not-found.tsx`, `error.tsx` 기본 파일 배치
-  - [ ] 동적 파라미터(`params`는 Promise) 처리 방식을 Next.js 16 문서로 확인하고 적용
+  - [x] `lib/constants/routes.ts`에 경로 빌더 함수 정의(`routes.group(groupId)` 등)
+  - [x] 각 세그먼트에 `loading.tsx`, `not-found.tsx`, `error.tsx` 기본 파일 배치
+  - [x] 동적 파라미터(`params`는 Promise) 처리 방식을 Next.js 16 문서로 확인하고 적용
   - 완료 조건: 모든 경로가 404 없이 렌더되고 `npm run build`가 통과한다
 
-- **Task 003: 공통 레이아웃 및 하단 탭 내비게이션 구현**
-  - 규모: M | 기능 ID: 메뉴 구조 전체 | 의존: Task 002
-  - [ ] 필요한 shadcn/ui 컴포넌트 추가: `dialog`, `alert-dialog`, `sheet`, `select`, `textarea`, `tabs`, `avatar`, `separator`, `skeleton`, `sonner`(토스트), `form` 대체용 필드 래퍼
-  - [ ] 모바일 우선 앱 셸: 상단 헤더(뒤로 가기, 페이지 제목, 컨텍스트 메뉴) + 하단 탭 바(`components/layout/bottom-tab-nav.tsx`)
-  - [ ] 컨텍스트별 탭 구성
+- **Task 003: 공통 레이아웃 및 하단 탭 내비게이션 구현** ✅ - 완료
+  - 규모: M | 기능 ID: 메뉴 구조 전체 | 의존: Task 002 | 작업 파일: `tasks/003-app-shell-navigation.md`
+  - [x] 필요한 shadcn/ui 컴포넌트 추가: `dialog`, `alert-dialog`, `sheet`, `select`, `textarea`, `tabs`, `avatar`, `separator`, `skeleton`, `sonner`(토스트), `form` 대체용 필드 래퍼
+  - [x] 모바일 우선 앱 셸: 상단 헤더(뒤로 가기, 페이지 제목, 컨텍스트 메뉴) + 하단 탭 바(`components/layout/bottom-tab-nav.tsx`)
+  - [x] 컨텍스트별 탭 구성
     - 공통: 대시보드 / 내 프로필
     - 그룹 내부: 그룹 홈 / 이벤트 만들기(owner/admin) / 멤버(owner/admin) / 설정(owner/admin)
     - 이벤트 내부: 상세 / 카풀 / 정산
-  - [ ] 역할별 탭 노출은 props(`role`)로 받도록 설계해 Phase 1에서 실제 역할만 주입
-  - [ ] 로그아웃은 내 프로필 페이지와 헤더 메뉴에 배치, 로그아웃 후 랜딩으로 이동
-  - [ ] 다크 모드(`theme-switcher.tsx`) 유지, 터치 영역 44px 이상, 활성 탭 `aria-current`
+  - [x] 역할별 탭 노출은 props(`role`)로 받도록 설계해 Phase 1에서 실제 역할만 주입
+  - [x] 로그아웃은 내 프로필 페이지와 헤더 메뉴에 배치, 로그아웃 후 랜딩으로 이동
+  - [x] 다크 모드(`theme-switcher.tsx`) 유지, 터치 영역 44px 이상, 활성 탭 `aria-current`
   - 완료 조건: 360px 폭에서 가로 스크롤 없이 모든 탭이 보이고, 더미 역할을 바꾸면 관리자 탭 노출이 바뀐다
 
-- **Task 004: 도메인 타입·Zod 스키마·레이어 구조 및 DB 스키마 설계**
-  - 규모: M | 기능 ID: 전체 | 의존: Task 001
-  - [ ] `zod` 설치, `lib/validations/*.ts`에 그룹·초대·이벤트·RSVP·공지·카풀·비용·계좌 입력 스키마 정의
-  - [ ] `lib/types/domain.ts`: PRD 데이터 모델 기준 도메인 타입과 상태 enum(`GroupRole`, `EventStatus`, `RsvpStatus`, `CarpoolRiderStatus`) 정의. DB 타입 생성 후에는 `Database['public']['Tables']` 기반으로 연결
-  - [ ] `lib/types/action-result.ts`(`ActionResult<T>`, 에러 코드 목록), `lib/logger.ts`(레벨별 로거, pino 등 검토) 작성
-  - [ ] `lib/services/`, `lib/repositories/` 디렉토리와 작성 규칙(README 주석) 마련
-  - [ ] `lib/mocks/`에 Phase 1~4 UI용 더미 데이터 생성기 작성(도메인 타입 준수)
-  - [ ] `docs/db-schema.md`에 전체 ERD, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 목록과 시그니처 설계(구현은 각 Phase에서)
+- **Task 004: 도메인 타입·Zod 스키마·레이어 구조 및 DB 스키마 설계** ✅ - 완료
+  - 규모: M | 기능 ID: 전체 | 의존: Task 001 | 작업 파일: `tasks/004-domain-foundation.md`
+  - [x] `zod` 설치, `lib/validations/*.ts`에 그룹·초대·이벤트·RSVP·공지·카풀·비용·계좌 입력 스키마 정의
+  - [x] `lib/types/domain.ts`: PRD 데이터 모델 기준 도메인 타입과 상태 enum(`GroupRole`, `EventStatus`, `RsvpStatus`, `CarpoolRiderStatus`) 정의. DB 타입 생성 후에는 `Database['public']['Tables']` 기반으로 연결
+  - [x] `lib/types/action-result.ts`(`ActionResult<T>`, 에러 코드 목록), `lib/logger.ts`(레벨별 로거, 의존성 없는 자체 구현으로 결정) 작성
+  - [x] `lib/services/`, `lib/repositories/` 디렉토리와 작성 규칙(README 주석) 마련
+  - [x] `lib/mocks/`에 Phase 1~4 UI용 더미 데이터 생성기 작성(도메인 타입 준수)
+  - [x] `docs/db-schema.md`에 전체 ERD, CHECK/UNIQUE/부분 유니크 제약, 인덱스, 헬퍼 함수·RPC 목록과 시그니처 설계(구현은 각 Phase에서)
   - 완료 조건: 모든 더미 데이터가 도메인 타입으로 타입 체크되고, DB 설계 문서에 PRD의 12개 테이블과 제약이 빠짐없이 매핑된다
 
-- **Task 005: 테스트 러너 도입 및 CI 연결**
-  - 규모: S | 기능 ID: 품질 기반 (정산 로직 선행 조건) | 의존: Task 001
-  - [ ] Vitest(+ `vite-tsconfig-paths`로 `@/*` 별칭) 설치, `vitest.config.ts` 작성, `npm run test` / `npm run test:watch` 스크립트 추가
-  - [ ] 샘플 테스트(예: `lib/utils.ts`의 `cn()`)로 동작 확인
-  - [ ] `npm run check`에 `test` 포함 여부 결정 후 반영, `.github/workflows/ci.yml`에 test 단계 추가
-  - [ ] Playwright MCP E2E용 테스트 계정 2~3개와 시드 절차를 `docs/testing.md`에 정리
+- **Task 005: 테스트 러너 도입 및 CI 연결** ✅ - 완료
+  - 규모: S | 기능 ID: 품질 기반 (정산 로직 선행 조건) | 의존: Task 001 | 작업 파일: `tasks/005-test-runner.md`
+  - [x] Vitest 5 설치(`@/*` 별칭은 `vite-tsconfig-paths` 대신 Vite 8 내장 `resolve.tsconfigPaths`), `vitest.config.mts` 작성, `npm run test` / `npm run test:watch` 스크립트 추가
+  - [x] 샘플 테스트(예: `lib/utils.ts`의 `cn()`)로 동작 확인
+  - [x] `npm run check`에 `test` 포함(pre-commit은 제외), `.github/workflows/ci.yml`에 test 단계 추가
+  - [x] Playwright MCP E2E용 테스트 계정 2~3개와 시드 절차를 `docs/testing.md`에 정리
   - 완료 조건: 로컬과 CI에서 `npm run test`가 통과하고, CI가 실패 테스트를 잡아낸다
 
 - **Task 006: 카카오 비즈 앱 전환 심사 신청 및 외부 설정 준비** - 우선순위 (병렬, 비개발 작업)
@@ -167,44 +167,44 @@
   - 완료 조건: 심사 신청이 접수되었고, 플래그가 false일 때 카카오 버튼이 어디에도 노출되지 않는다
 
 - **Phase 0 마무리**
-  - [ ] `npm run check` 통과
-  - [ ] `npm run test` 통과
+  - [x] `npm run check` 통과
+  - [x] `npm run test` 통과
 
 ### Phase 1: 그룹·초대·멤버
 
-- **Task 007: 대시보드·그룹·초대·멤버 화면 UI 완성 (더미 데이터)**
+- **Task 007: 대시보드·그룹·초대·멤버 화면 UI 완성 (더미 데이터)** ✅ - 완료
   - 규모: M | 기능 ID: F001~F005, F022 | 의존: Task 003, 004
-  - [ ] 랜딩 페이지: 서비스 소개 카피, 로그인/회원가입 버튼
-  - [ ] 대시보드: 그룹 카드 목록(그룹명, 역할 배지, 다음 이벤트 요약), 빈 상태, "새 그룹 만들기" 버튼
-  - [ ] 그룹 생성·설정 폼(그룹명/설명), 초대 링크 표시·복사·재발급 확인 다이얼로그
-  - [ ] 초대 수락 페이지: 그룹 미리보기 카드, "그룹 가입하기" 버튼, 토큰 무효/만료 에러 상태, 이미 멤버인 경우 상태
-  - [ ] 멤버 관리: 멤버 목록(이름, 역할, 가입일), 역할 변경 셀렉트, 내보내기 확인 다이얼로그
-  - [ ] 그룹 홈 셸(공지/이벤트 목록 영역은 Phase 2에서 채움)
+  - [x] 랜딩 페이지: 서비스 소개 카피, 로그인/회원가입 버튼
+  - [x] 대시보드: 그룹 카드 목록(그룹명, 역할 배지, 다음 이벤트 요약), 빈 상태, "새 그룹 만들기" 버튼
+  - [x] 그룹 생성·설정 폼(그룹명/설명), 초대 링크 표시·복사·재발급 확인 다이얼로그
+  - [x] 초대 수락 페이지: 그룹 미리보기 카드, "그룹 가입하기" 버튼, 토큰 무효/만료 에러 상태, 이미 멤버인 경우 상태
+  - [x] 멤버 관리: 멤버 목록(이름, 역할, 가입일), 역할 변경 셀렉트, 내보내기 확인 다이얼로그
+  - [x] 그룹 홈 셸(공지/이벤트 목록 영역은 Phase 2에서 채움)
   - 완료 조건: 더미 데이터로 랜딩 → 대시보드 → 그룹 생성 → 그룹 홈 → 설정/멤버 흐름을 클릭으로 끝까지 이동할 수 있다
 
-- **Task 008: 그룹·멤버·초대 스키마, RLS, 헬퍼 함수 구축**
+- **Task 008: 그룹·멤버·초대 스키마, RLS, 헬퍼 함수 구축** ✅ - 완료
   - 규모: M | 기능 ID: F001~F005 | 의존: Task 004
-  - [ ] (1) 마이그레이션: `groups`, `group_members`(role CHECK, `unique(group_id, user_id)`), `group_invites`(`unique(token)`, `unique(group_id) where revoked_at is null`), 조회 인덱스
-  - [ ] (2) 헬퍼 함수 `is_group_member(group_id)`, `is_group_admin(group_id)` (`security definer`, `set search_path = ''`, `stable`)
-  - [ ] (2) RLS: 그룹·멤버 조회는 멤버만, 그룹 수정은 admin 이상, 멤버/초대 쓰기는 RPC 전용
-  - [ ] (2) RPC: `create_group(name, description)`(그룹 + owner 멤버를 한 트랜잭션으로), `get_invite_preview(token)`(anon 허용, 그룹명·설명·유효 여부만 반환), `accept_invite(token)`(중복 가입 무시, 무효 토큰 에러), `regenerate_invite(group_id)`(기존 토큰 `revoked_at` 기록 + 신규 발급을 한 트랜잭션으로), `change_member_role(group_id, user_id, role)`, `remove_member(group_id, user_id)`
-  - [ ] (2) 권한 규칙: owner는 최소 1명 유지(마지막 owner 강등·내보내기 불가), admin은 owner를 변경·내보낼 수 없음, owner 위임 시 `groups.owner_id` 동기화
-  - [ ] (2) `get_advisors`로 보안 경고 0건 확인
-  - [ ] (3) `generate_typescript_types`로 타입 재생성
+  - [x] (1) 마이그레이션: `groups`, `group_members`(role CHECK, `unique(group_id, user_id)`), `group_invites`(`unique(token)`, `unique(group_id) where revoked_at is null`), 조회 인덱스
+  - [x] (2) 헬퍼 함수 `is_group_member(group_id)`, `is_group_admin(group_id)` (`security definer`, `set search_path = ''`, `stable`)
+  - [x] (2) RLS: 그룹·멤버 조회는 멤버만, 그룹 수정은 admin 이상, 멤버/초대 쓰기는 RPC 전용
+  - [x] (2) RPC: `create_group(name, description)`(그룹 + owner 멤버를 한 트랜잭션으로), `get_invite_preview(token)`(anon 허용, 그룹명·설명·유효 여부만 반환), `accept_invite(token)`(중복 가입 무시, 무효 토큰 에러), `regenerate_invite(group_id)`(기존 토큰 `revoked_at` 기록 + 신규 발급을 한 트랜잭션으로), `change_member_role(group_id, user_id, role)`, `remove_member(group_id, user_id)`
+  - [x] (2) 권한 규칙: owner는 최소 1명 유지(마지막 owner 강등·내보내기 불가), admin은 owner를 변경·내보낼 수 없음, owner 위임 시 `groups.owner_id` 동기화
+  - [x] (2) `get_advisors`로 보안 경고 0건 확인
+  - [x] (3) `generate_typescript_types`로 타입 재생성
   - 완료 조건: 비멤버 JWT로 `groups`/`group_members` 조회 시 0행, anon이 `get_invite_preview`로 그룹명·설명 외 컬럼을 얻을 수 없다
 
-- **Task 009: 그룹 생성/수정 및 대시보드 연동**
+- **Task 009: 그룹 생성/수정 및 대시보드 연동** ✅ - 완료
   - 규모: M | 기능 ID: F001, F022 | 의존: Task 007, 008
-  - [ ] `lib/repositories/group-repository.ts`, `lib/services/group-service.ts`, `app/(app)/groups/actions.ts`(Server Action) 구현
-  - [ ] 그룹 생성 → `create_group` RPC → 그룹 홈으로 리다이렉트
-  - [ ] 그룹 설정에서 그룹명/설명 수정(admin 이상), 비관리자가 URL로 접근하면 그룹 홈으로 리다이렉트
-  - [ ] `groups/[groupId]/layout.tsx`에서 멤버 여부와 역할을 조회해 비멤버는 `notFound()`, 역할을 하단 탭에 주입
-  - [ ] 대시보드 그룹 목록을 실데이터로 교체(다음 이벤트 요약은 Task 015에서 연결, 그 전에는 "예정 이벤트 없음")
+  - [x] `lib/repositories/group-repository.ts`, `lib/services/group-service.ts`, `app/(app)/groups/actions.ts`(Server Action) 구현
+  - [x] 그룹 생성 → `create_group` RPC → 그룹 홈으로 리다이렉트
+  - [x] 그룹 설정에서 그룹명/설명 수정(admin 이상), 비관리자가 URL로 접근하면 그룹 홈으로 리다이렉트
+  - [x] `groups/[groupId]/layout.tsx`에서 멤버 여부와 역할을 조회해 비멤버는 `notFound()`, 역할을 하단 탭에 주입
+  - [x] 대시보드 그룹 목록을 실데이터로 교체(다음 이벤트 요약은 Task 015에서 연결, 그 전에는 "예정 이벤트 없음")
   - 테스트 체크리스트 (Playwright MCP)
-    - [ ] 그룹 생성 후 대시보드에 owner 배지와 함께 표시
-    - [ ] 빈 그룹명·길이 초과 입력 시 Zod 에러 메시지 표시
-    - [ ] member 계정으로 `/groups/[id]/settings` 직접 접근 시 차단
-    - [ ] 비멤버 계정으로 그룹 URL 접근 시 404
+    - [x] 그룹 생성 후 대시보드에 owner 배지와 함께 표시
+    - [x] 빈 그룹명·길이 초과 입력 시 Zod 에러 메시지 표시
+    - [x] member 계정으로 `/groups/[id]/settings` 직접 접근 시 차단
+    - [x] 비멤버 계정으로 그룹 URL 접근 시 404
   - 완료 조건: 위 시나리오 전부 통과
 
 - **Task 010: 초대 링크 발급/재발급 및 초대 가입 플로우 구현**
